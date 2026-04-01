@@ -77,7 +77,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
-                  child: const Text('Basla'),
+                  child: const Text('Başla'),
                 ),
               ),
               const SizedBox(height: 16),

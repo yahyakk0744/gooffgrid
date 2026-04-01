@@ -66,7 +66,7 @@ class SettingsScreen extends ConsumerWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(color: AppColors.cardBorder, borderRadius: BorderRadius.circular(8)),
-                      child: const Text('Ucretsiz', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                      child: const Text('Ücretsiz', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
                     ),
                     const SizedBox(width: 8),
                     const Icon(Icons.chevron_right_rounded, color: AppColors.textTertiary),
@@ -83,9 +83,9 @@ class SettingsScreen extends ConsumerWidget {
                     const Divider(color: AppColors.cardBorder, height: 1),
                     _ToggleRow(label: 'Günlük Hatırlatıcı', value: true, onChanged: (_) {}),
                     const Divider(color: AppColors.cardBorder, height: 1),
-                    _ToggleRow(label: 'Duel Bildirimleri', value: false, onChanged: (_) {}),
+                    _ToggleRow(label: 'Düello Bildirimleri', value: false, onChanged: (_) {}),
                     const Divider(color: AppColors.cardBorder, height: 1),
-                    _ToggleRow(label: 'Konum Paylasimi', value: true, onChanged: (_) {}),
+                    _ToggleRow(label: 'Konum Paylaşımı', value: true, onChanged: (_) {}),
                   ],
                 ),
               ),
@@ -97,7 +97,7 @@ class SettingsScreen extends ConsumerWidget {
                     HapticService.warning();
                     context.go('/onboarding');
                   },
-                  child: const Text('Cikis Yap', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.ringDanger)),
+                  child: const Text('Çıkış Yap', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.ringDanger)),
                 ),
               ),
               const SizedBox(height: 24),

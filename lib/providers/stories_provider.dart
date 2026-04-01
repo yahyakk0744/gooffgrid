@@ -89,7 +89,7 @@ class StoriesNotifier extends StateNotifier<StoriesState> {
       final first = userStories.first;
       return StoryGroup(
         userId: e.key,
-        userName: first.userName ?? 'Kullanici',
+        userName: first.userName ?? 'Kullanıcı',
         avatarUrl: first.userAvatarUrl,
         avatarColor: first.userAvatarColor ?? const Color(0xFF6B7280),
         stories: userStories,

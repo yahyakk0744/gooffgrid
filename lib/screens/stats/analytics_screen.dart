@@ -99,7 +99,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 // ═══════════════════════════════════════
                 // APP USAGE LIST — Native ikonlarla
                 // ═══════════════════════════════════════
-                const Text('Uygulama Detaylari', style: AppTextStyles.h3),
+                const Text('Uygulama Detayları', style: AppTextStyles.h3),
                 const SizedBox(height: 12),
 
                 // iOS: Platform View | Android: Native icon list
@@ -571,7 +571,7 @@ class _AppListWithIcons extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(32),
           child: Text(
-            'Henuz veri yok',
+            'Henüz veri yok',
             style: TextStyle(fontSize: 14, color: AppColors.textTertiary),
           ),
         ),

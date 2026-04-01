@@ -75,14 +75,14 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
               ),
               const SizedBox(height: 32),
               const Text(
-                'Ekran sureni takip etmemiz gerekiyor',
+                'Ekran süreni takip etmemiz gerekiyor',
                 style: AppTextStyles.h2,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
               Text(
-                'Hangi uygulamalarda ne kadar vakit gecirdigini gormek icin '
-                'ekran suresi erisimi gerekiyor.',
+                'Hangi uygulamalarda ne kadar vakit geçirdiğini görmek için '
+                'ekran süresi erişimi gerekiyor.',
                 style: AppTextStyles.bodySecondary,
                 textAlign: TextAlign.center,
               ),
@@ -103,7 +103,7 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
                       Icon(Icons.check_circle_rounded, color: AppColors.neonGreen, size: 24),
                       SizedBox(width: 8),
                       Text(
-                        'Ekran suresi izni verildi!',
+                        'Ekran süresi izni verildi!',
                         style: TextStyle(
                           color: AppColors.neonGreen,
                           fontWeight: FontWeight.w600,

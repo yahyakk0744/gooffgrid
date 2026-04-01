@@ -105,9 +105,9 @@ class ShareableStatsCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _StatColumn(label: 'Bugun', value: _formatted, color: _ringColor),
+                _StatColumn(label: 'Bugün', value: _formatted, color: _ringColor),
                 _StatColumn(label: 'Streak', value: '$streak gun', color: AppColors.neonGreen),
-                _StatColumn(label: 'Siralama', value: '#$rank', color: AppColors.gold),
+                _StatColumn(label: 'Sıralama', value: '#$rank', color: AppColors.gold),
               ],
             ),
             const SizedBox(height: 20),

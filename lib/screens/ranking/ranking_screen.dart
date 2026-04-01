@@ -28,7 +28,7 @@ class RankingScreen extends ConsumerWidget {
             const SizedBox(height: 16),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text('Siralama', style: AppTextStyles.h1),
+              child: Text('Sıralama', style: AppTextStyles.h1),
             ),
             const SizedBox(height: 16),
 

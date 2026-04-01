@@ -36,7 +36,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 24),
-              const Text('Profilini Olustur', style: AppTextStyles.h1),
+              const Text('Profilini Oluştur', style: AppTextStyles.h1),
               const SizedBox(height: 32),
 
               // Name

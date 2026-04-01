@@ -40,7 +40,7 @@ class _FocusModeScreenState extends ConsumerState<FocusModeScreen> {
     final notifier = ref.read(focusSessionProvider.notifier);
     final success = await notifier.start();
     if (!success) {
-      setState(() => _error = 'O₂ sadece 08:00-00:00 arası kazanılır');
+      setState(() => _error = 'O₂ sadece 08:00–00:00 arası kazanılır');
     } else {
       setState(() {
         _isComplete = false;
@@ -81,11 +81,11 @@ class _FocusModeScreenState extends ConsumerState<FocusModeScreen> {
         backgroundColor: const Color(0xFF1A1A2E),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text(
-          'Hala burada misin?',
+          'Hâlâ burada mısın?',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
         ),
         content: const Text(
-          '120 dakikalik odak limitine ulastin. Oturum otomatik olarak sonlandirildi.\n\nDinlenmek onemli! Kisa bir mola vermeyi dusun.',
+          '120 dakikalık odak limitine ulaştın. Oturum otomatik olarak sonlandırıldı.\n\nDinlenmek önemli! Kısa bir mola vermeyi düşün.',
           style: TextStyle(color: Colors.white70, fontSize: 14),
         ),
         actions: [
@@ -180,7 +180,7 @@ class _FocusModeScreenState extends ConsumerState<FocusModeScreen> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            '⚠️ ${session.remainingSeconds ~/ 60}dk kaldi (120dk limit)',
+                            '⚠️ ${session.remainingSeconds ~/ 60}dk kaldı (120dk limit)',
                             style: const TextStyle(fontSize: 12, color: AppColors.ringDanger),
                           ),
                         ),
@@ -200,9 +200,9 @@ class _FocusModeScreenState extends ConsumerState<FocusModeScreen> {
                           ),
                           child: const Column(
                             children: [
-                              Text('⏱️ Oturum Zaman Asimi', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.ringDanger)),
+                              Text('⏱️ Oturum Zaman Aşımı', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.ringDanger)),
                               SizedBox(height: 4),
-                              Text('120 dakika limitine ulastin.\nHala orada misin?', style: TextStyle(fontSize: 13, color: AppColors.textSecondary), textAlign: TextAlign.center),
+                              Text('120 dakika limitine ulaştın.\nHâlâ orada mısın?', style: TextStyle(fontSize: 13, color: AppColors.textSecondary), textAlign: TextAlign.center),
                             ],
                           ),
                         ),
@@ -215,7 +215,7 @@ class _FocusModeScreenState extends ConsumerState<FocusModeScreen> {
                     if (session.isActive)
                       Column(
                         children: [
-                          Text('Odaklaniyorsun...', style: AppTextStyles.bodySecondary.copyWith(color: Colors.white60)),
+                          Text('Odaklanıyorsun...', style: AppTextStyles.bodySecondary.copyWith(color: Colors.white60)),
                           const SizedBox(height: 4),
                           Text(
                             '+${(session.elapsedMinutes * 3).clamp(0, 500)} O₂ (tahmini)',
@@ -227,7 +227,7 @@ class _FocusModeScreenState extends ConsumerState<FocusModeScreen> {
                       Column(
                         children: [
                           Text(
-                            'Harika! $_focusMinutes dk odaklandin',
+                            'Harika! $_focusMinutes dk odaklandın',
                             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.neonGreen),
                           ),
                           const SizedBox(height: 4),
@@ -259,7 +259,7 @@ class _FocusModeScreenState extends ConsumerState<FocusModeScreen> {
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                             textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                           ),
-                          child: Text(session.isActive ? 'Bitir' : 'Odak Modunu Baslat'),
+                          child: Text(session.isActive ? 'Bitir' : 'Odak Modunu Başlat'),
                         ),
                       ),
                     ),

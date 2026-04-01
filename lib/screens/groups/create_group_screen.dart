@@ -35,7 +35,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                 children: [
                   GestureDetector(onTap: () => context.pop(), child: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary)),
                   const SizedBox(width: 12),
-                  const Text('Grup Olustur', style: AppTextStyles.h1),
+                  const Text('Grup Oluştur', style: AppTextStyles.h1),
                 ],
               ),
               const SizedBox(height: 32),
@@ -81,7 +81,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
-                  child: const Text('Olustur'),
+                  child: const Text('Oluştur'),
                 ),
               ),
               const SizedBox(height: 100),

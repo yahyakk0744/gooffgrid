@@ -79,7 +79,7 @@ class O2DashboardScreen extends ConsumerWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Bugun: ${o2.todayEarned}/500 O₂',
+                                  'Bugün: ${o2.todayEarned}/500 O₂',
                                   style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
                                 ),
                                 const SizedBox(height: 4),
@@ -188,9 +188,9 @@ class O2DashboardScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('O₂ Kurallari', style: AppTextStyles.h3),
+                      const Text('O₂ Kuralları', style: AppTextStyles.h3),
                       const SizedBox(height: 12),
-                      _RuleRow(emoji: '🕗', text: 'Sadece 08:00-00:00 arasi kazanilir'),
+                      _RuleRow(emoji: '🕗', text: 'Sadece 08:00–00:00 arası kazanılır'),
                       _RuleRow(emoji: '📊', text: 'Günde max 500 O₂'),
                       _RuleRow(emoji: '⏱️', text: 'Odak modu max 120 dk'),
                       _RuleRow(emoji: '🚫', text: 'Transfer ve bahis yasak'),
@@ -200,21 +200,21 @@ class O2DashboardScreen extends ConsumerWidget {
                 const SizedBox(height: 24),
 
                 // Transaction history
-                const Text('Son Islemler', style: AppTextStyles.h3),
+                const Text('Son İşlemler', style: AppTextStyles.h3),
                 const SizedBox(height: 12),
                 txAsync.when(
                   data: (txs) => txs.isEmpty
                       ? const Center(
                           child: Padding(
                             padding: EdgeInsets.all(24),
-                            child: Text('Henuz islem yok', style: AppTextStyles.bodySecondary),
+                            child: Text('Henüz işlem yok', style: AppTextStyles.bodySecondary),
                           ),
                         )
                       : Column(
                           children: txs.take(20).map((tx) => _TransactionRow(tx: tx)).toList(),
                         ),
                   loading: () => const Center(child: CircularProgressIndicator(color: AppColors.neonGreen)),
-                  error: (_, __) => const Text('Yuklenemedi', style: AppTextStyles.bodySecondary),
+                  error: (_, __) => const Text('Yüklenemedi', style: AppTextStyles.bodySecondary),
                 ),
                 const SizedBox(height: 100),
               ],

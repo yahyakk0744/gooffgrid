@@ -111,7 +111,7 @@ class _DuelInviteScreenState extends ConsumerState<DuelInviteScreen> {
                   children: [
                     const Icon(Icons.link_rounded, color: AppColors.textSecondary, size: 32),
                     const SizedBox(height: 8),
-                    Text('veya Link Gonder', style: AppTextStyles.bodySecondary),
+                    Text('veya Link Gönder', style: AppTextStyles.bodySecondary),
                   ],
                 ),
               ),

@@ -68,7 +68,7 @@ class MarketScreen extends ConsumerWidget {
                       ? const Center(
                           child: Padding(
                             padding: EdgeInsets.all(32),
-                            child: Text('Henuz teklif yok', style: AppTextStyles.bodySecondary),
+                            child: Text('Henüz teklif yok', style: AppTextStyles.bodySecondary),
                           ),
                         )
                       : Column(
@@ -80,7 +80,7 @@ class MarketScreen extends ConsumerWidget {
                       child: CircularProgressIndicator(color: AppColors.neonGreen),
                     ),
                   ),
-                  error: (_, __) => const Text('Yuklenemedi', style: AppTextStyles.bodySecondary),
+                  error: (_, __) => const Text('Yüklenemedi', style: AppTextStyles.bodySecondary),
                 ),
                 const SizedBox(height: 100),
               ],
@@ -243,7 +243,7 @@ class _OfferCard extends ConsumerWidget {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result.error ?? 'Hata olustu')),
+        SnackBar(content: Text(result.error ?? 'Hata oluştu')),
       );
     }
   }
