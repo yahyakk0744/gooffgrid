@@ -52,7 +52,21 @@ class AuthNotifier extends StateNotifier<AuthState> {
   final _auth = SupabaseAuthService.instance;
   StreamSubscription<sb.AuthState>? _sub;
 
+  /// Demo modu — Supabase bağlantısı olmadan UI test etmek için.
+  /// Production'da false yapılmalı.
+  static const _demoMode = true;
+
   void _init() {
+    if (_demoMode) {
+      state = const AuthState(
+        isLoading: false,
+        isLoggedIn: true,
+        userId: 'demo-user',
+        isOnboarded: true,
+      );
+      return;
+    }
+
     // Mevcut oturum varsa direkt giriş
     final user = _auth.currentUser;
     if (user != null) {

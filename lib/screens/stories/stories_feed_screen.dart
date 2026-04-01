@@ -71,10 +71,10 @@ class StoriesFeedScreen extends ConsumerWidget {
                           children: [
                             Icon(Icons.auto_stories_rounded, size: 64, color: AppColors.textTertiary.withOpacity(0.4)),
                             const SizedBox(height: 12),
-                            const Text('Henuz hikaye yok', style: AppTextStyles.bodySecondary),
+                            const Text('Henüz hikaye yok', style: AppTextStyles.bodySecondary),
                             const SizedBox(height: 4),
                             Text(
-                              'Arkadaslarin off-grid anlarina paylasmaya baslasin!',
+                              'Arkadaşlarının off-grid anlarına paylaşmaya başlasın!',
                               style: TextStyle(fontSize: 12, color: AppColors.textTertiary),
                               textAlign: TextAlign.center,
                             ),
@@ -134,10 +134,10 @@ class StoriesFeedScreen extends ConsumerWidget {
                 child: const Icon(Icons.block_rounded, color: AppColors.ringDanger, size: 40),
               ),
               const SizedBox(height: 16),
-              const Text('Hikaye Paylasamazsin', style: AppTextStyles.h2),
+              const Text('Hikaye Paylaşamazsın', style: AppTextStyles.h2),
               const SizedBox(height: 8),
               Text(
-                eligibility.message ?? 'Gunluk ekran suresi hedefini astin. Hedefine sadik kalarak hikaye paylasma hakkini kazan!',
+                eligibility.message ?? 'Günlük ekran süresi hedefini aştın. Hedefine sadık kalarak hikaye paylaşma hakkını kazan!',
                 style: const TextStyle(fontSize: 14, color: AppColors.textSecondary),
                 textAlign: TextAlign.center,
               ),
@@ -281,7 +281,7 @@ class _StoryCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(story.userName ?? 'Kullanici', style: AppTextStyles.body),
+                    Text(story.userName ?? 'Kullanıcı', style: AppTextStyles.body),
                     Text(story.remainingLabel, style: TextStyle(fontSize: 11, color: AppColors.textTertiary)),
                   ],
                 ),
@@ -356,20 +356,20 @@ class _CreateStorySheet extends StatefulWidget {
 
 class _CreateStorySheetState extends State<_CreateStorySheet> {
   final _captionController = TextEditingController();
-  String _selectedActivity = 'Yuruyus';
+  String _selectedActivity = 'Yürüyüş';
   int _durationHours = 24;
   bool _isPosting = false;
 
   static const _activities = [
-    'Yuruyus',
-    'Kosu',
+    'Yürüyüş',
+    'Koşu',
     'Kitap',
     'Meditasyon',
-    'Dogada',
+    'Doğada',
     'Spor',
-    'Muzik',
+    'Müzik',
     'Yemek',
-    'Arkadas',
+    'Arkadaş',
     'Aile',
   ];
 

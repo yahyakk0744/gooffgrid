@@ -57,7 +57,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
               ),
               const SizedBox(height: 32),
 
-              Text('Gunluk Hedef: ${_targetHours.round()} saat', style: AppTextStyles.label),
+              Text('Günlük Hedef: ${_targetHours.round()} saat', style: AppTextStyles.label),
               const SizedBox(height: 8),
               Slider(
                 value: _targetHours,

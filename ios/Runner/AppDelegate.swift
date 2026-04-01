@@ -69,8 +69,36 @@ import DeviceActivity
       }
 
     case "getUsageStats", "getTodayStats":
-      // App Group shared storage'dan DeviceActivityReport'un yazdigi veriyi oku
       let data = readScreenTimeFromAppGroup()
+      result(data)
+
+    case "getDetailedStats":
+      // iOS'te detayli veri App Group'tan okunur, pickups Apple API'si ile alinamaz
+      var data = readScreenTimeFromAppGroup()
+      data["phonePickups"] = 0  // iOS sandbox: pickup sayisi mevcut degil
+      data["longestOffMinutes"] = 0
+      result(data)
+
+    case "getPickups":
+      // iOS sandbox kisitlamasi: KEYGUARD event'leri erisilemez
+      result(0)
+
+    case "getAppIcon":
+      // iOS sandbox: Baska uygulamalarin ikonlari cekilemez
+      // DeviceActivityReport platform view kullanilmali
+      result(nil)
+
+    case "getWeekStats":
+      // iOS'te haftalik veri App Group'tan okunur
+      let data = readScreenTimeFromAppGroup()
+      let today = data
+      result(["days": [today]])
+
+    case "getUsageWithIcons":
+      // iOS'te ikonlar sadece DeviceActivityReport platform view ile gosterilir
+      var data = readScreenTimeFromAppGroup()
+      data["phonePickups"] = 0
+      data["longestOffMinutes"] = 0
       result(data)
 
     case "startMonitoring":

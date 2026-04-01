@@ -70,7 +70,7 @@ class FriendProfileScreen extends ConsumerWidget {
                 child: Center(
                   child: Column(
                     children: [
-                      const Text('Bugun', style: AppTextStyles.label),
+                      const Text('Bugün', style: AppTextStyles.label),
                       const SizedBox(height: 4),
                       Text(
                         '${friend.todayMinutes}dk',

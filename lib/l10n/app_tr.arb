@@ -1,7 +1,7 @@
 {
   "@@locale": "tr",
   "appTitle": "gooffgrid",
-  "appSlogan": "Ekranını bırak. Arkadaşlarını yen. Hayatı yaşa.",
+  "appSlogan": "Fişi çek. Oyuna başla. Dijitalde kaybolma.",
   "home": "Ana Sayfa",
   "ranking": "Sıralama",
   "duel": "Düello",
@@ -86,7 +86,7 @@
 
   "logout": "Çıkış Yap",
   "shareProfile": "Profilimi Paylaş",
-  "shareReportCard": "Karnemi Paylaş",
+  "shareReportCard": "Havamı At",
   "appUsage": "Uygulama Kullanımı",
   "whatDidYouUse": "Bugün ne kullandın?",
   "weeklyReport": "Haftalık Rapor",
@@ -132,7 +132,7 @@
   "friendsActivity": "Arkadaş",
   "family": "Aile",
 
-  "o2Balance": "O₂ Bakiye",
+  "o2Balance": "O₂ Puanı",
   "o2Remaining": "Kalan: {count}",
   "@o2Remaining": { "placeholders": { "count": { "type": "int" } } },
   "o2Today": "Bugün: {earned}/{max} O₂",
@@ -144,8 +144,8 @@
   "o2RuleTransfer": "Transfer ve bahis yasak",
   "o2Estimated": "+{amount} O₂ (tahmini)",
   "@o2Estimated": { "placeholders": { "amount": { "type": "int" } } },
-  "offGridMarket": "Off-Grid Market",
-  "offGridMarketHint": "O₂ puanlarını gerçek dünya indirimlerine dönüştür",
+  "offGridMarket": "Ganimetler",
+  "offGridMarketHint": "O₂ puanlarını gerçek dünya ganimetlerine dönüştür",
   "redeem": "Al",
   "insufficient": "Yetersiz",
   "redeemSuccess": "Tebrikler!",

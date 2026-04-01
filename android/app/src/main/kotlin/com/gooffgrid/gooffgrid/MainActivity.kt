@@ -56,6 +56,16 @@ class MainActivity : FlutterActivity() {
                     val stats = getUsageWithIcons(daysAgo)
                     result.success(stats)
                 }
+                "getPickups" -> {
+                    val daysAgo = call.argument<Int>("daysAgo") ?: 0
+                    if (!hasUsageStatsPermission()) {
+                        result.success(0)
+                    } else {
+                        val (startTime, endTime) = getDayRange(daysAgo)
+                        val usm = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+                        result.success(countPickups(usm, startTime, endTime))
+                    }
+                }
                 "getAppIcon" -> {
                     val packageName = call.argument<String>("packageName")
                     if (packageName != null) {

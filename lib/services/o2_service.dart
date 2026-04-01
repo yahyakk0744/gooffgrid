@@ -4,6 +4,14 @@ import '../models/o2_transaction.dart';
 
 /// O2 Ekonomisi Supabase servisi.
 /// Anti-cheat kuralları sunucu tarafında uygulanır (earn_o2 fonksiyonu).
+///
+/// ── ANTI-CHEAT KURALLARI ──
+/// 1. Zaman penceresi: O2 sadece 08:00-00:00 arası kazanılır (yerel saat)
+/// 2. Günlük tavan: Maksimum 500 O2/gün
+/// 3. Focus timeout: 120dk aşımında oturum otomatik kapanır
+/// 4. Transfer/Bahis YASAK: O2 kullanıcılar arası transfer edilemez,
+///    bahis veya kumar amaçlı kullanılamaz. Sistem yapısı gereği
+///    transfer API'si yoktur ve eklenmeyecektir.
 class O2Service {
   O2Service._();
   static final instance = O2Service._();
@@ -47,6 +55,7 @@ class O2Service {
 
   /// O2 kazan — sunucudaki earn_o2 fonksiyonunu çağırır.
   /// Anti-cheat kuralları (saat, günlük tavan) sunucuda uygulanır.
+  /// Client-side ön kontroller de yapılır (sunucu yükünü azaltmak için).
   Future<O2EarnResult> earnO2({
     required int amount,
     required String type,
@@ -54,6 +63,24 @@ class O2Service {
     Map<String, dynamic>? metadata,
   }) async {
     if (_uid == null) return O2EarnResult.error('not_logged_in');
+
+    // ── CLIENT-SIDE ANTI-CHEAT ÖN KONTROLLER ──
+    // Sunucu tarafı da kontrol eder, bunlar erken çıkış için.
+
+    // KURAL 1: Zaman penceresi (08:00-00:00)
+    final now = DateTime.now();
+    if (now.hour < 8) {
+      return O2EarnResult.error('night_blocked',
+          message: 'O₂ sadece 08:00-00:00 arası kazanılır. Sabah 8\'de tekrar dene!');
+    }
+
+    // KURAL 2: Günlük tavan (500 O2) — ön kontrol
+    final todayEarned = await getTodayEarned();
+    if (todayEarned >= 500) {
+      return O2EarnResult.error('daily_cap',
+          message: 'Bugünkü 500 O₂ limitine ulaştın. Yarın tekrar kazanabilirsin!');
+    }
+
     try {
       final res = await _db.rpc('earn_o2', params: {
         'p_user_id': _uid,
@@ -89,9 +116,10 @@ class O2Service {
   Future<String?> startFocusSession() async {
     if (_uid == null) return null;
 
-    // Anti-cheat: Saat kontrolü (client-side ön kontrol, sunucu da kontrol eder)
+    // Anti-cheat: Saat kontrolü (08:00-00:00 arası, client-side ön kontrol)
     final now = DateTime.now();
     if (now.hour < 8) return null; // 08:00 öncesi yasak
+    // 00:00 (gece yarısı) = hour 0, zaten yukarıda yakalanıyor
 
     try {
       final res = await _db.from('focus_sessions').insert({
@@ -246,6 +274,7 @@ class O2EarnResult {
   final int dailyTotal;
   final int dailyRemaining;
   final String? error;
+  final String? message;
 
   const O2EarnResult({
     this.success = false,
@@ -254,9 +283,11 @@ class O2EarnResult {
     this.dailyTotal = 0,
     this.dailyRemaining = 0,
     this.error,
+    this.message,
   });
 
-  factory O2EarnResult.error(String err) => O2EarnResult(error: err);
+  factory O2EarnResult.error(String err, {String? message}) =>
+      O2EarnResult(error: err, message: message);
 }
 
 class FocusResult {

@@ -81,7 +81,7 @@ class SettingsScreen extends ConsumerWidget {
                   children: [
                     _ToggleRow(label: 'Bildirimler', value: true, onChanged: (_) {}),
                     const Divider(color: AppColors.cardBorder, height: 1),
-                    _ToggleRow(label: 'Gunluk Hatirlatici', value: true, onChanged: (_) {}),
+                    _ToggleRow(label: 'Günlük Hatırlatıcı', value: true, onChanged: (_) {}),
                     const Divider(color: AppColors.cardBorder, height: 1),
                     _ToggleRow(label: 'Duel Bildirimleri', value: false, onChanged: (_) {}),
                     const Divider(color: AppColors.cardBorder, height: 1),

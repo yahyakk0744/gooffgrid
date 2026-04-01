@@ -22,7 +22,7 @@ class AddFriendScreen extends StatelessWidget {
                 children: [
                   GestureDetector(onTap: () => context.pop(), child: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary)),
                   const SizedBox(width: 12),
-                  const Text('Arkadas Ekle', style: AppTextStyles.h1),
+                  const Text('Arkadaş Ekle', style: AppTextStyles.h1),
                 ],
               ),
               const SizedBox(height: 32),

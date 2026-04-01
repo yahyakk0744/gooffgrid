@@ -22,6 +22,8 @@ class _FocusModeScreenState extends ConsumerState<FocusModeScreen> {
   String? _error;
   late ConfettiController _confetti;
 
+  bool _timeoutDialogShown = false;
+
   @override
   void initState() {
     super.initState();
@@ -68,10 +70,48 @@ class _FocusModeScreenState extends ConsumerState<FocusModeScreen> {
     return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
   }
 
+  void _showTimeoutDialog() {
+    if (_timeoutDialogShown) return;
+    _timeoutDialogShown = true;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF1A1A2E),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text(
+          'Hala burada misin?',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+        ),
+        content: const Text(
+          '120 dakikalik odak limitine ulastin. Oturum otomatik olarak sonlandirildi.\n\nDinlenmek onemli! Kisa bir mola vermeyi dusun.',
+          style: TextStyle(color: Colors.white70, fontSize: 14),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              _timeoutDialogShown = false;
+            },
+            child: const Text('Tamam', style: TextStyle(color: AppColors.neonGreen)),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final session = ref.watch(focusSessionProvider);
     final o2 = ref.watch(o2Provider);
+
+    // Anti-cheat: 120dk timeout olunca onay dialogu goster
+    ref.listen<FocusSessionState>(focusSessionProvider, (prev, next) {
+      if (next.isTimeout && !(prev?.isTimeout ?? false)) {
+        _showTimeoutDialog();
+      }
+    });
 
     return Scaffold(
       body: PremiumBackground(

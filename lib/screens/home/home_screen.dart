@@ -104,7 +104,7 @@ class HomeScreen extends ConsumerWidget {
                     value: st.goalProgress.clamp(0.0, 1.0),
                     size: 180,
                     centerText: st.formattedToday,
-                    subtitle: 'Bugun',
+                    subtitle: 'Bugün',
                     color: st.ringColor,
                   ),
                 ),
@@ -146,11 +146,11 @@ class HomeScreen extends ConsumerWidget {
               // Quick stats
               Row(
                 children: [
-                  Expanded(child: StatTile(value: '${user.streak} gun', label: 'streak', color: AppColors.neonGreen)),
+                  Expanded(child: StatTile(value: '${user.streak} gün', label: 'streak', color: AppColors.neonGreen)),
                   const SizedBox(width: 8),
                   Expanded(child: StatTile(value: '#$cityRank', label: user.city, color: AppColors.textSecondary)),
                   const SizedBox(width: 8),
-                  Expanded(child: StatTile(value: '$friendRank/8', label: 'arkadas', color: AppColors.textSecondary)),
+                  Expanded(child: StatTile(value: '$friendRank/8', label: 'arkadaş', color: AppColors.textSecondary)),
                 ],
               ),
               const SizedBox(height: 24),
@@ -158,7 +158,7 @@ class HomeScreen extends ConsumerWidget {
               // Friends feed
               Row(
                 children: [
-                  const Text('Arkadaslarin', style: AppTextStyles.h3),
+                  const Text('Arkadaşların', style: AppTextStyles.h3),
                   const Spacer(),
                   GestureDetector(
                     onTap: () {
@@ -201,7 +201,7 @@ class HomeScreen extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Bugun ne kullandin?', style: AppTextStyles.h3),
+                    const Text('Bugün ne kullandın?', style: AppTextStyles.h3),
                     const SizedBox(height: 16),
                     PlatformAppUsageList(
                       apps: st.appUsage,
@@ -245,7 +245,7 @@ class HomeScreen extends ConsumerWidget {
                         children: [
                           const Icon(Icons.bolt_rounded, color: AppColors.neonOrange, size: 20),
                           const SizedBox(width: 8),
-                          Text('Duel', style: AppTextStyles.h3.copyWith(color: AppColors.neonOrange, fontSize: 14)),
+                          Text('Düello', style: AppTextStyles.h3.copyWith(color: AppColors.neonOrange, fontSize: 14)),
                         ],
                       ),
                     ),
@@ -289,7 +289,7 @@ class HomeScreen extends ConsumerWidget {
                           children: [
                             Icon(Icons.share_rounded, color: Colors.black, size: 20),
                             SizedBox(width: 8),
-                            Text('Karnemi paylas', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black)),
+                            Text('Havamı At', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black)),
                           ],
                         ),
                       ),

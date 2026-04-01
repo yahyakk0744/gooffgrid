@@ -77,7 +77,7 @@ class _DuelInviteScreenState extends ConsumerState<DuelInviteScreen> {
               ),
               const SizedBox(height: 24),
 
-              const Text('Arkadas Sec', style: AppTextStyles.label),
+              const Text('Arkadaş Seç', style: AppTextStyles.label),
               const SizedBox(height: 12),
               ...friends.map((f) {
                 final selected = _selectedFriend == f.profile.id;

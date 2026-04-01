@@ -69,7 +69,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get phonePickups => 'Telefon Açma';
 
   @override
-  String get longestOffScreen => 'En Uzun Offline';
+  String get longestOffScreen => 'En Uzun Mola';
 
   @override
   String get dailyGoal => 'Günlük Hedef';
@@ -183,7 +183,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get whatIf => 'Ya Olsaydı?';
 
   @override
-  String get focusMode => 'Nefes Al';
+  String get focusMode => 'Odak Modu';
 
   @override
   String get reportCard => 'Karne';

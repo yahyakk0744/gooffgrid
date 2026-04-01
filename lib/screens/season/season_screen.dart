@@ -8,11 +8,11 @@ class SeasonScreen extends StatelessWidget {
   const SeasonScreen({super.key});
 
   static const _tasks = [
-    {'desc': '7 gun ust uste hedef tut', 'progress': 0.85, 'reward': '500 XP'},
+    {'desc': '7 gün üst üste hedef tut', 'progress': 0.85, 'reward': '500 XP'},
     {'desc': '3 duel kazan', 'progress': 0.33, 'reward': '300 XP'},
     {'desc': '5 nefes egzersizi tamamla', 'progress': 0.6, 'reward': '200 XP'},
-    {'desc': 'Gunluk 1 saat alti kal', 'progress': 0.0, 'reward': 'Ozel Rozet', 'premium': true},
-    {'desc': 'Tum arkadaslarini yen', 'progress': 0.0, 'reward': 'Altin Cerceve', 'premium': true},
+    {'desc': 'Günlük 1 saat altı kal', 'progress': 0.0, 'reward': 'Özel Rozet', 'premium': true},
+    {'desc': 'Tüm arkadaşlarını yen', 'progress': 0.0, 'reward': 'Altın Çerçeve', 'premium': true},
   ];
 
   @override

@@ -42,7 +42,7 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
                 children: [
                   GestureDetector(onTap: () => context.pop(), child: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary)),
                   const SizedBox(width: 12),
-                  const Text('Arkadaslar', style: AppTextStyles.h1),
+                  const Text('Arkadaşlar', style: AppTextStyles.h1),
                 ],
               ),
               const SizedBox(height: 16),

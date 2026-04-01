@@ -10,7 +10,7 @@ import '../../services/haptic_service.dart';
 class RankingScreen extends ConsumerWidget {
   const RankingScreen({super.key});
 
-  static const _tabLabels = ['Arkadaslar', 'Sehir', 'Ulke', 'Global', 'Yas', 'Sezon'];
+  static const _tabLabels = ['Arkadaşlar', 'Şehir', 'Ülke', 'Global', 'Yaş', 'Sezon'];
   static const _freeTabCount = 2;
 
   @override

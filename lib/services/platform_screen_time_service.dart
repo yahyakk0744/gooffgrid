@@ -119,6 +119,22 @@ class PlatformScreenTimeService {
     }
   }
 
+  /// Belirli bir gunun telefon acilma (pickup) sayisini dondurur.
+  /// Android: KEYGUARD_HIDDEN events, iOS: sandbox kisitlamasi nedeniyle 0.
+  Future<int> getPickups(int daysAgo) async {
+    if (_isWeb) return 0;
+    if (!_isAndroid && !_isIOS) return 0;
+    try {
+      final result = await _channel.invokeMethod<int>('getPickups', {
+        'daysAgo': daysAgo,
+      });
+      return result ?? 0;
+    } on PlatformException catch (e) {
+      debugPrint('getPickups error: $e');
+      return 0;
+    }
+  }
+
   /// Tek bir uygulamanın ikonunu byte[] olarak çeker (Android only).
   Future<Uint8List?> getAppIcon(String packageName) async {
     if (!_isAndroid) return null;

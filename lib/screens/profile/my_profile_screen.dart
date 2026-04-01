@@ -83,7 +83,7 @@ class MyProfileScreen extends ConsumerWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _RankItem(label: 'Arkadaslar', value: '$friendRank/8'),
+                    _RankItem(label: 'Arkadaşlar', value: '$friendRank/8'),
                     _RankItem(label: user.city, value: '#$cityRank'),
                     _RankItem(label: 'Turkiye', value: '#$countryRank'),
                   ],
@@ -112,7 +112,7 @@ class MyProfileScreen extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('${user.streak} gun streak', style: AppTextStyles.h3.copyWith(color: AppColors.neonGreen)),
+                    Text('${user.streak} gün streak', style: AppTextStyles.h3.copyWith(color: AppColors.neonGreen)),
                     const SizedBox(height: 12),
                     const StreakCalendar(
                       days: [StreakDay.success, StreakDay.success, StreakDay.success, StreakDay.partial, StreakDay.success, StreakDay.success, StreakDay.upcoming],

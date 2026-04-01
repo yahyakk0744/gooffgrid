@@ -51,7 +51,7 @@ class StatsScreen extends ConsumerWidget {
               // Quick stats
               Row(
                 children: [
-                  Expanded(child: StatTile(value: '${st.phoneOpens}', label: 'Telefon Acma', icon: Icons.phone_android_rounded)),
+                  Expanded(child: StatTile(value: '${st.phoneOpens}', label: 'Telefon Açma', icon: Icons.phone_android_rounded)),
                   const SizedBox(width: 8),
                   Expanded(child: StatTile(value: '${st.longestOffScreenMinutes}dk', label: 'En Uzun Mola', icon: Icons.timer_off_rounded)),
                 ],
@@ -59,7 +59,7 @@ class StatsScreen extends ConsumerWidget {
               const SizedBox(height: 16),
 
               // Weekly trend
-              const Text('7 Gunluk Trend', style: AppTextStyles.h3),
+              const Text('7 Günlük Trend', style: AppTextStyles.h3),
               const SizedBox(height: 12),
               AppCard(
                 child: SizedBox(

@@ -31,6 +31,7 @@ import '../screens/settings/subscription_screen.dart';
 import '../screens/stories/stories_feed_screen.dart';
 import '../screens/o2/o2_dashboard_screen.dart';
 import '../screens/o2/market_screen.dart';
+import '../screens/ganimet/ganimet_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -111,6 +112,7 @@ GoRouter buildAppRouter(Ref ref) {
                       FriendProfileScreen(friendId: state.pathParameters['id']!),
                 ),
                 GoRoute(path: 'wrapped', builder: (_, __) => const ReportCardScreen()),
+                GoRoute(path: 'ganimetler', builder: (_, __) => const GanimetScreen()),
                 GoRoute(path: 'groups', builder: (_, __) => const GroupsScreen()),
                 GoRoute(
                   path: 'group/:id',

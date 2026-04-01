@@ -1,11 +1,17 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../config/theme.dart';
+import '../../widgets/glassmorphic_card.dart';
 import '../../widgets/premium_background.dart';
-import '../../widgets/wrapped_card.dart';
+import '../../services/haptic_service.dart';
 import '../../providers/screen_time_provider.dart';
 import '../../providers/user_provider.dart';
+import '../../providers/ranking_provider.dart';
+import '../../providers/o2_provider.dart';
 
 class ReportCardScreen extends ConsumerWidget {
   const ReportCardScreen({super.key});
@@ -15,171 +21,309 @@ class ReportCardScreen extends ConsumerWidget {
     final st = ref.watch(todayScreenTimeProvider);
     final weekTotal = ref.watch(weekTotalProvider);
     final user = ref.watch(userProvider);
-    final controller = PageController();
+    final friendRank = ref.watch(userFriendRankProvider);
+    final cityRank = ref.watch(userCityRankProvider);
+    final o2 = ref.watch(o2Provider);
+    final cardKey = GlobalKey();
 
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: PremiumBackground(
         child: SafeArea(
           child: Column(
-          children: [
-            const SizedBox(height: 16),
-            const Text('Haftalik Karne', style: AppTextStyles.h1),
-            const SizedBox(height: 24),
-            Expanded(
-              child: PageView(
-                controller: controller,
-                children: [
-                  // Page 1: Week summary
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: WrappedCard(
-                      gradient: AppColors.wrappedGradient1,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text('Bu Hafta', style: AppTextStyles.wrappedSub),
-                          const SizedBox(height: 8),
-                          Text(weekTotal, style: AppTextStyles.wrappedHero),
-                          const SizedBox(height: 8),
-                          const Text('Gecen haftadan %12 daha iyi', style: AppTextStyles.wrappedSub),
+            children: [
+              const SizedBox(height: 16),
+              // Header
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        HapticService.light();
+                        Navigator.of(context).pop();
+                      },
+                      child: const Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.textSecondary, size: 20),
+                    ),
+                    const Spacer(),
+                    const Text('Havam\u0131 At', style: AppTextStyles.h1),
+                    const Spacer(),
+                    const SizedBox(width: 20),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Shareable card
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: RepaintBoundary(
+                    key: cardKey,
+                    child: Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(24),
+                        gradient: const LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Color(0xFF0F0F2A),
+                            Color(0xFF1A0A2E),
+                            Color(0xFF0A0A14),
+                          ],
+                        ),
+                        border: Border.all(
+                          width: 1.5,
+                          color: AppColors.neonGreen.withOpacity(0.25),
+                        ),
+                        boxShadow: [
+                          BoxShadow(color: AppColors.neonGreen.withOpacity(0.08), blurRadius: 40, spreadRadius: -8),
+                          BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 20),
                         ],
                       ),
-                    ),
-                  ),
-
-                  // Page 2: Top app
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: WrappedCard(
-                      gradient: AppColors.wrappedGradient2,
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Text('En cok kullandigin', style: AppTextStyles.wrappedSub),
-                          const SizedBox(height: 12),
-                          Container(
-                            width: 64,
-                            height: 64,
-                            decoration: BoxDecoration(color: st.appUsage.first.iconColor, shape: BoxShape.circle),
-                            child: const Center(child: Icon(Icons.apps_rounded, color: Colors.white, size: 32)),
-                          ),
-                          const SizedBox(height: 12),
-                          Text(st.appUsage.first.name, style: AppTextStyles.wrappedHero.copyWith(fontSize: 36)),
-                          Text(st.appUsage.first.formattedDuration, style: AppTextStyles.wrappedSub),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  // Page 3: Rankings
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: WrappedCard(
-                      gradient: AppColors.wrappedGradient3,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text('Siralamalarin', style: AppTextStyles.wrappedSub),
-                          const SizedBox(height: 24),
-                          _RankLine(label: 'Arkadaslar', value: '#3/8', arrow: ''),
-                          const SizedBox(height: 16),
-                          _RankLine(label: user.city, value: '#247', arrow: ''),
-                          const SizedBox(height: 16),
-                          _RankLine(label: 'Turkiye', value: '#12.847', arrow: ''),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  // Page 4: Streak & badges
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: WrappedCard(
-                      gradient: AppColors.wrappedGradient4,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text('Streak & Basarilar', style: AppTextStyles.wrappedSub),
-                          const SizedBox(height: 12),
-                          Text('${user.streak}', style: AppTextStyles.wrappedHero.copyWith(fontSize: 64)),
-                          const Text('gun ust uste', style: AppTextStyles.wrappedSub),
-                          const SizedBox(height: 16),
-                          const Text('6 rozet kazandin', style: AppTextStyles.wrappedSub),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  // Page 5: Share
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: WrappedCard(
-                      gradient: AppColors.wrappedGradient5,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text('gooffgrid', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: Colors.white, letterSpacing: 3)),
-                          const SizedBox(height: 24),
-                          const Icon(Icons.qr_code_2_rounded, size: 100, color: Colors.white),
-                          const SizedBox(height: 24),
-                          ElevatedButton.icon(
-                            onPressed: () {},
-                            icon: const Icon(Icons.share_rounded),
-                            label: const Text('Paylas'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              foregroundColor: Colors.black,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                          // Branding
+                          const Text(
+                            'gooffgrid',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textTertiary,
+                              letterSpacing: 3,
                             ),
                           ),
+                          const SizedBox(height: 4),
+                          ShaderMask(
+                            shaderCallback: (bounds) => LinearGradient(
+                              colors: [AppColors.neonGreen, AppColors.neonGreen.withOpacity(0.6)],
+                            ).createShader(bounds),
+                            child: const Text(
+                              'Haftal\u0131k Rapor',
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white, letterSpacing: 1),
+                            ),
+                          ),
+                          const SizedBox(height: 28),
+
+                          // Week total hero
+                          Text(weekTotal, style: AppTextStyles.wrappedHero.copyWith(
+                            fontSize: 52,
+                            shadows: [Shadow(color: AppColors.neonGreen.withOpacity(0.3), blurRadius: 20)],
+                          )),
+                          const SizedBox(height: 4),
+                          const Text('ekran s\u00fcresi', style: TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+                          const SizedBox(height: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: AppColors.ringGood.withOpacity(0.12),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: AppColors.ringGood.withOpacity(0.25)),
+                            ),
+                            child: const Text(
+                              'Ge\u00e7en haftadan %12 daha iyi',
+                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: AppColors.ringGood),
+                            ),
+                          ),
+                          const SizedBox(height: 28),
+
+                          // Stats grid
+                          Row(
+                            children: [
+                              Expanded(child: _StatBox(
+                                label: 'O\u2082 Kazan\u0131lan',
+                                value: '${o2.todayEarned * 7}',
+                                icon: Icons.eco_rounded,
+                                color: AppColors.neonGreen,
+                              )),
+                              const SizedBox(width: 12),
+                              Expanded(child: _StatBox(
+                                label: 'Streak',
+                                value: '${user.streak} g\u00fcn',
+                                icon: Icons.local_fire_department_rounded,
+                                color: AppColors.neonOrange,
+                              )),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              Expanded(child: _StatBox(
+                                label: 'Arkada\u015f S\u0131ra',
+                                value: '#$friendRank',
+                                icon: Icons.people_rounded,
+                                color: AppColors.wrappedGradient3[0],
+                              )),
+                              const SizedBox(width: 12),
+                              Expanded(child: _StatBox(
+                                label: '${user.city} S\u0131ra',
+                                value: '#$cityRank',
+                                icon: Icons.location_city_rounded,
+                                color: AppColors.wrappedGradient1[0],
+                              )),
+                            ],
+                          ),
+                          const SizedBox(height: 28),
+
+                          // Top app
+                          if (st.appUsage.isNotEmpty) ...[
+                            GlassmorphicCard(
+                              opacity: 0.05,
+                              borderOpacity: 0.1,
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: st.appUsage.first.iconColor.withOpacity(0.2),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Icon(Icons.apps_rounded, color: st.appUsage.first.iconColor, size: 20),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Text('En \u00e7ok kullan\u0131lan', style: TextStyle(fontSize: 10, color: AppColors.textTertiary)),
+                                        Text(st.appUsage.first.name, style: AppTextStyles.h3),
+                                      ],
+                                    ),
+                                  ),
+                                  Text(st.appUsage.first.formattedDuration, style: const TextStyle(fontSize: 14, color: AppColors.textSecondary)),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                          ],
+
+                          // Footer branding
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 6,
+                                height: 6,
+                                decoration: BoxDecoration(
+                                  color: AppColors.neonGreen,
+                                  shape: BoxShape.circle,
+                                  boxShadow: [BoxShadow(color: AppColors.neonGreen.withOpacity(0.5), blurRadius: 6)],
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              const Text(
+                                'gooffgrid.app',
+                                style: TextStyle(fontSize: 11, color: AppColors.textTertiary, letterSpacing: 1),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            SmoothPageIndicator(
-              controller: controller,
-              count: 5,
-              effect: const WormEffect(
-                dotWidth: 8,
-                dotHeight: 8,
-                spacing: 8,
-                activeDotColor: AppColors.neonGreen,
-                dotColor: AppColors.cardBorder,
+              const SizedBox(height: 16),
+
+              // Havami At button
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: GestureDetector(
+                  onTap: () async {
+                    await HapticService.success();
+                    await _captureAndShare(cardKey);
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    decoration: BoxDecoration(
+                      color: AppColors.neonGreen,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(color: AppColors.neonGreen.withOpacity(0.3), blurRadius: 16, offset: const Offset(0, 4)),
+                      ],
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.share_rounded, color: Colors.black, size: 20),
+                        SizedBox(width: 10),
+                        Text(
+                          'Havam\u0131 At',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.black, letterSpacing: 0.5),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
-            const SizedBox(height: 100),
-          ],
+              const SizedBox(height: 40),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
+
+  Future<void> _captureAndShare(GlobalKey key) async {
+    try {
+      final boundary = key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+      if (boundary == null) return;
+
+      final image = await boundary.toImage(pixelRatio: 3.0);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      if (byteData == null) return;
+
+      final pngBytes = byteData.buffer.asUint8List();
+
+      await Share.shareXFiles(
+        [XFile.fromData(pngBytes, mimeType: 'image/png', name: 'gooffgrid-havami-at.png')],
+        text: 'Bu hafta ekran s\u00fcremi d\u00fc\u015f\u00fcrd\u00fcm! #gooffgrid',
+      );
+    } catch (e) {
+      debugPrint('Share error: $e');
+    }
+  }
 }
 
-class _RankLine extends StatelessWidget {
-  const _RankLine({required this.label, required this.value, required this.arrow});
+class _StatBox extends StatelessWidget {
+  const _StatBox({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+
   final String label;
   final String value;
-  final String arrow;
+  final IconData icon;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(label, style: AppTextStyles.wrappedSub),
-        const SizedBox(width: 12),
-        Text(value, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: Colors.white)),
-        if (arrow.isNotEmpty) ...[
-          const SizedBox(width: 8),
-          Text(arrow, style: const TextStyle(fontSize: 16, color: Colors.white70)),
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: color.withOpacity(0.06),
+        border: Border.all(color: color.withOpacity(0.15)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: color, size: 18,
+            shadows: [Shadow(color: color.withOpacity(0.5), blurRadius: 8)],
+          ),
+          const SizedBox(height: 8),
+          Text(value, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white)),
+          const SizedBox(height: 2),
+          Text(label, style: const TextStyle(fontSize: 10, color: AppColors.textTertiary)),
         ],
-      ],
+      ),
     );
   }
 }

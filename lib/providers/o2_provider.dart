@@ -181,10 +181,13 @@ class FocusSessionNotifier extends StateNotifier<FocusSessionState> {
 
   void _timeout() {
     _timer?.cancel();
+    final sid = state.sessionId;
     state = state.copyWith(isActive: false, isTimeout: true);
-    // Otomatik kapat
-    if (state.sessionId != null) {
-      _service.completeFocusSession(state.sessionId!);
+    // Otomatik kapat — sunucuya bildir
+    if (sid != null) {
+      _service.completeFocusSession(sid).then((_) {
+        _o2Notifier.refresh();
+      });
     }
   }
 

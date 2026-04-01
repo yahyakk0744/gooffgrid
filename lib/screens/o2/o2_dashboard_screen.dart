@@ -45,7 +45,7 @@ class O2DashboardScreen extends ConsumerWidget {
                   glowColor: AppColors.neonGreen,
                   child: Column(
                     children: [
-                      const Text('Bakiyen', style: AppTextStyles.label),
+                      const Text('O₂ Puanı', style: AppTextStyles.label),
                       const SizedBox(height: 8),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -171,8 +171,8 @@ class O2DashboardScreen extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Off-Grid Market', style: AppTextStyles.h3),
-                              Text('O2 puanlarini gercek dunya indirimlerine donustur', style: AppTextStyles.bodySecondary),
+                              Text('Ganimetler', style: AppTextStyles.h3),
+                              Text('O₂ puanlarını gerçek dünya ganimetlerine dönüştür', style: AppTextStyles.bodySecondary),
                             ],
                           ),
                         ),
@@ -191,7 +191,7 @@ class O2DashboardScreen extends ConsumerWidget {
                       const Text('O₂ Kurallari', style: AppTextStyles.h3),
                       const SizedBox(height: 12),
                       _RuleRow(emoji: '🕗', text: 'Sadece 08:00-00:00 arasi kazanilir'),
-                      _RuleRow(emoji: '📊', text: 'Gunde max 500 O₂'),
+                      _RuleRow(emoji: '📊', text: 'Günde max 500 O₂'),
                       _RuleRow(emoji: '⏱️', text: 'Odak modu max 120 dk'),
                       _RuleRow(emoji: '🚫', text: 'Transfer ve bahis yasak'),
                     ],

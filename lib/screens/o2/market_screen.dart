@@ -32,7 +32,7 @@ class MarketScreen extends ConsumerWidget {
                       child: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
                     ),
                     const SizedBox(width: 12),
-                    const Text('Off-Grid Market', style: AppTextStyles.h1),
+                    const Text('Ganimetler', style: AppTextStyles.h1),
                     const Spacer(),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -57,7 +57,7 @@ class MarketScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'O₂ puanlarini gercek dunya indirimlerine donustur',
+                  'O₂ puanlarını gerçek dünya ganimetlerine dönüştür',
                   style: TextStyle(fontSize: 13, color: AppColors.textTertiary),
                 ),
                 const SizedBox(height: 24),

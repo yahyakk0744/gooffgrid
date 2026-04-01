@@ -57,7 +57,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        'Ekranini birak. Arkadaslarini yen.\nSehrinde 1 numara ol.',
+                        'Ekranını bırak. Arkadaşlarını yen.\nŞehrinde 1 numara ol.',
                         style: AppTextStyles.bodySecondary.copyWith(fontSize: 14),
                         textAlign: TextAlign.center,
                       ),
