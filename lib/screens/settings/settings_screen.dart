@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 import '../../config/theme.dart';
 import '../../widgets/app_card.dart';
 import '../../providers/user_provider.dart';
 import '../../widgets/premium_background.dart';
 import '../../services/haptic_service.dart';
+
+bool _isAdmin() {
+  final email = sb.Supabase.instance.client.auth.currentUser?.email;
+  return email == 'admin@gooffgrid.com';
+}
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -74,6 +80,27 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 16),
+
+              // Admin entry — only for admin@gooffgrid.com
+              if (_isAdmin())
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: AppCard(
+                    onTap: () {
+                      HapticService.light();
+                      context.push('/admin/ganimet');
+                    },
+                    child: Row(
+                      children: [
+                        const Icon(Icons.admin_panel_settings, color: AppColors.ringDanger, size: 24),
+                        const SizedBox(width: 12),
+                        const Text('Admin: Ganimet Ekle', style: AppTextStyles.h3),
+                        const Spacer(),
+                        const Icon(Icons.chevron_right_rounded, color: AppColors.textTertiary),
+                      ],
+                    ),
+                  ),
+                ),
 
               // Toggles
               AppCard(

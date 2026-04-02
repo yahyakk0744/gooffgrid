@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
 import '../../widgets/premium_background.dart';
-import '../../providers/duel_provider.dart';
+import '../../services/haptic_service.dart';
 
 class DuelActiveScreen extends ConsumerWidget {
-  const DuelActiveScreen({super.key, required this.duelId});
-  final String duelId;
+  const DuelActiveScreen({super.key, this.duelId});
+  final String? duelId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final duels = ref.watch(duelProvider);
-    final duel = duels.firstWhere(
-      (d) => d.id == duelId,
-      orElse: () => duels.first,
-    );
-
-    final p1Winning = duel.player1.totalMinutes <= duel.player2.totalMinutes;
-    final remaining = duel.startTime.add(Duration(minutes: duel.durationMinutes)).difference(DateTime.now());
-    final remainHours = remaining.inHours;
-    final remainMin = remaining.inMinutes % 60;
-    final formattedRemaining = '${remainHours}s ${remainMin}dk';
+    // Mock data
+    const p1Name = 'Sen';
+    const p2Name = 'Mert';
+    const p1Minutes = 134;
+    const p2Minutes = 178;
+    const p1Winning = p1Minutes <= p2Minutes;
+    const remainHours = 9;
+    const remainMin = 42;
 
     return Scaffold(
       backgroundColor: AppColors.bg,
@@ -30,46 +28,153 @@ class DuelActiveScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                const SizedBox(height: 32),
-
-                // Countdown
-                Text(
-                  'Kalan: $formattedRemaining',
-                  style: AppTextStyles.heroNumber.copyWith(color: AppColors.neonGreen),
-                ),
-                const SizedBox(height: 48),
-
-                // VS layout
+                // Header
                 Row(
                   children: [
-                    Expanded(
-                      child: _PlayerSide(
-                        name: duel.player1.name,
-                        minutes: duel.player1.totalMinutes,
-                        isWinning: p1Winning,
-                      ),
+                    GestureDetector(
+                      onTap: () => context.pop(),
+                      child: const Icon(Icons.arrow_back_rounded,
+                          color: AppColors.textPrimary),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        'VS',
-                        style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: AppColors.neonOrange),
+                    const SizedBox(width: 12),
+                    const Text('Düello', style: AppTextStyles.h1),
+                    const Spacer(),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: AppColors.neonGreen.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: AppColors.neonGreen.withValues(alpha: 0.4),
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      child: _PlayerSide(
-                        name: duel.player2.name,
-                        minutes: duel.player2.totalMinutes,
-                        isWinning: !p1Winning,
+                      child: const Text(
+                        '${remainHours}s ${remainMin}dk kaldı',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.neonGreen,
+                        ),
                       ),
                     ),
                   ],
                 ),
+                const SizedBox(height: 48),
+
+                // VS Section
+                Row(
+                  children: [
+                    Expanded(
+                      child: _PlayerSide(
+                        name: p1Name,
+                        minutes: p1Minutes,
+                        isWinning: p1Winning,
+                        isOnline: true,
+                        avatarColor: const Color(0xFF667EEA),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Text(
+                        'VS',
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.w900,
+                          color: AppColors.neonOrange,
+                          shadows: [
+                            Shadow(
+                              color:
+                                  AppColors.neonOrange.withValues(alpha: 0.6),
+                              blurRadius: 24,
+                            ),
+                            Shadow(
+                              color:
+                                  AppColors.neonOrange.withValues(alpha: 0.3),
+                              blurRadius: 48,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: _PlayerSide(
+                        name: p2Name,
+                        minutes: p2Minutes,
+                        isWinning: !p1Winning,
+                        isOnline: false,
+                        avatarColor: const Color(0xFF30D158),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 40),
+
+                // Countdown
+                Text(
+                  '${remainHours.toString().padLeft(2, '0')}:${remainMin.toString().padLeft(2, '0')}:17',
+                  style: AppTextStyles.heroNumber.copyWith(
+                    fontSize: 48,
+                    color: AppColors.neonGreen,
+                    shadows: [
+                      Shadow(
+                        color: AppColors.neonGreen.withValues(alpha: 0.4),
+                        blurRadius: 20,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Kalan Süre',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: 32),
+
+                // Viewer count
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: AppColors.cardBg,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: AppColors.cardBorder),
+                  ),
+                  child: const Text(
+                    '23 kişi izliyor 👀',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ),
 
                 const Spacer(),
-                Text(
-                  'Telefonunu birak ve kazan',
-                  style: AppTextStyles.bodySecondary,
+
+                // Pes Et button
+                SizedBox(
+                  width: 140,
+                  height: 44,
+                  child: OutlinedButton(
+                    onPressed: () {
+                      HapticService.warning();
+                      context.go('/duel/result');
+                    },
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.ringDanger,
+                      side: const BorderSide(color: AppColors.ringDanger),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      'Pes Et',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 100),
               ],
@@ -82,49 +187,85 @@ class DuelActiveScreen extends ConsumerWidget {
 }
 
 class _PlayerSide extends StatelessWidget {
-  const _PlayerSide({required this.name, required this.minutes, required this.isWinning});
+  const _PlayerSide({
+    required this.name,
+    required this.minutes,
+    required this.isWinning,
+    required this.isOnline,
+    required this.avatarColor,
+  });
+
   final String name;
   final int minutes;
   final bool isWinning;
+  final bool isOnline;
+  final Color avatarColor;
 
   @override
   Widget build(BuildContext context) {
     final initial = name.isNotEmpty ? name[0].toUpperCase() : '?';
-    final bgColor = isWinning
-        ? AppColors.neonGreen.withOpacity(0.08)
-        : AppColors.ringDanger.withOpacity(0.08);
+    final hours = minutes ~/ 60;
+    final mins = minutes % 60;
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: bgColor,
+        color: isWinning
+            ? AppColors.neonGreen.withValues(alpha: 0.06)
+            : AppColors.ringDanger.withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.cardBorder),
       ),
       child: Column(
         children: [
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: isWinning ? AppColors.neonGreen : AppColors.ringDanger,
-                width: 2,
+          Stack(
+            children: [
+              Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: avatarColor,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color:
+                        isWinning ? AppColors.neonGreen : AppColors.ringDanger,
+                    width: 2,
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    initial,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ),
-            ),
-            child: Center(
-              child: Text(initial, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
-            ),
+              if (isOnline)
+                Positioned(
+                  bottom: 2,
+                  right: 2,
+                  child: Container(
+                    width: 14,
+                    height: 14,
+                    decoration: BoxDecoration(
+                      color: AppColors.friendOnline,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.bg, width: 2),
+                    ),
+                  ),
+                ),
+            ],
           ),
           const SizedBox(height: 8),
           Text(name, style: AppTextStyles.h3),
           const SizedBox(height: 4),
           Text(
-            '${minutes}dk',
+            '${hours}s ${mins}dk',
             style: TextStyle(
-              fontSize: 28,
+              fontSize: 24,
               fontWeight: FontWeight.w700,
               color: isWinning ? AppColors.ringGood : AppColors.ringDanger,
             ),

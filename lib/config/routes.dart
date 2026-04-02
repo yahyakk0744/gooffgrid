@@ -13,6 +13,8 @@ import '../screens/ranking/ranking_screen.dart';
 import '../screens/duel/duel_list_screen.dart';
 import '../screens/duel/duel_active_screen.dart';
 import '../screens/duel/duel_invite_screen.dart';
+import '../screens/duel/create_duel_screen.dart';
+import '../screens/duel/duel_result_screen.dart';
 import '../screens/profile/my_profile_screen.dart';
 import '../screens/profile/friend_profile_screen.dart';
 import '../screens/profile/friends_list_screen.dart';
@@ -32,6 +34,7 @@ import '../screens/stories/stories_feed_screen.dart';
 import '../screens/o2/o2_dashboard_screen.dart';
 import '../screens/o2/market_screen.dart';
 import '../screens/ganimet/ganimet_screen.dart';
+import '../screens/admin/admin_ganimet_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -113,6 +116,7 @@ GoRouter buildAppRouter(Ref ref) {
                 ),
                 GoRoute(path: 'wrapped', builder: (_, __) => const ReportCardScreen()),
                 GoRoute(path: 'ganimetler', builder: (_, __) => const GanimetScreen()),
+                GoRoute(path: 'admin/ganimet', builder: (_, __) => const AdminGanimetScreen()),
                 GoRoute(path: 'groups', builder: (_, __) => const GroupsScreen()),
                 GoRoute(
                   path: 'group/:id',
@@ -141,7 +145,13 @@ GoRouter buildAppRouter(Ref ref) {
               path: '/duel',
               builder: (_, __) => const DuelListScreen(),
               routes: [
-                GoRoute(path: 'create', builder: (_, __) => const DuelInviteScreen()),
+                GoRoute(path: 'create', builder: (_, __) => const CreateDuelScreen()),
+                GoRoute(path: 'invite', builder: (_, __) => const DuelInviteScreen()),
+                GoRoute(
+                  path: 'active',
+                  builder: (_, __) => const DuelActiveScreen(),
+                ),
+                GoRoute(path: 'result', builder: (_, __) => const DuelResultScreen()),
                 GoRoute(
                   path: ':id',
                   builder: (_, state) =>
