@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../services/haptic_service.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/app_usage_bar.dart';
 import '../../widgets/level_badge.dart';
@@ -55,6 +57,26 @@ class MyProfileScreen extends ConsumerWidget {
                         Text(user.name, style: AppTextStyles.h1),
                         const SizedBox(width: 8),
                         LevelBadge(level: user.level),
+                        const SizedBox(width: 8),
+                        GestureDetector(
+                          onTap: () {
+                            HapticService.light();
+                            context.go('/profile/edit');
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: AppColors.cardBg,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: AppColors.cardBorder),
+                            ),
+                            child: const Icon(
+                              Icons.edit_rounded,
+                              size: 16,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 4),

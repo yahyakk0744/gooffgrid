@@ -19,14 +19,27 @@ class _CreateDuelScreenState extends ConsumerState<CreateDuelScreen> {
   int _step = 0;
   DuelType? _selectedType;
   Duration? _selectedDuration;
+  int _customHours = 1;
+  int _customMinutes = 0;
   String? _selectedPenalty;
   final _selectedFriends = <String>{};
   final _searchController = TextEditingController();
+  late final FixedExtentScrollController _hourController;
+  late final FixedExtentScrollController _minuteController;
+
+  @override
+  void initState() {
+    super.initState();
+    _hourController = FixedExtentScrollController(initialItem: 1);
+    _minuteController = FixedExtentScrollController(initialItem: 0);
+  }
 
   @override
   void dispose() {
     _pageController.dispose();
     _searchController.dispose();
+    _hourController.dispose();
+    _minuteController.dispose();
     super.dispose();
   }
 
@@ -52,7 +65,10 @@ class _CreateDuelScreenState extends ConsumerState<CreateDuelScreen> {
 
   bool get _canProceed {
     if (_step == 0) return _selectedType != null;
-    if (_step == 1) return _selectedDuration != null;
+    if (_step == 1) {
+      if (_selectedDuration == null) return false;
+      return _selectedDuration!.inMinutes >= 10;
+    }
     return _selectedFriends.isNotEmpty;
   }
 
@@ -243,109 +259,204 @@ class _CreateDuelScreenState extends ConsumerState<CreateDuelScreen> {
     );
   }
 
+  void _setCustomDuration(int hours, int minutes) {
+    final totalMin = hours * 60 + minutes;
+    final clamped = totalMin.clamp(10, 1440);
+    final h = clamped ~/ 60;
+    final m = ((clamped % 60) ~/ 5) * 5;
+    setState(() {
+      _customHours = h;
+      _customMinutes = m;
+      _selectedDuration = Duration(hours: h, minutes: m);
+    });
+  }
+
+  void _applyPreset(Duration d) {
+    HapticService.light();
+    final h = d.inHours;
+    final m = d.inMinutes % 60;
+    _hourController.animateToItem(h,
+        duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
+    _minuteController.animateToItem(m ~/ 5,
+        duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
+    setState(() {
+      _customHours = h;
+      _customMinutes = m;
+      _selectedDuration = d;
+    });
+  }
+
   Widget _buildDurationSelection() {
     if (_selectedType == null) return const SizedBox.shrink();
     final type = _selectedType!;
+
+    // Preset chips
+    final presets = <MapEntry<String, Duration>>[
+      const MapEntry('30dk', Duration(minutes: 30)),
+      const MapEntry('1s', Duration(hours: 1)),
+      const MapEntry('3s', Duration(hours: 3)),
+      const MapEntry('6s', Duration(hours: 6)),
+      const MapEntry('12s', Duration(hours: 12)),
+      const MapEntry('24s', Duration(hours: 24)),
+    ];
+
+    final totalMin = _customHours * 60 + _customMinutes;
+    final displayText = _customHours > 0 && _customMinutes > 0
+        ? '${_customHours}s ${_customMinutes}dk'
+        : _customHours > 0
+            ? '${_customHours}s'
+            : '${_customMinutes}dk';
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text(type.emoji, style: const TextStyle(fontSize: 28)),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(type.name, style: AppTextStyles.h2),
-                    Text(type.description,
-                        style: AppTextStyles.bodySecondary),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          const Text('Süre Seç', style: AppTextStyles.label),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: type.availableDurations.map((d) {
-              final isSelected = _selectedDuration == d;
-              return GestureDetector(
-                onTap: () {
-                  HapticService.light();
-                  setState(() => _selectedDuration = d);
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? AppColors.neonGreen
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(
-                      color: isSelected
-                          ? AppColors.neonGreen
-                          : AppColors.cardBorder,
-                    ),
-                  ),
-                  child: Text(
-                    type.formatDuration(d),
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: isSelected
-                          ? Colors.black
-                          : AppColors.textSecondary,
-                    ),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(type.emoji, style: const TextStyle(fontSize: 28)),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(type.name, style: AppTextStyles.h2),
+                      Text(type.description,
+                          style: AppTextStyles.bodySecondary),
+                    ],
                   ),
                 ),
-              );
-            }).toList(),
-          ),
-          if (type.id == 'penalty') ...[
+              ],
+            ),
             const SizedBox(height: 24),
-            const Text('Ceza Seç (opsiyonel)', style: AppTextStyles.label),
+            const Text('Hızlı Seçim', style: AppTextStyles.label),
             const SizedBox(height: 12),
             Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: DuelType.penaltyTemplates.map((p) {
-                final sel = _selectedPenalty == p;
+              spacing: 10,
+              runSpacing: 10,
+              children: presets.map((p) {
+                final isSelected = _selectedDuration == p.value;
                 return GestureDetector(
-                  onTap: () => setState(() => _selectedPenalty = p),
+                  onTap: () => _applyPreset(p.value),
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 10),
+                        horizontal: 20, vertical: 12),
                     decoration: BoxDecoration(
-                      color: sel
-                          ? AppColors.neonOrange.withValues(alpha: 0.2)
-                          : AppColors.cardBg,
-                      borderRadius: BorderRadius.circular(20),
+                      color: isSelected
+                          ? AppColors.neonGreen
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(24),
                       border: Border.all(
-                        color: sel
-                            ? AppColors.neonOrange
+                        color: isSelected
+                            ? AppColors.neonGreen
                             : AppColors.cardBorder,
                       ),
                     ),
-                    child: Text(p,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: sel
-                              ? AppColors.neonOrange
-                              : AppColors.textSecondary,
-                        )),
+                    child: Text(
+                      p.key,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: isSelected
+                            ? Colors.black
+                            : AppColors.textSecondary,
+                      ),
+                    ),
                   ),
                 );
               }).toList(),
             ),
+            const SizedBox(height: 24),
+            const Text('Özel Süre Seç', style: AppTextStyles.label),
+            const SizedBox(height: 12),
+            Container(
+              height: 180,
+              decoration: BoxDecoration(
+                color: AppColors.cardBg,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.cardBorder),
+              ),
+              child: Row(
+                children: [
+                  // Saat
+                  Expanded(
+                    child: _WheelPicker(
+                      controller: _hourController,
+                      itemCount: 25,
+                      labelBuilder: (i) => '$i saat',
+                      onChanged: (i) => _setCustomDuration(i, _customMinutes),
+                    ),
+                  ),
+                  Container(width: 1, height: 120, color: AppColors.cardBorder),
+                  // Dakika
+                  Expanded(
+                    child: _WheelPicker(
+                      controller: _minuteController,
+                      itemCount: 12,
+                      labelBuilder: (i) => '${i * 5} dk',
+                      onChanged: (i) =>
+                          _setCustomDuration(_customHours, i * 5),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            if (_selectedDuration != null && totalMin >= 10)
+              Center(
+                child: Text(
+                  'Seçilen: $displayText',
+                  style: AppTextStyles.h3.copyWith(color: AppColors.neonGreen),
+                ),
+              ),
+            if (_selectedDuration != null && totalMin < 10)
+              Center(
+                child: Text(
+                  'En az 10 dakika seçmelisin',
+                  style: AppTextStyles.label
+                      .copyWith(color: AppColors.ringWarning),
+                ),
+              ),
+            if (type.id == 'penalty') ...[
+              const SizedBox(height: 24),
+              const Text('Ceza Seç (opsiyonel)', style: AppTextStyles.label),
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: DuelType.penaltyTemplates.map((p) {
+                  final sel = _selectedPenalty == p;
+                  return GestureDetector(
+                    onTap: () => setState(() => _selectedPenalty = p),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: sel
+                            ? AppColors.neonOrange.withValues(alpha: 0.2)
+                            : AppColors.cardBg,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: sel
+                              ? AppColors.neonOrange
+                              : AppColors.cardBorder,
+                        ),
+                      ),
+                      child: Text(p,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: sel
+                                ? AppColors.neonOrange
+                                : AppColors.textSecondary,
+                          )),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -479,6 +590,51 @@ class _CreateDuelScreenState extends ConsumerState<CreateDuelScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _WheelPicker extends StatelessWidget {
+  const _WheelPicker({
+    required this.controller,
+    required this.itemCount,
+    required this.labelBuilder,
+    required this.onChanged,
+  });
+
+  final FixedExtentScrollController controller;
+  final int itemCount;
+  final String Function(int) labelBuilder;
+  final ValueChanged<int> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListWheelScrollView.useDelegate(
+      controller: controller,
+      itemExtent: 40,
+      physics: const FixedExtentScrollPhysics(),
+      diameterRatio: 1.5,
+      magnification: 1.2,
+      useMagnifier: true,
+      onSelectedItemChanged: (i) {
+        HapticService.selection();
+        onChanged(i);
+      },
+      childDelegate: ListWheelChildBuilderDelegate(
+        childCount: itemCount,
+        builder: (_, i) {
+          return Center(
+            child: Text(
+              labelBuilder(i),
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textPrimary,
+              ),
+            ),
+          );
+        },
       ),
     );
   }

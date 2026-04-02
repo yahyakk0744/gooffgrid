@@ -1,510 +1,121 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
 import '../../models/story.dart';
 import '../../providers/stories_provider.dart';
-import '../../services/o2_service.dart';
-import '../../widgets/premium_background.dart';
+import '../../services/haptic_service.dart';
+import '../../widgets/story_comments_sheet.dart';
 
-class StoriesFeedScreen extends ConsumerWidget {
+/// TikTok/Reels tarzinda dikey swipe hikaye akisi.
+class StoriesFeedScreen extends ConsumerStatefulWidget {
   const StoriesFeedScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final storiesState = ref.watch(storiesProvider);
-
-    return Scaffold(
-      backgroundColor: AppColors.bg,
-      body: PremiumBackground(
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    const Text('Hikayeler', style: AppTextStyles.h1),
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () => _showCreateStory(context, ref),
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [AppColors.cardGradientStart, AppColors.cardGradientEnd],
-                          ),
-                          shape: BoxShape.circle,
-                          border: Border.all(color: AppColors.neonGreen.withOpacity(0.4)),
-                        ),
-                        child: const Icon(Icons.add_rounded, color: AppColors.neonGreen, size: 24),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Story circles
-              SizedBox(
-                height: 100,
-                child: storiesState.isLoading
-                    ? const Center(child: CircularProgressIndicator(color: AppColors.neonGreen))
-                    : ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        itemCount: storiesState.groups.length,
-                        itemBuilder: (_, i) =>
-                            _StoryCircle(group: storiesState.groups[i]),
-                      ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // Story cards feed
-              Expanded(
-                child: storiesState.groups.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.auto_stories_rounded, size: 64, color: AppColors.textTertiary.withOpacity(0.4)),
-                            const SizedBox(height: 12),
-                            const Text('Henüz hikaye yok', style: AppTextStyles.bodySecondary),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Arkadaşlarının off-grid anlarına paylaşmaya başlasın!',
-                              style: TextStyle(fontSize: 12, color: AppColors.textTertiary),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      )
-                    : ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        itemCount: _allStories(storiesState.groups).length,
-                        itemBuilder: (_, i) {
-                          final story = _allStories(storiesState.groups)[i];
-                          return _StoryCard(story: story);
-                        },
-                      ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  List<Story> _allStories(List<StoryGroup> groups) {
-    return groups.expand((g) => g.stories).toList()
-      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-  }
-
-  Future<void> _showCreateStory(BuildContext context, WidgetRef ref) async {
-    // Server-side eligibility check: only users under daily goal can post
-    final eligibility = await O2Service.instance.checkStoryEligibility();
-
-    if (!context.mounted) return;
-
-    if (!eligibility.eligible) {
-      showModalBottomSheet(
-        context: context,
-        backgroundColor: AppColors.cardGradientStart,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        builder: (_) => Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 40, height: 4,
-                decoration: BoxDecoration(color: AppColors.cardBorder, borderRadius: BorderRadius.circular(2)),
-              ),
-              const SizedBox(height: 24),
-              Container(
-                width: 80, height: 80,
-                decoration: BoxDecoration(
-                  color: AppColors.ringDanger.withOpacity(0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.block_rounded, color: AppColors.ringDanger, size: 40),
-              ),
-              const SizedBox(height: 16),
-              const Text('Hikaye Paylaşamazsın', style: AppTextStyles.h2),
-              const SizedBox(height: 8),
-              Text(
-                eligibility.message ?? 'Günlük ekran süresi hedefini aştın. Hedefine sadık kalarak hikaye paylaşma hakkını kazan!',
-                style: const TextStyle(fontSize: 14, color: AppColors.textSecondary),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity, height: 48,
-                child: ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.cardBorder,
-                    foregroundColor: AppColors.textPrimary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: const Text('Tamam'),
-                ),
-              ),
-              const SizedBox(height: 16),
-            ],
-          ),
-        ),
-      );
-      return;
-    }
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: AppColors.cardGradientStart,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) => _CreateStorySheet(ref: ref),
-    );
-  }
+  ConsumerState<StoriesFeedScreen> createState() => _StoriesFeedScreenState();
 }
 
-class _StoryCircle extends StatelessWidget {
-  const _StoryCircle({required this.group});
-  final StoryGroup group;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: group.hasUnviewed
-                  ? const LinearGradient(
-                      colors: [AppColors.neonGreen, Color(0xFF00C9DB)],
-                    )
-                  : null,
-              color: group.hasUnviewed ? null : AppColors.cardBorder,
-            ),
-            padding: const EdgeInsets.all(2.5),
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: group.avatarColor,
-              ),
-              child: Center(
-                child: Text(
-                  group.userName.isNotEmpty ? group.userName[0].toUpperCase() : '?',
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 4),
-          SizedBox(
-            width: 64,
-            child: Text(
-              group.userName,
-              style: const TextStyle(fontSize: 10, color: AppColors.textSecondary),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StoryCard extends StatelessWidget {
-  const _StoryCard({required this.story});
-  final Story story;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [AppColors.cardGradientStart, AppColors.cardGradientEnd],
-        ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.cardBorder.withOpacity(0.5)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // User row
-          Row(
-            children: [
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  color: story.userAvatarColor ?? AppColors.textTertiary,
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Text(
-                    (story.userName ?? '?')[0].toUpperCase(),
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(story.userName ?? 'Kullanıcı', style: AppTextStyles.body),
-                    Text(story.remainingLabel, style: TextStyle(fontSize: 11, color: AppColors.textTertiary)),
-                  ],
-                ),
-              ),
-              if (story.activityType != null)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: AppColors.neonGreen.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: AppColors.neonGreen.withOpacity(0.3)),
-                  ),
-                  child: Text(
-                    story.activityType!,
-                    style: const TextStyle(fontSize: 10, color: AppColors.neonGreen, fontWeight: FontWeight.w500),
-                  ),
-                ),
-            ],
-          ),
-
-          // Caption
-          if (story.caption != null && story.caption!.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            Text(story.caption!, style: AppTextStyles.body),
-          ],
-
-          // Image
-          if (story.imageUrl != null) ...[
-            const SizedBox(height: 12),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.network(
-                story.imageUrl!,
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
-                  height: 200,
-                  color: AppColors.cardBorder,
-                  child: const Center(child: Icon(Icons.image_rounded, color: AppColors.textTertiary)),
-                ),
-              ),
-            ),
-          ],
-
-          // Footer
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Icon(Icons.visibility_rounded, size: 14, color: AppColors.textTertiary),
-              const SizedBox(width: 4),
-              Text('${story.viewCount}', style: TextStyle(fontSize: 11, color: AppColors.textTertiary)),
-              const Spacer(),
-              Icon(Icons.schedule_rounded, size: 14, color: AppColors.textTertiary),
-              const SizedBox(width: 4),
-              Text(story.remainingLabel, style: TextStyle(fontSize: 11, color: AppColors.textTertiary)),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _CreateStorySheet extends StatefulWidget {
-  const _CreateStorySheet({required this.ref});
-  final WidgetRef ref;
-
-  @override
-  State<_CreateStorySheet> createState() => _CreateStorySheetState();
-}
-
-class _CreateStorySheetState extends State<_CreateStorySheet> {
-  final _captionController = TextEditingController();
-  String _selectedActivity = 'Yürüyüş';
-  int _durationHours = 24;
-  bool _isPosting = false;
-
-  static const _activities = [
-    'Yürüyüş',
-    'Koşu',
-    'Kitap',
-    'Meditasyon',
-    'Doğada',
-    'Spor',
-    'Müzik',
-    'Yemek',
-    'Arkadaş',
-    'Aile',
-  ];
+class _StoriesFeedScreenState extends ConsumerState<StoriesFeedScreen> {
+  String _activeFilter = 'friends';
+  final _pageController = PageController();
 
   @override
   void dispose() {
-    _captionController.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(16, 16, 16, MediaQuery.of(context).viewInsets.bottom + 16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+    final storiesAsync = ref.watch(storiesFeedProvider(_activeFilter));
+
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: Stack(
         children: [
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppColors.cardBorder,
-                borderRadius: BorderRadius.circular(2),
-              ),
+          // Story pages
+          storiesAsync.when(
+            data: (stories) => stories.isEmpty
+                ? _buildEmptyState()
+                : PageView.builder(
+                    controller: _pageController,
+                    scrollDirection: Axis.vertical,
+                    itemCount: stories.length,
+                    itemBuilder: (_, i) => _StoryPage(
+                      story: stories[i],
+                      onCommentTap: () => _openComments(stories[i].id),
+                    ),
+                  ),
+            loading: () => const Center(
+              child: CircularProgressIndicator(color: AppColors.neonGreen),
             ),
+            error: (_, __) => _buildEmptyState(),
           ),
-          const SizedBox(height: 16),
-          const Text('Anti-Sosyal An', style: AppTextStyles.h2),
-          const SizedBox(height: 4),
-          Text(
-            'Telefonundan uzakta ne yapiyorsun?',
-            style: TextStyle(fontSize: 13, color: AppColors.textTertiary),
-          ),
-          const SizedBox(height: 16),
 
-          // Activity chips
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: _activities.map((a) {
-              final selected = a == _selectedActivity;
-              return GestureDetector(
-                onTap: () => setState(() => _selectedActivity = a),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: selected ? AppColors.neonGreen.withOpacity(0.15) : AppColors.cardBorder.withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: selected ? AppColors.neonGreen : AppColors.cardBorder,
+          // Top filter tabs
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: SafeArea(
+              bottom: false,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back_ios_rounded,
+                          color: Colors.white, size: 20),
+                      onPressed: () => context.pop(),
                     ),
-                  ),
-                  child: Text(
-                    a,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: selected ? AppColors.neonGreen : AppColors.textSecondary,
-                      fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                    const Spacer(),
+                    _FilterTab(
+                      label: 'Arkadaslarim',
+                      isSelected: _activeFilter == 'friends',
+                      onTap: () => _switchFilter('friends'),
                     ),
-                  ),
+                    const SizedBox(width: 8),
+                    _FilterTab(
+                      label: 'Sehrimdekiler',
+                      isSelected: _activeFilter == 'city',
+                      onTap: () => _switchFilter('city'),
+                    ),
+                    const Spacer(),
+                    const SizedBox(width: 40), // balance back button
+                  ],
                 ),
-              );
-            }).toList(),
-          ),
-          const SizedBox(height: 16),
-
-          // Caption
-          TextField(
-            controller: _captionController,
-            style: const TextStyle(color: AppColors.textPrimary),
-            maxLength: 140,
-            decoration: InputDecoration(
-              hintText: 'Ne yapiyorsun? (opsiyonel)',
-              hintStyle: TextStyle(color: AppColors.textTertiary),
-              filled: true,
-              fillColor: AppColors.cardBorder.withOpacity(0.3),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
               ),
-              counterStyle: TextStyle(color: AppColors.textTertiary),
             ),
           ),
-          const SizedBox(height: 12),
 
-          // Duration selector
-          Row(
-            children: [
-              Text('Sure: ', style: AppTextStyles.body),
-              const SizedBox(width: 8),
-              ...[1, 6, 12, 24].map((h) {
-                final selected = h == _durationHours;
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: GestureDetector(
-                    onTap: () => setState(() => _durationHours = h),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: selected ? AppColors.neonGreen : Colors.transparent,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: selected ? AppColors.neonGreen : AppColors.cardBorder),
-                      ),
-                      child: Text(
-                        '${h}s',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: selected ? Colors.black : AppColors.textSecondary,
-                          fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-                        ),
-                      ),
+          // FAB
+          Positioned(
+            bottom: MediaQuery.of(context).padding.bottom + 16,
+            right: 16,
+            child: GestureDetector(
+              onTap: () {
+                HapticService.medium();
+                context.go('/stories/create');
+              },
+              child: Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: AppColors.neonGreen,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.neonGreen.withValues(alpha: 0.4),
+                      blurRadius: 16,
+                      offset: const Offset(0, 4),
                     ),
-                  ),
-                );
-              }),
-            ],
-          ),
-          const SizedBox(height: 20),
-
-          // Post button
-          SizedBox(
-            width: double.infinity,
-            height: 48,
-            child: ElevatedButton(
-              onPressed: _isPosting ? null : _post,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.neonGreen,
-                foregroundColor: Colors.black,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                  ],
+                ),
+                child: const Icon(Icons.add_rounded,
+                    color: Colors.black, size: 28),
               ),
-              child: _isPosting
-                  ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black))
-                  : const Text('Paylas'),
             ),
           ),
         ],
@@ -512,15 +123,373 @@ class _CreateStorySheetState extends State<_CreateStorySheet> {
     );
   }
 
-  Future<void> _post() async {
-    setState(() => _isPosting = true);
-    await widget.ref.read(storiesProvider.notifier).createStory(
-          caption: _captionController.text.isEmpty ? null : _captionController.text,
-          activityType: _selectedActivity,
-          durationHours: _durationHours,
-        );
-    if (mounted) {
-      Navigator.pop(context);
-    }
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.auto_stories_rounded,
+              size: 64,
+              color: AppColors.textTertiary.withValues(alpha: 0.4)),
+          const SizedBox(height: 12),
+          const Text('Henuz hikaye yok', style: AppTextStyles.bodySecondary),
+          const SizedBox(height: 4),
+          Text(
+            'Ilk hikayeni paylasarak baslat!',
+            style: TextStyle(fontSize: 12, color: AppColors.textTertiary),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _switchFilter(String filter) {
+    if (_activeFilter == filter) return;
+    HapticService.selection();
+    setState(() => _activeFilter = filter);
+    _pageController.jumpToPage(0);
+  }
+
+  void _openComments(String storyId) {
+    HapticService.light();
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => StoryCommentsSheet(storyId: storyId),
+    );
+  }
+}
+
+// ──────────────────────────────────────────────
+// Filter Tab (glassmorphism)
+// ──────────────────────────────────────────────
+
+class _FilterTab extends StatelessWidget {
+  const _FilterTab({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: isSelected
+                  ? AppColors.neonGreen.withValues(alpha: 0.2)
+                  : Colors.white.withValues(alpha: 0.06),
+              border: Border.all(
+                color: isSelected
+                    ? AppColors.neonGreen.withValues(alpha: 0.6)
+                    : Colors.white.withValues(alpha: 0.12),
+              ),
+            ),
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                color:
+                    isSelected ? AppColors.neonGreen : AppColors.textSecondary,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ──────────────────────────────────────────────
+// Single Story Page (full screen)
+// ──────────────────────────────────────────────
+
+class _StoryPage extends ConsumerStatefulWidget {
+  const _StoryPage({required this.story, required this.onCommentTap});
+
+  final Story story;
+  final VoidCallback onCommentTap;
+
+  @override
+  ConsumerState<_StoryPage> createState() => _StoryPageState();
+}
+
+class _StoryPageState extends ConsumerState<_StoryPage>
+    with SingleTickerProviderStateMixin {
+  bool _localLiked = false;
+  int _localLikeCount = 0;
+  late AnimationController _likeAnimController;
+  late Animation<double> _likeScale;
+
+  @override
+  void initState() {
+    super.initState();
+    _likeAnimController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _likeScale = TweenSequence<double>([
+      TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.4), weight: 50),
+      TweenSequenceItem(tween: Tween(begin: 1.4, end: 1.0), weight: 50),
+    ]).animate(CurvedAnimation(
+        parent: _likeAnimController, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    _likeAnimController.dispose();
+    super.dispose();
+  }
+
+  // Story'ye ozel gradient renkleri
+  List<Color> get _bgGradient {
+    final base = widget.story.userAvatarColor ?? const Color(0xFF667EEA);
+    return [
+      base.withValues(alpha: 0.3),
+      AppColors.bg,
+    ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final likesAsync = ref.watch(storyLikesProvider(widget.story.id));
+
+    // Sync local state with server
+    likesAsync.whenData((info) {
+      if (_localLikeCount == 0 && !_localLiked) {
+        _localLikeCount = info.count;
+        _localLiked = info.isLiked;
+      }
+    });
+
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: _bgGradient,
+        ),
+      ),
+      child: Stack(
+        children: [
+          // Center content
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Text(
+                widget.story.caption ?? '',
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                  height: 1.4,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+
+          // Activity chip (top)
+          if (widget.story.activityType != null)
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 60,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: AppColors.neonGreen.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: AppColors.neonGreen.withValues(alpha: 0.4),
+                    ),
+                  ),
+                  child: Text(
+                    widget.story.activityType!,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.neonGreen,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+          // Bottom-left: user info
+          Positioned(
+            bottom: MediaQuery.of(context).padding.bottom + 24,
+            left: 16,
+            right: 80,
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: widget.story.userAvatarColor ??
+                        AppColors.textTertiary,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Text(
+                      (widget.story.userName ?? '?')[0].toUpperCase(),
+                      style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        widget.story.userName ?? 'Kullanici',
+                        style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white),
+                      ),
+                      Text(
+                        widget.story.remainingLabel,
+                        style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.white.withValues(alpha: 0.6)),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Bottom-right: action buttons
+          Positioned(
+            bottom: MediaQuery.of(context).padding.bottom + 24,
+            right: 12,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Like
+                _ActionButton(
+                  icon: _localLiked
+                      ? Icons.favorite_rounded
+                      : Icons.favorite_border_rounded,
+                  color: _localLiked ? AppColors.ringDanger : Colors.white,
+                  label: '$_localLikeCount',
+                  scaleAnimation: _likeScale,
+                  onTap: _toggleLike,
+                ),
+                const SizedBox(height: 20),
+
+                // Comment
+                _ActionButton(
+                  icon: Icons.chat_bubble_outline_rounded,
+                  color: Colors.white,
+                  label: '0',
+                  onTap: widget.onCommentTap,
+                ),
+                const SizedBox(height: 20),
+
+                // Share
+                _ActionButton(
+                  icon: Icons.share_outlined,
+                  color: Colors.white,
+                  label: '',
+                  onTap: () => HapticService.light(),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _toggleLike() async {
+    HapticService.medium();
+    _likeAnimController.forward(from: 0);
+
+    setState(() {
+      _localLiked = !_localLiked;
+      _localLikeCount += _localLiked ? 1 : -1;
+      if (_localLikeCount < 0) _localLikeCount = 0;
+    });
+
+    await toggleStoryLike(widget.story.id);
+    ref.invalidate(storyLikesProvider(widget.story.id));
+  }
+}
+
+// ──────────────────────────────────────────────
+// Action Button (like, comment, share)
+// ──────────────────────────────────────────────
+
+class _ActionButton extends StatelessWidget {
+  const _ActionButton({
+    required this.icon,
+    required this.color,
+    required this.label,
+    required this.onTap,
+    this.scaleAnimation,
+  });
+
+  final IconData icon;
+  final Color color;
+  final String label;
+  final VoidCallback onTap;
+  final Animation<double>? scaleAnimation;
+
+  @override
+  Widget build(BuildContext context) {
+    final iconWidget = Icon(icon, color: color, size: 28);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          scaleAnimation != null
+              ? AnimatedBuilder(
+                  animation: scaleAnimation!,
+                  builder: (_, child) => Transform.scale(
+                    scale: scaleAnimation!.value,
+                    child: child,
+                  ),
+                  child: iconWidget,
+                )
+              : iconWidget,
+          if (label.isNotEmpty) ...[
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: TextStyle(
+                  fontSize: 11,
+                  color: Colors.white.withValues(alpha: 0.8),
+                  fontWeight: FontWeight.w500),
+            ),
+          ],
+        ],
+      ),
+    );
   }
 }

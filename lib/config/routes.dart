@@ -16,6 +16,7 @@ import '../screens/duel/duel_invite_screen.dart';
 import '../screens/duel/create_duel_screen.dart';
 import '../screens/duel/duel_result_screen.dart';
 import '../screens/profile/my_profile_screen.dart';
+import '../screens/profile/edit_profile_screen.dart';
 import '../screens/profile/friend_profile_screen.dart';
 import '../screens/profile/friends_list_screen.dart';
 import '../screens/profile/add_friend_screen.dart';
@@ -31,6 +32,7 @@ import '../screens/season/season_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../screens/settings/subscription_screen.dart';
 import '../screens/stories/stories_feed_screen.dart';
+import '../screens/stories/create_story_screen.dart';
 import '../screens/o2/o2_dashboard_screen.dart';
 import '../screens/o2/market_screen.dart';
 import '../screens/ganimet/ganimet_screen.dart';
@@ -99,7 +101,13 @@ GoRouter buildAppRouter(Ref ref) {
               builder: (_, __) => const HomeScreen(),
               routes: [
                 GoRoute(path: 'breathing', builder: (_, __) => const FocusModeScreen()),
-                GoRoute(path: 'stories', builder: (_, __) => const StoriesFeedScreen()),
+                GoRoute(
+                  path: 'stories',
+                  builder: (_, __) => const StoriesFeedScreen(),
+                  routes: [
+                    GoRoute(path: 'create', builder: (_, __) => const CreateStoryScreen()),
+                  ],
+                ),
                 GoRoute(
                   path: 'o2',
                   builder: (_, __) => const O2DashboardScreen(),
@@ -167,6 +175,7 @@ GoRouter buildAppRouter(Ref ref) {
               path: '/profile',
               builder: (_, __) => const MyProfileScreen(),
               routes: [
+                GoRoute(path: 'edit', builder: (_, __) => const EditProfileScreen()),
                 GoRoute(path: 'stats', builder: (_, __) => const StatsScreen()),
                 GoRoute(path: 'stats/analytics', builder: (_, __) => const AnalyticsScreen()),
                 GoRoute(path: 'stats/whatif', builder: (_, __) => const WhatIfScreen()),
