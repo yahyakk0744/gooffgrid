@@ -414,6 +414,30 @@ abstract class AppLocalizations {
   /// **'Share Profile'**
   String get shareProfile;
 
+  /// No description provided for @shareReportCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop the Air'**
+  String get shareReportCard;
+
+  /// No description provided for @o2Balance.
+  ///
+  /// In en, this message translates to:
+  /// **'O₂ Points'**
+  String get o2Balance;
+
+  /// No description provided for @offGridMarket.
+  ///
+  /// In en, this message translates to:
+  /// **'Loot'**
+  String get offGridMarket;
+
+  /// No description provided for @offGridMarketHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn O₂ points into real-world loot'**
+  String get offGridMarketHint;
+
   /// No description provided for @appUsage.
   ///
   /// In en, this message translates to:

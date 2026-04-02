@@ -162,6 +162,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get shareProfile => '分享个人资料';
 
   @override
+  String get shareReportCard => 'Drop the Air';
+
+  @override
+  String get o2Balance => 'O₂ Points';
+
+  @override
+  String get offGridMarket => 'Loot';
+
+  @override
+  String get offGridMarketHint => 'Turn O₂ points into real-world loot';
+
+  @override
   String get appUsage => '应用使用情况';
 
   @override

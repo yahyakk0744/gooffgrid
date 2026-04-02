@@ -162,6 +162,18 @@ class AppLocalizationsRu extends AppLocalizations {
   String get shareProfile => 'Поделиться профилем';
 
   @override
+  String get shareReportCard => 'Drop the Air';
+
+  @override
+  String get o2Balance => 'O₂ Points';
+
+  @override
+  String get offGridMarket => 'Loot';
+
+  @override
+  String get offGridMarketHint => 'Turn O₂ points into real-world loot';
+
+  @override
   String get appUsage => 'Использование приложений';
 
   @override

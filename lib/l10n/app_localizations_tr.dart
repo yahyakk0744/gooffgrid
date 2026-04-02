@@ -162,6 +162,19 @@ class AppLocalizationsTr extends AppLocalizations {
   String get shareProfile => 'Profilimi Paylaş';
 
   @override
+  String get shareReportCard => 'Havamı At';
+
+  @override
+  String get o2Balance => 'O₂ Puanı';
+
+  @override
+  String get offGridMarket => 'Ganimetler';
+
+  @override
+  String get offGridMarketHint =>
+      'O₂ puanlarını gerçek dünya ganimetlerine dönüştür';
+
+  @override
   String get appUsage => 'Uygulama Kullanımı';
 
   @override
