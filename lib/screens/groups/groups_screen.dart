@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
 import '../../widgets/premium_background.dart';
 import '../../widgets/app_card.dart';
 import '../../providers/groups_provider.dart';
+import '../../widgets/empty_state.dart';
 
 class GroupsScreen extends ConsumerWidget {
   const GroupsScreen({super.key});
@@ -23,6 +25,15 @@ class GroupsScreen extends ConsumerWidget {
             children: [
               const Text('Gruplar', style: AppTextStyles.h1),
               const SizedBox(height: 24),
+              if (groups.isEmpty)
+                EmptyState(
+                  emoji: '👥',
+                  title: 'Henüz grup yok',
+                  subtitle: 'Arkadaşlarınla grup oluştur',
+                  buttonText: 'Grup Oluştur',
+                  onButtonTap: () => context.push('/group/create'),
+                ),
+
               ...groups.map((g) => Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: AppCard(

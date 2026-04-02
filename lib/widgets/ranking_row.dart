@@ -46,11 +46,11 @@ class RankingRow extends StatelessWidget {
             : null,
         borderRadius: isCurrentUser ? BorderRadius.circular(12) : null,
         border: isCurrentUser
-            ? Border.all(color: AppColors.neonGreen.withOpacity(0.3), width: 1)
+            ? Border.all(color: AppColors.neonGreen.withValues(alpha: 0.3), width: 1)
             : null,
         boxShadow: isCurrentUser
             ? [
-                BoxShadow(color: AppColors.neonGreen.withOpacity(0.1), blurRadius: 12, spreadRadius: -4),
+                BoxShadow(color: AppColors.neonGreen.withValues(alpha: 0.1), blurRadius: 12, spreadRadius: -4),
               ]
             : null,
       ),
@@ -96,7 +96,7 @@ class RankingRow extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
-                      color: AppColors.neonGreen.withOpacity(0.15),
+                      color: AppColors.neonGreen.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Text('Sen', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.neonGreen)),

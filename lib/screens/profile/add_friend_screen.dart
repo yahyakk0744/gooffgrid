@@ -33,7 +33,7 @@ class AddFriendScreen extends StatelessWidget {
                   children: [
                     const Icon(Icons.qr_code_2_rounded, size: 120, color: AppColors.textPrimary),
                     const SizedBox(height: 12),
-                    const Text('QR kodunu goster', style: AppTextStyles.bodySecondary),
+                    const Text('QR kodunu göster', style: AppTextStyles.bodySecondary),
                   ],
                 ),
               ),
@@ -64,7 +64,7 @@ class AddFriendScreen extends StatelessWidget {
                 child: OutlinedButton.icon(
                   onPressed: () {},
                   icon: const Icon(Icons.share_rounded),
-                  label: const Text('Davet Linki Paylas'),
+                  label: const Text('Davet Linki Paylaş'),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.neonGreen,
                     side: const BorderSide(color: AppColors.neonGreen),

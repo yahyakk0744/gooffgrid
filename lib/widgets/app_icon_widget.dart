@@ -62,13 +62,13 @@ class AppIconWidget extends StatelessWidget {
         boxShadow: [
           // Neon glow
           BoxShadow(
-            color: color.withOpacity(glowIntensity),
+            color: color.withValues(alpha: glowIntensity),
             blurRadius: size * 0.4,
             spreadRadius: -2,
           ),
           // Subtle depth shadow
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withValues(alpha: 0.3),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -85,12 +85,12 @@ class AppIconWidget extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        Colors.white.withOpacity(0.1),
-                        Colors.white.withOpacity(0.04),
+                        Colors.white.withValues(alpha: 0.1),
+                        Colors.white.withValues(alpha: 0.04),
                       ],
                     ),
                     border: Border.all(
-                      color: Colors.white.withOpacity(0.12),
+                      color: Colors.white.withValues(alpha: 0.12),
                       width: 0.5,
                     ),
                     borderRadius: BorderRadius.circular(borderRadius),
@@ -121,7 +121,7 @@ class AppIconWidget extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: color.withOpacity(0.2),
+        color: color.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(borderRadius),
       ),
       child: Center(
@@ -268,12 +268,12 @@ class AppUsageBarWithIcon extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [app.iconColor.withOpacity(0.7), app.iconColor],
+                      colors: [app.iconColor.withValues(alpha: 0.7), app.iconColor],
                     ),
                     borderRadius: BorderRadius.circular(3),
                     boxShadow: [
                       BoxShadow(
-                        color: app.iconColor.withOpacity(0.3),
+                        color: app.iconColor.withValues(alpha: 0.3),
                         blurRadius: 6,
                         offset: const Offset(0, 1),
                       ),

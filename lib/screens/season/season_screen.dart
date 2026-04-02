@@ -34,7 +34,7 @@ class SeasonScreen extends StatelessWidget {
                       children: [
                         Text('Sezon 1', style: AppTextStyles.h1),
                         SizedBox(height: 4),
-                        Text('Bahar Uyanisi', style: AppTextStyles.bodySecondary),
+                        Text('Bahar Uyanışı', style: AppTextStyles.bodySecondary),
                       ],
                     ),
                   ),
@@ -86,7 +86,7 @@ class SeasonScreen extends StatelessWidget {
                         Positioned.fill(
                           child: Container(
                             decoration: BoxDecoration(
-                              color: AppColors.bg.withOpacity(0.7),
+                              color: AppColors.bg.withValues(alpha: 0.7),
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child: const Center(

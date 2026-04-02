@@ -127,8 +127,8 @@ class _AnimatedMistBackgroundState extends State<_AnimatedMistBackground>
               ),
               radius: 1.5,
               colors: [
-                AppColors.neonGreen.withOpacity(0.04 + 0.02 * t),
-                const Color(0xFF1A0D3B).withOpacity(0.03),
+                AppColors.neonGreen.withValues(alpha: 0.04 + 0.02 * t),
+                const Color(0xFF1A0D3B).withValues(alpha: 0.03),
                 AppColors.bg,
               ],
               stops: const [0.0, 0.4, 1.0],
@@ -143,7 +143,7 @@ class _AnimatedMistBackgroundState extends State<_AnimatedMistBackground>
                 ),
                 radius: 1.2,
                 colors: [
-                  const Color(0xFF7B2FBE).withOpacity(0.03 + 0.015 * (1 - t)),
+                  const Color(0xFF7B2FBE).withValues(alpha: 0.03 + 0.015 * (1 - t)),
                   Colors.transparent,
                 ],
               ),
@@ -174,11 +174,11 @@ class _FreePlanCard extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white.withOpacity(0.05),
-                Colors.white.withOpacity(0.02),
+                Colors.white.withValues(alpha: 0.05),
+                Colors.white.withValues(alpha: 0.02),
               ],
             ),
-            border: Border.all(color: Colors.white.withOpacity(0.08)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -193,7 +193,7 @@ class _FreePlanCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.05),
+                  color: Colors.white.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Text('Mevcut Plan', style: TextStyle(fontSize: 12, color: AppColors.textTertiary)),
@@ -257,12 +257,12 @@ class _ProPlanCardState extends State<_ProPlanCard>
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: AppColors.neonGreen.withOpacity(0.15 + 0.05 * sin(_borderCtrl.value * pi * 2)),
+                color: AppColors.neonGreen.withValues(alpha: 0.15 + 0.05 * sin(_borderCtrl.value * pi * 2)),
                 blurRadius: 40,
                 spreadRadius: -8,
               ),
               BoxShadow(
-                color: AppColors.neonGreen.withOpacity(0.06),
+                color: AppColors.neonGreen.withValues(alpha: 0.06),
                 blurRadius: 80,
                 spreadRadius: -16,
               ),
@@ -308,7 +308,7 @@ class _ProPlanCardState extends State<_ProPlanCard>
                         fontSize: 24,
                         fontWeight: FontWeight.w800,
                         color: AppColors.neonGreen,
-                        shadows: [Shadow(color: AppColors.neonGreen.withOpacity(0.5), blurRadius: 16)],
+                        shadows: [Shadow(color: AppColors.neonGreen.withValues(alpha: 0.5), blurRadius: 16)],
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -316,10 +316,10 @@ class _ProPlanCardState extends State<_ProPlanCard>
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [AppColors.neonGreen.withOpacity(0.2), AppColors.neonGreen.withOpacity(0.08)],
+                          colors: [AppColors.neonGreen.withValues(alpha: 0.2), AppColors.neonGreen.withValues(alpha: 0.08)],
                         ),
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: AppColors.neonGreen.withOpacity(0.3)),
+                        border: Border.all(color: AppColors.neonGreen.withValues(alpha: 0.3)),
                       ),
                       child: const Text('Önerilen', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.neonGreen)),
                     ),
@@ -333,7 +333,7 @@ class _ProPlanCardState extends State<_ProPlanCard>
                     fontWeight: FontWeight.w800,
                     color: AppColors.neonGreen,
                     letterSpacing: -1,
-                    shadows: [Shadow(color: AppColors.neonGreen.withOpacity(0.4), blurRadius: 12)],
+                    shadows: [Shadow(color: AppColors.neonGreen.withValues(alpha: 0.4), blurRadius: 12)],
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -365,7 +365,7 @@ class _ProPlanCardState extends State<_ProPlanCard>
           height: 18,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: AppColors.neonGreen.withOpacity(0.15),
+            color: AppColors.neonGreen.withValues(alpha: 0.15),
           ),
           child: const Icon(Icons.check_rounded, size: 12, color: AppColors.neonGreen),
         ),
@@ -416,7 +416,7 @@ class _ProPlusPlanCardState extends State<_ProPlusPlanCard>
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: AppColors.gold.withOpacity(0.12 + 0.04 * sin(_borderCtrl.value * pi * 2)),
+                color: AppColors.gold.withValues(alpha: 0.12 + 0.04 * sin(_borderCtrl.value * pi * 2)),
                 blurRadius: 32,
                 spreadRadius: -8,
               ),
@@ -462,7 +462,7 @@ class _ProPlusPlanCardState extends State<_ProPlusPlanCard>
                         fontSize: 24,
                         fontWeight: FontWeight.w800,
                         color: AppColors.gold,
-                        shadows: [Shadow(color: AppColors.gold.withOpacity(0.5), blurRadius: 16)],
+                        shadows: [Shadow(color: AppColors.gold.withValues(alpha: 0.5), blurRadius: 16)],
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -470,10 +470,10 @@ class _ProPlusPlanCardState extends State<_ProPlusPlanCard>
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [AppColors.gold.withOpacity(0.2), AppColors.gold.withOpacity(0.08)],
+                          colors: [AppColors.gold.withValues(alpha: 0.2), AppColors.gold.withValues(alpha: 0.08)],
                         ),
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: AppColors.gold.withOpacity(0.3)),
+                        border: Border.all(color: AppColors.gold.withValues(alpha: 0.3)),
                       ),
                       child: const Text('VIP', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.gold, letterSpacing: 1)),
                     ),
@@ -487,7 +487,7 @@ class _ProPlusPlanCardState extends State<_ProPlusPlanCard>
                     fontWeight: FontWeight.w800,
                     color: AppColors.gold,
                     letterSpacing: -1,
-                    shadows: [Shadow(color: AppColors.gold.withOpacity(0.4), blurRadius: 12)],
+                    shadows: [Shadow(color: AppColors.gold.withValues(alpha: 0.4), blurRadius: 12)],
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -518,7 +518,7 @@ class _ProPlusPlanCardState extends State<_ProPlusPlanCard>
           height: 18,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: AppColors.gold.withOpacity(0.15),
+            color: AppColors.gold.withValues(alpha: 0.15),
           ),
           child: const Icon(Icons.check_rounded, size: 12, color: AppColors.gold),
         ),
@@ -561,11 +561,11 @@ class _AnimatedBorderPainter extends CustomPainter {
         transform: GradientRotation(progress * pi * 2),
         colors: [
           Colors.transparent,
-          color.withOpacity(0.1),
-          color.withOpacity(0.6),
+          color.withValues(alpha: 0.1),
+          color.withValues(alpha: 0.6),
           color,
-          color.withOpacity(0.6),
-          color.withOpacity(0.1),
+          color.withValues(alpha: 0.6),
+          color.withValues(alpha: 0.1),
           Colors.transparent,
         ],
         stops: const [0.0, 0.15, 0.35, 0.5, 0.65, 0.85, 1.0],
@@ -630,12 +630,12 @@ class _ShimmerButtonState extends State<_ShimmerButton>
               color: widget.color,
               boxShadow: [
                 BoxShadow(
-                  color: widget.color.withOpacity(0.4),
+                  color: widget.color.withValues(alpha: 0.4),
                   blurRadius: 20,
                   offset: const Offset(0, 6),
                 ),
                 BoxShadow(
-                  color: widget.color.withOpacity(0.15),
+                  color: widget.color.withValues(alpha: 0.15),
                   blurRadius: 40,
                   spreadRadius: -8,
                   offset: const Offset(0, 12),
@@ -655,7 +655,7 @@ class _ShimmerButtonState extends State<_ShimmerButton>
                         end: Alignment(shimmerPos + 0.5, 0),
                         colors: [
                           Colors.transparent,
-                          Colors.white.withOpacity(0.25),
+                          Colors.white.withValues(alpha: 0.25),
                           Colors.transparent,
                         ],
                       ).createShader(bounds),

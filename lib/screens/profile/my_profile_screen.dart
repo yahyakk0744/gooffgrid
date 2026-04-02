@@ -107,7 +107,7 @@ class MyProfileScreen extends ConsumerWidget {
                   children: [
                     _RankItem(label: 'Arkadaşlar', value: '$friendRank/8'),
                     _RankItem(label: user.city, value: '#$cityRank'),
-                    _RankItem(label: 'Turkiye', value: '#$countryRank'),
+                    _RankItem(label: 'Türkiye', value: '#$countryRank'),
                   ],
                 ),
               ),
@@ -118,7 +118,7 @@ class MyProfileScreen extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Uygulama Kullanimi', style: AppTextStyles.h3),
+                    const Text('Uygulama Kullanımı', style: AppTextStyles.h3),
                     const SizedBox(height: 12),
                     ...st.appUsage.map((app) => Padding(
                       padding: const EdgeInsets.only(bottom: 12),
@@ -151,6 +151,44 @@ class MyProfileScreen extends ConsumerWidget {
               BadgeGrid(badges: badges.map((b) => BadgeItem(name: b.name, iconEmoji: b.iconEmoji, isEarned: b.isEarned)).toList()),
               const SizedBox(height: 24),
 
+              // Quick actions
+              AppCard(
+                child: Column(
+                  children: [
+                    _QuickAction(
+                      icon: Icons.insights_rounded,
+                      color: AppColors.neonGreen,
+                      label: 'Detaylı Ekran Süresi',
+                      onTap: () {
+                        HapticService.light();
+                        context.push('/profile/stats/detailed');
+                      },
+                    ),
+                    const Divider(color: AppColors.cardBorder, height: 1),
+                    _QuickAction(
+                      icon: Icons.bar_chart_rounded,
+                      color: const Color(0xFF4FACFE),
+                      label: 'İstatistikler',
+                      onTap: () {
+                        HapticService.light();
+                        context.push('/profile/stats');
+                      },
+                    ),
+                    const Divider(color: AppColors.cardBorder, height: 1),
+                    _QuickAction(
+                      icon: Icons.settings_rounded,
+                      color: AppColors.textSecondary,
+                      label: 'Ayarlar',
+                      onTap: () {
+                        HapticService.light();
+                        context.push('/profile/settings');
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+
               // Share
               SizedBox(
                 width: double.infinity,
@@ -158,7 +196,7 @@ class MyProfileScreen extends ConsumerWidget {
                 child: ElevatedButton.icon(
                   onPressed: () {},
                   icon: const Icon(Icons.share_rounded),
-                  label: const Text('Profilimi Paylas'),
+                  label: const Text('Profilimi Paylaş'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.neonGreen,
                     foregroundColor: Colors.black,
@@ -172,6 +210,33 @@ class MyProfileScreen extends ConsumerWidget {
           ),
         ),
       ),
+      ),
+    );
+  }
+}
+
+class _QuickAction extends StatelessWidget {
+  const _QuickAction({required this.icon, required this.color, required this.label, required this.onTap});
+  final IconData icon;
+  final Color color;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Row(
+          children: [
+            Icon(icon, color: color, size: 22),
+            const SizedBox(width: 12),
+            Expanded(child: Text(label, style: AppTextStyles.body)),
+            const Icon(Icons.chevron_right_rounded, color: AppColors.textTertiary, size: 20),
+          ],
+        ),
       ),
     );
   }

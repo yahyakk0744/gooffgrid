@@ -9,7 +9,9 @@ import '../../widgets/premium_background.dart';
 import '../../services/haptic_service.dart';
 
 class RankingScreen extends ConsumerWidget {
-  const RankingScreen({super.key});
+  const RankingScreen({super.key, this.embedded = false});
+
+  final bool embedded;
 
   static const _tabLabels = ['Arkadaşlar', 'Şehir', 'Ülke', 'Global', 'Yaş', 'Sezon'];
   static const _freeTabCount = 2;
@@ -19,18 +21,16 @@ class RankingScreen extends ConsumerWidget {
     final rankingState = ref.watch(rankingProvider);
     final entries = rankingState.entries;
 
-    return Scaffold(
-      backgroundColor: AppColors.bg,
-      body: PremiumBackground(
-        child: SafeArea(
-        child: Column(
+    final content = Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 16),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text('Sıralama', style: AppTextStyles.h1),
-            ),
+            if (!embedded) ...[
+              const SizedBox(height: 16),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Text('Sıralama', style: AppTextStyles.h1),
+              ),
+            ],
             const SizedBox(height: 16),
 
             // Tabs
@@ -77,7 +77,7 @@ class RankingScreen extends ConsumerWidget {
                             const SizedBox(width: 4),
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                              decoration: BoxDecoration(color: AppColors.neonOrange.withOpacity(0.2), borderRadius: BorderRadius.circular(4)),
+                              decoration: BoxDecoration(color: AppColors.neonOrange.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(4)),
                               child: const Text('Pro', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w700, color: AppColors.neonOrange)),
                             ),
                           ],
@@ -127,8 +127,14 @@ class RankingScreen extends ConsumerWidget {
               ),
             ),
           ],
-        ),
-      ),
+        );
+
+    if (embedded) return content;
+
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: PremiumBackground(
+        child: SafeArea(child: content),
       ),
     );
   }

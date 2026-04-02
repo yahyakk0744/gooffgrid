@@ -9,6 +9,12 @@ import '../../services/haptic_service.dart';
 import '../../widgets/glassmorphic_card.dart';
 import '../../widgets/premium_background.dart';
 
+// ═══════════════════════════════════════════════
+// APPLE SCREEN TIME STYLE — DETAILED ANALYTICS
+// ═══════════════════════════════════════════════
+// Layout: Week/Day toggle → Chart → Total → Apps → Pickups → Notifications
+// Exactly mirrors iOS Settings > Screen Time > See All App & Website Activity
+
 class AnalyticsDetailedScreen extends ConsumerStatefulWidget {
   const AnalyticsDetailedScreen({super.key});
 
@@ -19,21 +25,19 @@ class AnalyticsDetailedScreen extends ConsumerStatefulWidget {
 
 class _AnalyticsDetailedScreenState
     extends ConsumerState<AnalyticsDetailedScreen> {
-  int _selectedDay = 6; // 0=Mon..6=Sun (today)
-  int? _touchedBarIndex;
+  // 0 = Haftalık, 1 = Günlük
+  int _viewMode = 1;
+  int _selectedDay = 6; // which day selected in weekly view (0=Mon..6=Sun)
 
-  // Mock 7-day data
   late final List<_DayData> _weekData;
-  late final List<_TopAppData> _topApps;
 
   @override
   void initState() {
     super.initState();
     _weekData = _generateWeekMock();
-    _topApps = _mockTopApps();
   }
 
-  _DayData get _today => _weekData[_selectedDay];
+  _DayData get _currentDay => _weekData[_selectedDay];
 
   @override
   Widget build(BuildContext context) {
@@ -41,40 +45,43 @@ class _AnalyticsDetailedScreenState
       backgroundColor: AppColors.bg,
       body: PremiumBackground(
         child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 8),
-                _buildHeader(),
-                const SizedBox(height: 20),
-                _buildWeekSelector(),
-                const SizedBox(height: 6),
-                _buildTotalTime(),
-                const SizedBox(height: 16),
-                _buildStackedBarChart(),
-                const SizedBox(height: 24),
-                _buildDailyAverage(),
-                const SizedBox(height: 20),
-                _buildMostUsedHighlight(),
-                const SizedBox(height: 20),
-                _buildPickupsSection(),
-                const SizedBox(height: 20),
-                _buildNotificationsSection(),
-                const SizedBox(height: 20),
-                _buildAppList(),
-                const SizedBox(height: 20),
-                _buildCategoryBreakdown(),
-                const SizedBox(height: 20),
-                _buildFirstLastPickup(),
-                const SizedBox(height: 20),
-                _buildScreenTimeGoal(),
-                const SizedBox(height: 20),
-                _buildWhatCouldYouDo(),
-                const SizedBox(height: 100),
-              ],
-            ),
+          child: Column(
+            children: [
+              // Fixed header
+              _buildHeader(context),
+              // Scrollable content
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 16),
+                      _buildSegmentedControl(),
+                      const SizedBox(height: 20),
+                      _buildMainChart(),
+                      const SizedBox(height: 6),
+                      if (_viewMode == 0) _buildWeekDaySelector(),
+                      const SizedBox(height: 20),
+                      _buildTotalSection(),
+                      const SizedBox(height: 24),
+                      _buildSectionHeader('En Çok Kullanılanlar'),
+                      const SizedBox(height: 8),
+                      _buildMostUsedApps(),
+                      const SizedBox(height: 28),
+                      _buildSectionHeader('Kilit Açma'),
+                      const SizedBox(height: 8),
+                      _buildPickupsSection(),
+                      const SizedBox(height: 28),
+                      _buildSectionHeader('Bildirimler'),
+                      const SizedBox(height: 8),
+                      _buildNotificationsSection(),
+                      const SizedBox(height: 100),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -82,187 +89,115 @@ class _AnalyticsDetailedScreenState
   }
 
   // ── HEADER ──
-  Widget _buildHeader() {
-    return Row(
-      children: [
-        GestureDetector(
-          onTap: () {
-            HapticService.light();
-            context.pop();
-          },
-          child: Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.06),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Icon(Icons.arrow_back_rounded,
-                color: AppColors.textPrimary, size: 20),
-          ),
-        ),
-        const SizedBox(width: 12),
-        const Text('Ekran Süresi', style: AppTextStyles.h1),
-      ],
-    );
-  }
-
-  // ── WEEK DAY SELECTOR (Apple style) ──
-  Widget _buildWeekSelector() {
-    const days = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: List.generate(7, (i) {
-        final selected = _selectedDay == i;
-        return GestureDetector(
-          onTap: () {
-            HapticService.selection();
-            setState(() => _selectedDay = i);
-          },
-          child: Container(
-            width: 42,
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            decoration: BoxDecoration(
-              color: selected
-                  ? AppColors.neonGreen.withValues(alpha: 0.15)
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(12),
-              border: selected
-                  ? Border.all(
-                      color: AppColors.neonGreen.withValues(alpha: 0.4))
-                  : null,
-            ),
-            child: Column(
-              children: [
-                Text(
-                  days[i],
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                    color: selected
-                        ? AppColors.neonGreen
-                        : AppColors.textTertiary,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Container(
-                  width: 6,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: selected
-                        ? AppColors.neonGreen
-                        : (i == 6
-                            ? AppColors.textTertiary
-                            : Colors.transparent),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      }),
-    );
-  }
-
-  // ── TOTAL TIME (big number) ──
-  Widget _buildTotalTime() {
-    final total = _today.totalMinutes;
-    final h = total ~/ 60;
-    final m = total % 60;
-
-    return Center(
-      child: Column(
+  Widget _buildHeader(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
         children: [
-          RichText(
-            text: TextSpan(
+          GestureDetector(
+            onTap: () {
+              HapticService.light();
+              context.pop();
+            },
+            child: Row(
               children: [
-                TextSpan(
-                  text: '$h',
-                  style: const TextStyle(
-                    fontSize: 48,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
-                    height: 1.1,
-                  ),
-                ),
-                const TextSpan(
-                  text: ' sa ',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-                TextSpan(
-                  text: '$m',
-                  style: const TextStyle(
-                    fontSize: 48,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
-                    height: 1.1,
-                  ),
-                ),
-                const TextSpan(
-                  text: ' dk',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
+                const Icon(Icons.arrow_back_ios_rounded,
+                    color: AppColors.neonGreen, size: 18),
+                const SizedBox(width: 2),
+                const Text('Geri',
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: AppColors.neonGreen,
+                        fontWeight: FontWeight.w400)),
               ],
             ),
           ),
-          const SizedBox(height: 4),
-          _buildChangeIndicator(
-            _today.changePercent,
-            isIncrease: _today.changePercent > 0,
-          ),
+          const Spacer(),
+          const Text('Ekran Süresi',
+              style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary)),
+          const Spacer(),
+          const SizedBox(width: 60), // balance
         ],
       ),
     );
   }
 
-  Widget _buildChangeIndicator(int percent, {required bool isIncrease}) {
-    final isGood = !isIncrease; // less screen time = good
-    final color = isGood ? AppColors.ringGood : AppColors.ringDanger;
+  // ── SEGMENTED CONTROL (Haftalık / Günlük) ──
+  Widget _buildSegmentedControl() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      height: 32,
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(10),
+        color: Colors.white.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(8),
       ),
-      child: Text(
-        '${isIncrease ? '▲' : '▼'} %${percent.abs()} düne göre',
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-          color: color,
+      child: Row(
+        children: [
+          _segmentButton('Haftalık', 0),
+          _segmentButton('Günlük', 1),
+        ],
+      ),
+    );
+  }
+
+  Widget _segmentButton(String label, int index) {
+    final selected = _viewMode == index;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          HapticService.selection();
+          setState(() => _viewMode = index);
+        },
+        child: Container(
+          margin: const EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            color: selected ? Colors.white.withValues(alpha: 0.15) : Colors.transparent,
+            borderRadius: BorderRadius.circular(7),
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                color: selected ? AppColors.textPrimary : AppColors.textTertiary,
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 
-  // ── STACKED BAR CHART (Apple-style 24h with colored segments per app) ──
-  Widget _buildStackedBarChart() {
-    final hourly = _today.hourlyApps;
-    final maxY = hourly
-            .map((h) => h.values.fold<double>(0, (s, v) => s + v))
+  // ── MAIN CHART ──
+  Widget _buildMainChart() {
+    if (_viewMode == 0) {
+      return _buildWeeklyChart();
+    } else {
+      return _buildHourlyChart();
+    }
+  }
+
+  // Weekly: 7 stacked bars (one per day), colored by category
+  Widget _buildWeeklyChart() {
+    final maxY = _weekData
+            .map((d) => d.totalMinutes.toDouble())
             .reduce(max) *
         1.2;
 
     return SizedBox(
-      height: 160,
+      height: 180,
       child: BarChart(
         BarChartData(
-          maxY: maxY.clamp(10, 120),
+          maxY: maxY.clamp(60, 600),
           barTouchData: BarTouchData(
             touchCallback: (event, response) {
               if (event is FlTapUpEvent && response?.spot != null) {
                 HapticService.light();
                 setState(() {
-                  _touchedBarIndex = response!.spot!.touchedBarGroupIndex;
+                  _selectedDay = response!.spot!.touchedBarGroupIndex;
                 });
               }
             },
@@ -270,31 +205,116 @@ class _AnalyticsDetailedScreenState
               getTooltipColor: (_) =>
                   AppColors.cardGradientStart.withValues(alpha: 0.95),
               getTooltipItem: (group, gI, rod, rI) {
-                final h = group.x;
-                final total = _today.hourlyApps[h]
-                    .values
-                    .fold<double>(0, (s, v) => s + v);
+                final d = _weekData[group.x];
                 return BarTooltipItem(
-                  '${h.toString().padLeft(2, '0')}:00\n${total.round()} dk',
+                  _formatMinutes(d.totalMinutes),
                   const TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
-                  ),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary),
                 );
               },
             ),
           ),
           borderData: FlBorderData(show: false),
-          gridData: FlGridData(
-            show: true,
-            drawVerticalLine: false,
-            horizontalInterval: 30,
-            getDrawingHorizontalLine: (v) => FlLine(
-              color: Colors.white.withValues(alpha: 0.04),
-              strokeWidth: 0.5,
+          gridData: const FlGridData(show: false),
+          titlesData: FlTitlesData(
+            topTitles:
+                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles:
+                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            leftTitles:
+                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: (v, _) {
+                  const days = ['P', 'S', 'Ç', 'P', 'C', 'C', 'P'];
+                  final i = v.toInt();
+                  if (i < 0 || i > 6) return const SizedBox.shrink();
+                  final selected = i == _selectedDay;
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: Text(
+                      days[i],
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight:
+                            selected ? FontWeight.w700 : FontWeight.w400,
+                        color: selected
+                            ? AppColors.neonGreen
+                            : AppColors.textTertiary,
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
+          barGroups: List.generate(7, (i) {
+            final d = _weekData[i];
+            final selected = i == _selectedDay;
+            final cats = d.categories;
+            final segments = <BarChartRodStackItem>[];
+            double cum = 0;
+            for (final c in cats) {
+              segments.add(BarChartRodStackItem(
+                  cum, cum + c.minutes.toDouble(), c.color));
+              cum += c.minutes;
+            }
+            return BarChartGroupData(
+              x: i,
+              barRods: [
+                BarChartRodData(
+                  toY: cum,
+                  width: selected ? 24 : 16,
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(4)),
+                  rodStackItems: segments,
+                  color: Colors.transparent,
+                ),
+              ],
+            );
+          }),
+        ),
+      ),
+    );
+  }
+
+  // Hourly: 24 stacked bars (one per hour), colored by app
+  Widget _buildHourlyChart() {
+    final hourly = _currentDay.hourlyApps;
+    final maxY = hourly
+        .map((h) => h.values.fold<double>(0, (s, v) => s + v))
+        .reduce(max) *
+        1.2;
+
+    return SizedBox(
+      height: 180,
+      child: BarChart(
+        BarChartData(
+          maxY: maxY.clamp(5, 120),
+          barTouchData: BarTouchData(
+            touchTooltipData: BarTouchTooltipData(
+              getTooltipColor: (_) =>
+                  AppColors.cardGradientStart.withValues(alpha: 0.95),
+              getTooltipItem: (group, gI, rod, rI) {
+                final h = group.x;
+                final total = _currentDay.hourlyApps[h]
+                    .values
+                    .fold<double>(0, (s, v) => s + v);
+                return BarTooltipItem(
+                  '${h.toString().padLeft(2, '0')}:00 — ${total.round()}dk',
+                  const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary),
+                );
+              },
+            ),
+          ),
+          borderData: FlBorderData(show: false),
+          gridData: const FlGridData(show: false),
           titlesData: FlTitlesData(
             topTitles:
                 const AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -308,21 +328,18 @@ class _AnalyticsDetailedScreenState
                 getTitlesWidget: (v, _) {
                   final h = v.toInt();
                   if (h % 6 != 0) return const SizedBox.shrink();
+                  final label = h == 0
+                      ? '12GÖ'
+                      : h == 6
+                          ? '6ÖÖ'
+                          : h == 12
+                              ? '12ÖS'
+                              : '6ÖS';
                   return Padding(
                     padding: const EdgeInsets.only(top: 4),
-                    child: Text(
-                      h == 0
-                          ? '12 ÖÖ'
-                          : h == 6
-                              ? '6 ÖÖ'
-                              : h == 12
-                                  ? '12 ÖS'
-                                  : '6 ÖS',
-                      style: const TextStyle(
-                          fontSize: 9,
-                          color: AppColors.textTertiary,
-                          fontWeight: FontWeight.w500),
-                    ),
+                    child: Text(label,
+                        style: const TextStyle(
+                            fontSize: 9, color: AppColors.textTertiary)),
                   );
                 },
               ),
@@ -331,23 +348,22 @@ class _AnalyticsDetailedScreenState
           barGroups: List.generate(24, (i) {
             final appMins = hourly[i];
             final segments = <BarChartRodStackItem>[];
-            double cumulative = 0;
+            double cum = 0;
             for (final entry in appMins.entries) {
-              final appColor = _appColor(entry.key);
               segments.add(BarChartRodStackItem(
-                  cumulative, cumulative + entry.value, appColor));
-              cumulative += entry.value;
+                  cum, cum + entry.value, _appColor(entry.key)));
+              cum += entry.value;
             }
             return BarChartGroupData(
               x: i,
               barRods: [
                 BarChartRodData(
-                  toY: cumulative,
-                  width: 7,
+                  toY: cum == 0 ? 0.2 : cum,
+                  width: 8,
                   borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(3)),
+                      const BorderRadius.vertical(top: Radius.circular(2)),
                   rodStackItems: segments,
-                  color: Colors.transparent,
+                  color: cum == 0 ? Colors.white.withValues(alpha: 0.03) : Colors.transparent,
                 ),
               ],
             );
@@ -357,491 +373,488 @@ class _AnalyticsDetailedScreenState
     );
   }
 
-  // ── DAILY AVERAGE ──
-  Widget _buildDailyAverage() {
-    final avg =
-        _weekData.fold<int>(0, (s, d) => s + d.totalMinutes) ~/ _weekData.length;
-    final h = avg ~/ 60;
-    final m = avg % 60;
-
-    return GlassmorphicCard(
-      padding: const EdgeInsets.all(16),
+  // ── WEEK DAY SELECTOR (only in weekly mode) ──
+  Widget _buildWeekDaySelector() {
+    const days = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
       child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: AppColors.neonGreen.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(Icons.timeline_rounded,
-                color: AppColors.neonGreen, size: 20),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: List.generate(7, (i) {
+          final selected = _selectedDay == i;
+          return GestureDetector(
+            onTap: () {
+              HapticService.selection();
+              setState(() => _selectedDay = i);
+            },
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Günlük Ortalama',
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: AppColors.textTertiary,
-                        fontWeight: FontWeight.w500)),
-                const SizedBox(height: 2),
-                Text('${h}s ${m}dk',
-                    style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary)),
-              ],
-            ),
-          ),
-          // Mini week sparkline
-          SizedBox(
-            width: 80,
-            height: 32,
-            child: CustomPaint(
-              painter: _SparklinePainter(
-                values: _weekData.map((d) => d.totalMinutes.toDouble()).toList(),
-                highlightIndex: _selectedDay,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ── MOST USED APP HIGHLIGHT ──
-  Widget _buildMostUsedHighlight() {
-    final app = _topApps.first;
-    return GlassmorphicCard(
-      glowColor: app.color,
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: app.color.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: app.color.withValues(alpha: 0.3)),
-            ),
-            child:
-                Center(child: Text(app.emoji, style: const TextStyle(fontSize: 24))),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('En Çok Kullanılan',
-                    style: TextStyle(
-                        fontSize: 11,
-                        color: AppColors.textTertiary,
-                        fontWeight: FontWeight.w500)),
-                const SizedBox(height: 2),
-                Text(app.name,
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: app.color)),
-                Text(_formatMinutes(app.minutes),
-                    style: const TextStyle(
-                        fontSize: 13, color: AppColors.textSecondary)),
-              ],
-            ),
-          ),
-          Column(
-            children: [
-              Text(
-                '${(app.minutes / _today.totalMinutes * 100).round()}%',
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w800,
-                    color: app.color),
-              ),
-              const Text('toplam',
-                  style:
-                      TextStyle(fontSize: 10, color: AppColors.textTertiary)),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ── PICKUPS ──
-  Widget _buildPickupsSection() {
-    return _StatSection(
-      title: 'Kilit Açma',
-      icon: Icons.phone_android_rounded,
-      iconColor: AppColors.neonOrange,
-      mainValue: '${_today.pickups}',
-      mainUnit: 'kez',
-      subtitle:
-          'Ortalama: her ${(_today.totalMinutes ~/ max(_today.pickups, 1))} dk\'da bir',
-      change: _today.pickupChange,
-      hourlyData: _today.hourlyPickups,
-    );
-  }
-
-  // ── NOTIFICATIONS ──
-  Widget _buildNotificationsSection() {
-    return _StatSection(
-      title: 'Bildirimler',
-      icon: Icons.notifications_rounded,
-      iconColor: const Color(0xFFAF52DE),
-      mainValue: '${_today.notifications}',
-      mainUnit: 'bildirim',
-      subtitle: 'En çok: ${_today.topNotifApp} (${_today.topNotifCount})',
-      change: _today.notifChange,
-      hourlyData: _today.hourlyNotifs,
-    );
-  }
-
-  // ── APP LIST (Apple style: icon + name + bar + time) ──
-  Widget _buildAppList() {
-    final maxMin = _topApps.isEmpty ? 1 : _topApps.first.minutes;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            const Text('Uygulamalar', style: AppTextStyles.h3),
-            const Spacer(),
-            Text('${_topApps.length} uygulama',
-                style: const TextStyle(
-                    fontSize: 12, color: AppColors.textTertiary)),
-          ],
-        ),
-        const SizedBox(height: 12),
-        GlassmorphicCard(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          child: Column(
-            children: List.generate(_topApps.length, (i) {
-              final app = _topApps[i];
-              final ratio =
-                  maxMin > 0 ? (app.minutes / maxMin).clamp(0.0, 1.0) : 0.0;
-              return Column(
-                children: [
-                  if (i > 0)
-                    Divider(
-                        color: Colors.white.withValues(alpha: 0.05), height: 1),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 32,
-                          height: 32,
-                          decoration: BoxDecoration(
-                            color: app.color.withValues(alpha: 0.12),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Center(
-                            child: Text(app.emoji,
-                                style: const TextStyle(fontSize: 16)),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(app.name,
-                                        style: const TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppColors.textPrimary)),
-                                  ),
-                                  Text(_formatMinutes(app.minutes),
-                                      style: const TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w600,
-                                          color: AppColors.textSecondary)),
-                                ],
-                              ),
-                              const SizedBox(height: 6),
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(2),
-                                child: SizedBox(
-                                  height: 4,
-                                  child: LinearProgressIndicator(
-                                    value: ratio,
-                                    backgroundColor:
-                                        Colors.white.withValues(alpha: 0.05),
-                                    valueColor:
-                                        AlwaysStoppedAnimation(app.color),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                Text(
+                  days[i],
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                    color: selected
+                        ? AppColors.neonGreen
+                        : AppColors.textTertiary,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                if (selected)
+                  Container(
+                    width: 5,
+                    height: 5,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.neonGreen,
                     ),
                   ),
-                ],
-              );
-            }),
-          ),
-        ),
-      ],
+              ],
+            ),
+          );
+        }),
+      ),
     );
   }
 
-  // ── CATEGORY BREAKDOWN ──
-  Widget _buildCategoryBreakdown() {
-    final categories = _today.categories;
-    final totalMin = categories.fold<int>(0, (s, c) => s + c.minutes);
+  // ── TOTAL SECTION ──
+  Widget _buildTotalSection() {
+    final d = _currentDay;
+    final h = d.totalMinutes ~/ 60;
+    final m = d.totalMinutes % 60;
+
+    // Weekly average
+    final weekAvg =
+        _weekData.fold<int>(0, (s, dd) => s + dd.totalMinutes) ~/ 7;
+    final avgH = weekAvg ~/ 60;
+    final avgM = weekAvg % 60;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Kategoriler', style: AppTextStyles.h3),
+        // Total time — big Apple style
+        RichText(
+          text: TextSpan(children: [
+            TextSpan(
+              text: '$h',
+              style: const TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
+                  height: 1),
+            ),
+            const TextSpan(
+              text: 'sa ',
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.textSecondary),
+            ),
+            TextSpan(
+              text: '$m',
+              style: const TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
+                  height: 1),
+            ),
+            const TextSpan(
+              text: 'dk',
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.textSecondary),
+            ),
+          ]),
+        ),
+        const SizedBox(height: 4),
+        Row(
+          children: [
+            Text(
+              _viewMode == 0 ? 'Seçili Gün' : 'Bugün',
+              style: const TextStyle(
+                  fontSize: 12, color: AppColors.textTertiary),
+            ),
+            const SizedBox(width: 12),
+            // Change indicator
+            _changeChip(d.changePercent),
+          ],
+        ),
+        if (_viewMode == 0) ...[
+          const SizedBox(height: 8),
+          Text(
+            'Günlük ort: ${avgH}sa ${avgM}dk',
+            style: const TextStyle(
+                fontSize: 13,
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w500),
+          ),
+        ],
         const SizedBox(height: 12),
-        GlassmorphicCard(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              // Stacked horizontal bar
-              ClipRRect(
-                borderRadius: BorderRadius.circular(6),
-                child: SizedBox(
-                  height: 10,
-                  child: Row(
-                    children: categories.map((c) {
-                      final ratio = totalMin > 0 ? c.minutes / totalMin : 0.0;
-                      return Expanded(
-                        flex: (ratio * 1000).round().clamp(1, 1000),
-                        child: Container(color: c.color),
-                      );
-                    }).toList(),
+        // Category legend (colored dots)
+        Wrap(
+          spacing: 14,
+          runSpacing: 6,
+          children: _currentDay.categories.map((c) {
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: c.color,
+                    borderRadius: BorderRadius.circular(2),
                   ),
+                ),
+                const SizedBox(width: 4),
+                Text(c.name,
+                    style: const TextStyle(
+                        fontSize: 11, color: AppColors.textSecondary)),
+              ],
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _changeChip(int percent) {
+    final isUp = percent > 0;
+    final color = isUp ? AppColors.ringDanger : AppColors.ringGood;
+    return Text(
+      '${isUp ? '▲' : '▼'} %${percent.abs()} geçen haftaya göre',
+      style: TextStyle(
+          fontSize: 11, fontWeight: FontWeight.w500, color: color),
+    );
+  }
+
+  // ── SECTION HEADER (Apple style) ──
+  Widget _buildSectionHeader(String title) {
+    return Text(
+      title,
+      style: const TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        color: AppColors.textPrimary,
+      ),
+    );
+  }
+
+  // ── MOST USED APPS (Apple style list) ──
+  Widget _buildMostUsedApps() {
+    final apps = _currentDay.apps;
+    final maxMin = apps.isEmpty ? 1 : apps.first.minutes;
+
+    return GlassmorphicCard(
+      padding: EdgeInsets.zero,
+      child: Column(
+        children: List.generate(apps.length, (i) {
+          final app = apps[i];
+          final ratio =
+              maxMin > 0 ? (app.minutes / maxMin).clamp(0.0, 1.0) : 0.0;
+          return Column(
+            children: [
+              if (i > 0)
+                Divider(
+                    color: Colors.white.withValues(alpha: 0.06),
+                    height: 1,
+                    indent: 60),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Row(
+                  children: [
+                    // App icon
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: app.color.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Center(
+                          child: Text(app.emoji,
+                              style: const TextStyle(fontSize: 18))),
+                    ),
+                    const SizedBox(width: 12),
+                    // Name + category + bar
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(app.name,
+                              style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.textPrimary)),
+                          const SizedBox(height: 2),
+                          Text(app.category,
+                              style: const TextStyle(
+                                  fontSize: 11,
+                                  color: AppColors.textTertiary)),
+                          const SizedBox(height: 6),
+                          // Usage bar (Apple style — thin blue/colored bar)
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(2),
+                            child: SizedBox(
+                              height: 4,
+                              child: LinearProgressIndicator(
+                                value: ratio,
+                                backgroundColor:
+                                    Colors.white.withValues(alpha: 0.05),
+                                valueColor:
+                                    AlwaysStoppedAnimation(app.color),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    // Time
+                    Text(
+                      _formatMinutes(app.minutes),
+                      style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w400,
+                          color: AppColors.textSecondary),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 16),
-              ...categories.map((c) {
-                final pct =
-                    totalMin > 0 ? (c.minutes / totalMin * 100).round() : 0;
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: c.color,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(c.name,
-                            style: const TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.textPrimary)),
-                      ),
-                      Text(_formatMinutes(c.minutes),
-                          style: const TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.textSecondary)),
-                      const SizedBox(width: 8),
-                      SizedBox(
-                        width: 36,
-                        child: Text('%$pct',
-                            textAlign: TextAlign.end,
-                            style: TextStyle(
-                                fontSize: 11,
-                                color: c.color.withValues(alpha: 0.8))),
-                      ),
-                    ],
-                  ),
-                );
-              }),
             ],
-          ),
-        ),
-      ],
+          );
+        }),
+      ),
     );
   }
 
-  // ── FIRST & LAST PICKUP ──
-  Widget _buildFirstLastPickup() {
-    return Row(
-      children: [
-        Expanded(
-          child: GlassmorphicCard(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.wb_sunny_rounded,
-                        size: 16,
-                        color: AppColors.gold.withValues(alpha: 0.8)),
-                    const SizedBox(width: 6),
-                    const Text('İlk Açılış',
-                        style: TextStyle(
-                            fontSize: 11,
-                            color: AppColors.textTertiary,
-                            fontWeight: FontWeight.w500)),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text(_today.firstPickup,
-                    style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary)),
-                Text('uyanınca',
-                    style: TextStyle(
-                        fontSize: 11, color: AppColors.textTertiary)),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: GlassmorphicCard(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.nightlight_rounded,
-                        size: 16,
-                        color: const Color(0xFF5E5CE6).withValues(alpha: 0.8)),
-                    const SizedBox(width: 6),
-                    const Text('Son Açılış',
-                        style: TextStyle(
-                            fontSize: 11,
-                            color: AppColors.textTertiary,
-                            fontWeight: FontWeight.w500)),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text(_today.lastPickup,
-                    style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary)),
-                Text('yatmadan önce',
-                    style: TextStyle(
-                        fontSize: 11, color: AppColors.textTertiary)),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // ── SCREEN TIME GOAL ──
-  Widget _buildScreenTimeGoal() {
-    const goalMinutes = 180; // 3 hour goal
-    final actual = _today.totalMinutes;
-    final progress = (actual / goalMinutes).clamp(0.0, 2.0);
-    final isOver = actual > goalMinutes;
-    final overBy = actual - goalMinutes;
-
+  // ── PICKUPS SECTION (Apple style) ──
+  Widget _buildPickupsSection() {
+    final d = _currentDay;
     return GlassmorphicCard(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Big number
           Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              const Icon(Icons.flag_rounded,
-                  color: AppColors.neonGreen, size: 18),
-              const SizedBox(width: 8),
-              const Text('Günlük Hedef',
-                  style: TextStyle(
-                      fontSize: 13,
-                      color: AppColors.textPrimary,
-                      fontWeight: FontWeight.w600)),
-              const Spacer(),
-              Text('${goalMinutes ~/ 60}s ${goalMinutes % 60}dk',
+              Text('${d.pickups}',
                   style: const TextStyle(
-                      fontSize: 12, color: AppColors.textTertiary)),
+                      fontSize: 36,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary)),
+              const SizedBox(width: 6),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 6),
+                child: Text('kez',
+                    style: TextStyle(
+                        fontSize: 15, color: AppColors.textSecondary)),
+              ),
+              const Spacer(),
+              _changeChip(d.pickupChange),
             ],
           ),
           const SizedBox(height: 12),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(5),
-            child: SizedBox(
-              height: 8,
-              child: LinearProgressIndicator(
-                value: progress.clamp(0.0, 1.0),
-                backgroundColor: Colors.white.withValues(alpha: 0.06),
-                valueColor: AlwaysStoppedAnimation(
-                  isOver ? AppColors.ringDanger : AppColors.neonGreen,
+          // Hourly pickup mini chart
+          SizedBox(
+            height: 60,
+            child: BarChart(
+              BarChartData(
+                maxY: d.hourlyPickups.reduce(max).clamp(1, 100) * 1.2,
+                barTouchData: BarTouchData(enabled: false),
+                borderData: FlBorderData(show: false),
+                gridData: const FlGridData(show: false),
+                titlesData: FlTitlesData(
+                  topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false)),
+                  rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false)),
+                  leftTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false)),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (v, _) {
+                        final h = v.toInt();
+                        if (h != 0 && h != 6 && h != 12 && h != 18) {
+                          return const SizedBox.shrink();
+                        }
+                        return Text('${h}',
+                            style: const TextStyle(
+                                fontSize: 8, color: AppColors.textTertiary));
+                      },
+                    ),
+                  ),
                 ),
+                barGroups: List.generate(24, (i) {
+                  return BarChartGroupData(
+                    x: i,
+                    barRods: [
+                      BarChartRodData(
+                        toY: d.hourlyPickups[i],
+                        width: 5,
+                        borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(2)),
+                        color: AppColors.neonOrange.withValues(alpha: 0.7),
+                      ),
+                    ],
+                  );
+                }),
               ),
             ),
           ),
+          const SizedBox(height: 12),
+          Divider(color: Colors.white.withValues(alpha: 0.06), height: 1),
+          const SizedBox(height: 12),
+          // First pickup + most opened app
+          Row(
+            children: [
+              const Expanded(
+                child: Text('İlk Açılış',
+                    style: TextStyle(
+                        fontSize: 13, color: AppColors.textSecondary)),
+              ),
+              Text(d.firstPickup,
+                  style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.textPrimary)),
+            ],
+          ),
           const SizedBox(height: 8),
-          Text(
-            isOver
-                ? 'Hedefi ${_formatMinutes(overBy)} aştın'
-                : 'Hedefe ${_formatMinutes(goalMinutes - actual)} kaldı',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color: isOver ? AppColors.ringDanger : AppColors.neonGreen,
-            ),
+          Row(
+            children: [
+              const Expanded(
+                child: Text('En Çok Açılan',
+                    style: TextStyle(
+                        fontSize: 13, color: AppColors.textSecondary)),
+              ),
+              Text(d.mostPickedApp,
+                  style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.textPrimary)),
+            ],
           ),
         ],
       ),
     );
   }
 
-  // ── WHAT COULD YOU DO ──
-  Widget _buildWhatCouldYouDo() {
-    final totalH = _today.totalMinutes / 60;
-    final items = [
-      if (totalH >= 2) _MotivItem('📚', '${totalH.floor()} kitap bölümü okuyabilirdin'),
-      if (totalH >= 1) _MotivItem('🏃', '${(totalH * 5).floor()} km yürüyebilirdin'),
-      if (totalH >= 1.5) _MotivItem('🎸', 'Yeni bir enstrüman öğrenmeye başlayabilirdin'),
-      if (totalH >= 3) _MotivItem('🎨', 'Bir tablo resmedebilirdin'),
-    ];
-
-    if (items.isEmpty) return const SizedBox.shrink();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('Bu Sürede...', style: AppTextStyles.h3),
-        const SizedBox(height: 12),
-        ...items.map((item) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Row(
-                children: [
-                  Text(item.emoji, style: const TextStyle(fontSize: 22)),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(item.text,
-                        style: const TextStyle(
-                            fontSize: 13,
-                            color: AppColors.textSecondary,
-                            height: 1.3)),
-                  ),
-                ],
+  // ── NOTIFICATIONS SECTION (Apple style) ──
+  Widget _buildNotificationsSection() {
+    final d = _currentDay;
+    return GlassmorphicCard(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Big number
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text('${d.notifications}',
+                  style: const TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary)),
+              const SizedBox(width: 6),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 6),
+                child: Text('bildirim',
+                    style: TextStyle(
+                        fontSize: 15, color: AppColors.textSecondary)),
               ),
-            )),
-      ],
+              const Spacer(),
+              _changeChip(d.notifChange),
+            ],
+          ),
+          const SizedBox(height: 12),
+          // Hourly notification mini chart
+          SizedBox(
+            height: 60,
+            child: BarChart(
+              BarChartData(
+                maxY: d.hourlyNotifs.reduce(max).clamp(1, 100) * 1.2,
+                barTouchData: BarTouchData(enabled: false),
+                borderData: FlBorderData(show: false),
+                gridData: const FlGridData(show: false),
+                titlesData: FlTitlesData(
+                  topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false)),
+                  rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false)),
+                  leftTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false)),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (v, _) {
+                        final h = v.toInt();
+                        if (h != 0 && h != 6 && h != 12 && h != 18) {
+                          return const SizedBox.shrink();
+                        }
+                        return Text('${h}',
+                            style: const TextStyle(
+                                fontSize: 8, color: AppColors.textTertiary));
+                      },
+                    ),
+                  ),
+                ),
+                barGroups: List.generate(24, (i) {
+                  return BarChartGroupData(
+                    x: i,
+                    barRods: [
+                      BarChartRodData(
+                        toY: d.hourlyNotifs[i],
+                        width: 5,
+                        borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(2)),
+                        color: const Color(0xFFAF52DE).withValues(alpha: 0.7),
+                      ),
+                    ],
+                  );
+                }),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Divider(color: Colors.white.withValues(alpha: 0.06), height: 1),
+          const SizedBox(height: 12),
+          // Top notification senders
+          ...d.topNotifApps.map((app) => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        color: app.color.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Center(
+                          child: Text(app.emoji,
+                              style: const TextStyle(fontSize: 14))),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(app.name,
+                          style: const TextStyle(
+                              fontSize: 14, color: AppColors.textPrimary)),
+                    ),
+                    Text('${app.count} bildirim',
+                        style: const TextStyle(
+                            fontSize: 13, color: AppColors.textSecondary)),
+                  ],
+                ),
+              )),
+        ],
+      ),
     );
   }
 
@@ -850,48 +863,51 @@ class _AnalyticsDetailedScreenState
     if (m >= 60) {
       final h = m ~/ 60;
       final rem = m % 60;
-      return rem > 0 ? '${h}s ${rem}dk' : '${h}s';
+      return rem > 0 ? '${h}sa ${rem}dk' : '${h}sa';
     }
     return '${m}dk';
   }
 
   Color _appColor(String app) {
-    switch (app) {
-      case 'Instagram':
-        return const Color(0xFFE1306C);
-      case 'YouTube':
-        return const Color(0xFFFF0000);
-      case 'TikTok':
-        return const Color(0xFF69C9D0);
-      case 'WhatsApp':
-        return const Color(0xFF25D366);
-      case 'Twitter':
-        return const Color(0xFF1DA1F2);
-      case 'Spotify':
-        return const Color(0xFF1DB954);
-      default:
-        return const Color(0xFF6B7280);
-    }
+    const map = {
+      'Instagram': Color(0xFFE1306C),
+      'YouTube': Color(0xFFFF0000),
+      'TikTok': Color(0xFF69C9D0),
+      'WhatsApp': Color(0xFF25D366),
+      'Twitter': Color(0xFF1DA1F2),
+      'Spotify': Color(0xFF1DB954),
+      'Clash Royale': Color(0xFF8B5CF6),
+      'Netflix': Color(0xFFE50914),
+    };
+    return map[app] ?? const Color(0xFF6B7280);
   }
 
   // ── MOCK DATA ──
   List<_DayData> _generateWeekMock() {
     final rng = Random(42);
     return List.generate(7, (day) {
-      final base = 180 + rng.nextInt(120); // 3-5 hours
-      final pickups = 30 + rng.nextInt(40);
-      final notifs = 60 + rng.nextInt(80);
+      final base = 180 + rng.nextInt(150); // 3-5.5 hours
+      final pickups = 35 + rng.nextInt(50);
+      final notifs = 50 + rng.nextInt(100);
 
-      // Generate per-hour stacked app data
+      final categories = [
+        _CategoryData('Sosyal Medya', const Color(0xFFE1306C), (base * 0.35).round()),
+        _CategoryData('Eğlence', const Color(0xFFFF0000), (base * 0.22).round()),
+        _CategoryData('Oyunlar', const Color(0xFF8B5CF6), (base * 0.15).round()),
+        _CategoryData('Mesajlaşma', const Color(0xFF25D366), (base * 0.12).round()),
+        _CategoryData('Verimlilik', const Color(0xFF1DA1F2), (base * 0.09).round()),
+        _CategoryData('Diğer', const Color(0xFF6B7280), (base * 0.07).round()),
+      ];
+
       final hourlyApps = List.generate(24, (h) {
         final Map<String, double> apps = {};
         double budget;
         if (h < 7) {
           budget = rng.nextDouble() * 3;
         } else if (h < 9) {
-          budget = 5 + rng.nextDouble() * 10;
+          budget = 5 + rng.nextDouble() * 12;
         } else if (h < 12) {
-          budget = 10 + rng.nextDouble() * 20;
+          budget = 8 + rng.nextDouble() * 18;
         } else if (h == 12 || h == 13) {
           budget = 15 + rng.nextDouble() * 25;
         } else if (h < 17) {
@@ -903,234 +919,68 @@ class _AnalyticsDetailedScreenState
         } else {
           budget = rng.nextDouble() * 5;
         }
-
         if (budget > 2) {
-          apps['Instagram'] = budget * (0.2 + rng.nextDouble() * 0.15);
-          apps['YouTube'] = budget * (0.15 + rng.nextDouble() * 0.15);
+          apps['Instagram'] = budget * (0.25 + rng.nextDouble() * 0.1);
+          apps['YouTube'] = budget * (0.15 + rng.nextDouble() * 0.1);
           apps['TikTok'] = budget * (0.1 + rng.nextDouble() * 0.1);
-          apps['WhatsApp'] = budget * (0.05 + rng.nextDouble() * 0.1);
+          apps['WhatsApp'] = budget * (0.08 + rng.nextDouble() * 0.05);
           if (rng.nextBool()) {
-            apps['Twitter'] = budget * (0.05 + rng.nextDouble() * 0.05);
+            apps['Spotify'] = budget * (0.05 + rng.nextDouble() * 0.05);
           }
         }
         return apps;
       });
 
       final hourlyPickups = List.generate(24, (h) {
-        if (h < 7) return rng.nextInt(2).toDouble();
-        if (h < 9) return 2 + rng.nextDouble() * 3;
-        if (h < 21) return 1 + rng.nextDouble() * 4;
+        if (h < 7) return rng.nextDouble() * 2;
+        if (h < 9) return 2 + rng.nextDouble() * 4;
+        if (h < 21) return 1 + rng.nextDouble() * 5;
         return rng.nextDouble() * 2;
       });
 
       final hourlyNotifs = List.generate(24, (h) {
-        if (h < 7) return rng.nextInt(3).toDouble();
-        if (h < 9) return 5 + rng.nextDouble() * 8;
-        if (h < 21) return 3 + rng.nextDouble() * 6;
+        if (h < 7) return rng.nextDouble() * 3;
+        if (h < 9) return 4 + rng.nextDouble() * 8;
+        if (h < 21) return 2 + rng.nextDouble() * 7;
         return rng.nextDouble() * 3;
       });
 
+      final apps = [
+        _AppData('Instagram', '📸', const Color(0xFFE1306C), (base * 0.24).round(), 'Sosyal Medya'),
+        _AppData('YouTube', '▶️', const Color(0xFFFF0000), (base * 0.18).round(), 'Eğlence'),
+        _AppData('TikTok', '🎵', const Color(0xFF69C9D0), (base * 0.14).round(), 'Eğlence'),
+        _AppData('WhatsApp', '💬', const Color(0xFF25D366), (base * 0.10).round(), 'Mesajlaşma'),
+        _AppData('Twitter', '🐦', const Color(0xFF1DA1F2), (base * 0.08).round(), 'Sosyal Medya'),
+        _AppData('Clash Royale', '⚔️', const Color(0xFF8B5CF6), (base * 0.07).round(), 'Oyunlar'),
+        _AppData('Netflix', '🎬', const Color(0xFFE50914), (base * 0.06).round(), 'Eğlence'),
+        _AppData('Spotify', '🎧', const Color(0xFF1DB954), (base * 0.05).round(), 'Eğlence'),
+        _AppData('Telegram', '✈️', const Color(0xFF0088CC), (base * 0.04).round(), 'Mesajlaşma'),
+        _AppData('Safari', '🧭', const Color(0xFF0076FF), (base * 0.04).round(), 'Verimlilik'),
+      ];
+
       return _DayData(
         totalMinutes: base,
-        changePercent: -15 + rng.nextInt(30),
+        changePercent: -20 + rng.nextInt(40),
         pickups: pickups,
-        pickupChange: -10 + rng.nextInt(20),
+        pickupChange: -15 + rng.nextInt(30),
         notifications: notifs,
         notifChange: -10 + rng.nextInt(20),
-        topNotifApp: 'Instagram',
-        topNotifCount: 15 + rng.nextInt(30),
         firstPickup: '0${6 + rng.nextInt(2)}:${rng.nextInt(5)}${rng.nextInt(10)}',
-        lastPickup: '${22 + rng.nextInt(2)}:${rng.nextInt(5)}${rng.nextInt(10)}',
+        mostPickedApp: 'Instagram',
         hourlyApps: hourlyApps,
         hourlyPickups: hourlyPickups,
         hourlyNotifs: hourlyNotifs,
-        categories: [
-          _CategoryData('Sosyal Medya', const Color(0xFFE1306C), (base * 0.38).round()),
-          _CategoryData('Video', const Color(0xFFFF0000), (base * 0.25).round()),
-          _CategoryData('Oyun', const Color(0xFF8B5CF6), (base * 0.12).round()),
-          _CategoryData('İletişim', const Color(0xFF25D366), (base * 0.11).round()),
-          _CategoryData('Verimlilik', const Color(0xFF1DA1F2), (base * 0.08).round()),
-          _CategoryData('Diğer', const Color(0xFF6B7280), (base * 0.06).round()),
+        categories: categories,
+        apps: apps,
+        topNotifApps: [
+          _NotifAppData('Instagram', '📸', const Color(0xFFE1306C), 18 + rng.nextInt(15)),
+          _NotifAppData('WhatsApp', '💬', const Color(0xFF25D366), 12 + rng.nextInt(10)),
+          _NotifAppData('Twitter', '🐦', const Color(0xFF1DA1F2), 5 + rng.nextInt(8)),
+          _NotifAppData('YouTube', '▶️', const Color(0xFFFF0000), 3 + rng.nextInt(5)),
         ],
       );
     });
   }
-
-  List<_TopAppData> _mockTopApps() => [
-        _TopAppData('Instagram', '📸', const Color(0xFFE1306C), 72),
-        _TopAppData('YouTube', '▶️', const Color(0xFFFF0000), 55),
-        _TopAppData('TikTok', '🎵', const Color(0xFF69C9D0), 41),
-        _TopAppData('WhatsApp', '💬', const Color(0xFF25D366), 28),
-        _TopAppData('Twitter', '🐦', const Color(0xFF1DA1F2), 22),
-        _TopAppData('Clash Royale', '⚔️', const Color(0xFF8B5CF6), 18),
-        _TopAppData('Netflix', '🎬', const Color(0xFFE50914), 15),
-        _TopAppData('Spotify', '🎧', const Color(0xFF1DB954), 12),
-      ];
-}
-
-// ── STAT SECTION (reusable for pickups & notifications) ──
-
-class _StatSection extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final Color iconColor;
-  final String mainValue;
-  final String mainUnit;
-  final String subtitle;
-  final int change;
-  final List<double> hourlyData;
-
-  const _StatSection({
-    required this.title,
-    required this.icon,
-    required this.iconColor,
-    required this.mainValue,
-    required this.mainUnit,
-    required this.subtitle,
-    required this.change,
-    required this.hourlyData,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final isUp = change > 0;
-    final isGood = !isUp;
-    final color = isGood ? AppColors.ringGood : AppColors.ringDanger;
-
-    return GlassmorphicCard(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, color: iconColor, size: 18),
-              const SizedBox(width: 8),
-              Text(title,
-                  style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary)),
-              const Spacer(),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  '${isUp ? '▲' : '▼'} %${change.abs()}',
-                  style: TextStyle(
-                      fontSize: 11, fontWeight: FontWeight.w600, color: color),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text(mainValue,
-                  style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w800,
-                      color: iconColor)),
-              const SizedBox(width: 4),
-              Text(mainUnit,
-                  style: const TextStyle(
-                      fontSize: 14, color: AppColors.textSecondary)),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Text(subtitle, style: AppTextStyles.labelSmall),
-          const SizedBox(height: 12),
-          // Mini hourly bar chart
-          SizedBox(
-            height: 32,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: List.generate(24, (i) {
-                final maxVal =
-                    hourlyData.reduce(max).clamp(1.0, double.infinity);
-                final ratio = hourlyData[i] / maxVal;
-                return Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 0.5),
-                    child: FractionallySizedBox(
-                      heightFactor: ratio.clamp(0.05, 1.0),
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: iconColor.withValues(alpha: 0.5),
-                          borderRadius:
-                              const BorderRadius.vertical(top: Radius.circular(1)),
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ── SPARKLINE PAINTER ──
-
-class _SparklinePainter extends CustomPainter {
-  final List<double> values;
-  final int highlightIndex;
-
-  _SparklinePainter({required this.values, required this.highlightIndex});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (values.isEmpty) return;
-    final maxV = values.reduce(max);
-    final minV = values.reduce(min);
-    final range = maxV - minV;
-
-    final paint = Paint()
-      ..color = AppColors.neonGreen.withValues(alpha: 0.6)
-      ..strokeWidth = 1.5
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    final path = Path();
-    for (int i = 0; i < values.length; i++) {
-      final x = i / (values.length - 1) * size.width;
-      final y = range > 0
-          ? size.height - ((values[i] - minV) / range) * size.height
-          : size.height / 2;
-      if (i == 0) {
-        path.moveTo(x, y);
-      } else {
-        path.lineTo(x, y);
-      }
-    }
-    canvas.drawPath(path, paint);
-
-    // Highlight dot
-    final hx = highlightIndex / (values.length - 1) * size.width;
-    final hy = range > 0
-        ? size.height -
-            ((values[highlightIndex] - minV) / range) * size.height
-        : size.height / 2;
-    canvas.drawCircle(
-      Offset(hx, hy),
-      3,
-      Paint()..color = AppColors.neonGreen,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant _SparklinePainter old) =>
-      old.highlightIndex != highlightIndex;
 }
 
 // ── DATA CLASSES ──
@@ -1142,14 +992,14 @@ class _DayData {
   final int pickupChange;
   final int notifications;
   final int notifChange;
-  final String topNotifApp;
-  final int topNotifCount;
   final String firstPickup;
-  final String lastPickup;
+  final String mostPickedApp;
   final List<Map<String, double>> hourlyApps;
   final List<double> hourlyPickups;
   final List<double> hourlyNotifs;
   final List<_CategoryData> categories;
+  final List<_AppData> apps;
+  final List<_NotifAppData> topNotifApps;
 
   const _DayData({
     required this.totalMinutes,
@@ -1158,14 +1008,14 @@ class _DayData {
     required this.pickupChange,
     required this.notifications,
     required this.notifChange,
-    required this.topNotifApp,
-    required this.topNotifCount,
     required this.firstPickup,
-    required this.lastPickup,
+    required this.mostPickedApp,
     required this.hourlyApps,
     required this.hourlyPickups,
     required this.hourlyNotifs,
     required this.categories,
+    required this.apps,
+    required this.topNotifApps,
   });
 }
 
@@ -1176,16 +1026,19 @@ class _CategoryData {
   const _CategoryData(this.name, this.color, this.minutes);
 }
 
-class _TopAppData {
+class _AppData {
   final String name;
   final String emoji;
   final Color color;
   final int minutes;
-  const _TopAppData(this.name, this.emoji, this.color, this.minutes);
+  final String category;
+  const _AppData(this.name, this.emoji, this.color, this.minutes, this.category);
 }
 
-class _MotivItem {
+class _NotifAppData {
+  final String name;
   final String emoji;
-  final String text;
-  const _MotivItem(this.emoji, this.text);
+  final Color color;
+  final int count;
+  const _NotifAppData(this.name, this.emoji, this.color, this.count);
 }

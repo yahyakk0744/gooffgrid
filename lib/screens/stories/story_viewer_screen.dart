@@ -114,10 +114,10 @@ class _StoryViewerScreenState extends ConsumerState<StoryViewerScreen>
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.black.withOpacity(0.6),
+                    Colors.black.withValues(alpha: 0.6),
                     Colors.transparent,
                     Colors.transparent,
-                    Colors.black.withOpacity(0.8),
+                    Colors.black.withValues(alpha: 0.8),
                   ],
                   stops: const [0, 0.2, 0.7, 1],
                 ),
@@ -149,7 +149,7 @@ class _StoryViewerScreenState extends ConsumerState<StoryViewerScreen>
                                 }
                                 return LinearProgressIndicator(
                                   value: value,
-                                  backgroundColor: Colors.white.withOpacity(0.2),
+                                  backgroundColor: Colors.white.withValues(alpha: 0.2),
                                   valueColor: const AlwaysStoppedAnimation(Colors.white),
                                   minHeight: 2.5,
                                   borderRadius: BorderRadius.circular(2),
@@ -186,7 +186,7 @@ class _StoryViewerScreenState extends ConsumerState<StoryViewerScreen>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(widget.group.userName, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14)),
-                            Text(story.remainingLabel, style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 11)),
+                            Text(story.remainingLabel, style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 11)),
                           ],
                         ),
                         const Spacer(),
@@ -211,7 +211,7 @@ class _StoryViewerScreenState extends ConsumerState<StoryViewerScreen>
                             margin: const EdgeInsets.only(bottom: 8),
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                             decoration: BoxDecoration(
-                              color: AppColors.neonGreen.withOpacity(0.2),
+                              color: AppColors.neonGreen.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(

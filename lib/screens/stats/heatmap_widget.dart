@@ -25,7 +25,7 @@ class HeatmapWidget extends StatelessWidget {
   Color _cellColor(int value) {
     switch (value) {
       case 0: return AppColors.surface;
-      case 1: return AppColors.ringGood.withOpacity(0.3);
+      case 1: return AppColors.ringGood.withValues(alpha: 0.3);
       case 2: return AppColors.ringGood;
       case 3: return AppColors.ringWarning;
       default: return AppColors.ringDanger;

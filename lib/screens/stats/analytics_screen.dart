@@ -6,7 +6,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../services/haptic_service.dart';
 import '../../models/app_usage_entry.dart';
 import '../../models/screen_time_data.dart';
 import '../../providers/analytics_provider.dart';
@@ -67,7 +69,48 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
+
+                // Detaylı Analiz butonu (Apple Screen Time)
+                GestureDetector(
+                  onTap: () {
+                    HapticService.light();
+                    context.push('/profile/stats/detailed');
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(14),
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.neonGreen.withValues(alpha: 0.12),
+                          AppColors.neonGreen.withValues(alpha: 0.04),
+                        ],
+                      ),
+                      border: Border.all(color: AppColors.neonGreen.withValues(alpha: 0.25)),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.insights_rounded, color: AppColors.neonGreen, size: 20),
+                        const SizedBox(width: 10),
+                        const Expanded(
+                          child: Text(
+                            'Detaylı Ekran Süresi',
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.neonGreen),
+                          ),
+                        ),
+                        const Text(
+                          'Apple tarzı',
+                          style: TextStyle(fontSize: 11, color: AppColors.textTertiary),
+                        ),
+                        const SizedBox(width: 4),
+                        Icon(Icons.chevron_right_rounded, color: AppColors.neonGreen.withValues(alpha: 0.6), size: 20),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
 
                 // ═══════════════════════════════════════
                 // WEEKLY BAR CHART — Kategorize, neon
@@ -165,14 +208,14 @@ class _WeeklyBarChart extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white.withOpacity(0.07),
-                Colors.white.withOpacity(0.02),
+                Colors.white.withValues(alpha: 0.07),
+                Colors.white.withValues(alpha: 0.02),
               ],
             ),
-            border: Border.all(color: Colors.white.withOpacity(0.1)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.3),
+                color: Colors.black.withValues(alpha: 0.3),
                 blurRadius: 20,
                 offset: const Offset(0, 8),
               ),
@@ -183,13 +226,13 @@ class _WeeklyBarChart extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Text('Haftalik Kullanim', style: AppTextStyles.h3),
+                  const Text('Haftalık Kullanım', style: AppTextStyles.h3),
                   const Spacer(),
                   Text(
                     _selectedLabel(),
                     style: TextStyle(
                       fontSize: 13,
-                      color: AppColors.neonGreen.withOpacity(0.8),
+                      color: AppColors.neonGreen.withValues(alpha: 0.8),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -208,7 +251,7 @@ class _WeeklyBarChart extends StatelessWidget {
                         }
                       },
                       touchTooltipData: BarTouchTooltipData(
-                        getTooltipColor: (_) => AppColors.cardGradientStart.withOpacity(0.9),
+                        getTooltipColor: (_) => AppColors.cardGradientStart.withValues(alpha: 0.9),
                         getTooltipItem: (group, gI, rod, rI) {
                           final d = weekData[group.x];
                           return BarTooltipItem(
@@ -224,7 +267,7 @@ class _WeeklyBarChart extends StatelessWidget {
                       drawVerticalLine: false,
                       horizontalInterval: goal.toDouble(),
                       getDrawingHorizontalLine: (v) => FlLine(
-                        color: AppColors.ringDanger.withOpacity(0.3),
+                        color: AppColors.ringDanger.withValues(alpha: 0.3),
                         strokeWidth: 1,
                         dashArray: [6, 4],
                       ),
@@ -246,7 +289,7 @@ class _WeeklyBarChart extends StatelessWidget {
                         sideTitles: SideTitles(
                           showTitles: true,
                           getTitlesWidget: (v, _) {
-                            const days = ['Pzt', 'Sal', 'Car', 'Per', 'Cum', 'Cmt', 'Paz'];
+                            const days = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
                             final i = v.toInt();
                             if (i < 0 || i >= weekData.length) return const SizedBox.shrink();
                             final dayOfWeek = weekData[i].date.weekday - 1;
@@ -283,7 +326,7 @@ class _WeeklyBarChart extends StatelessWidget {
                             backDrawRodData: BackgroundBarChartRodData(
                               show: true,
                               toY: maxMin * 1.1,
-                              color: Colors.white.withOpacity(0.03),
+                              color: Colors.white.withValues(alpha: 0.03),
                             ),
                           ),
                         ],
@@ -302,17 +345,17 @@ class _WeeklyBarChart extends StatelessWidget {
   String _selectedLabel() {
     if (selectedIndex < 0 || selectedIndex >= weekData.length) return '';
     final d = weekData[selectedIndex];
-    return '${d.formattedTotal} • ${d.phoneOpens} acma';
+    return '${d.formattedTotal} • ${d.phoneOpens} açma';
   }
 
   List<Color> _barColors(ScreenTimeData d) {
     if (d.totalMinutes <= d.goalMinutes * 0.5) {
-      return [AppColors.neonGreen.withOpacity(0.6), AppColors.neonGreen];
+      return [AppColors.neonGreen.withValues(alpha: 0.6), AppColors.neonGreen];
     }
     if (d.totalMinutes <= d.goalMinutes) {
-      return [const Color(0xFFFFD60A).withOpacity(0.6), const Color(0xFFFFD60A)];
+      return [const Color(0xFFFFD60A).withValues(alpha: 0.6), const Color(0xFFFFD60A)];
     }
-    return [AppColors.ringDanger.withOpacity(0.6), AppColors.ringDanger];
+    return [AppColors.ringDanger.withValues(alpha: 0.6), AppColors.ringDanger];
   }
 }
 
@@ -351,14 +394,14 @@ class _CategoryGrid extends StatelessWidget {
               center: Alignment.topLeft,
               radius: 2.5,
               colors: [
-                color.withOpacity(0.15),
+                color.withValues(alpha: 0.15),
                 AppColors.cardGradientEnd,
               ],
             ),
-            border: Border.all(color: color.withOpacity(0.2)),
+            border: Border.all(color: color.withValues(alpha: 0.2)),
             boxShadow: [
               BoxShadow(
-                color: color.withOpacity(0.08),
+                color: color.withValues(alpha: 0.08),
                 blurRadius: 12,
                 spreadRadius: -4,
               ),
@@ -375,13 +418,13 @@ class _CategoryGrid extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: color,
                       shape: BoxShape.circle,
-                      boxShadow: [BoxShadow(color: color.withOpacity(0.5), blurRadius: 6)],
+                      boxShadow: [BoxShadow(color: color.withValues(alpha: 0.5), blurRadius: 6)],
                     ),
                   ),
                   const SizedBox(width: 8),
                   Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: color)),
                   const Spacer(),
-                  Text('%$pct', style: TextStyle(fontSize: 11, color: color.withOpacity(0.7))),
+                  Text('%$pct', style: TextStyle(fontSize: 11, color: color.withValues(alpha: 0.7))),
                 ],
               ),
               const SizedBox(height: 8),
@@ -391,7 +434,7 @@ class _CategoryGrid extends StatelessWidget {
               Container(
                 height: 3,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.06),
+                  color: Colors.white.withValues(alpha: 0.06),
                   borderRadius: BorderRadius.circular(2),
                 ),
                 child: FractionallySizedBox(
@@ -399,7 +442,7 @@ class _CategoryGrid extends StatelessWidget {
                   widthFactor: totalMinutes > 0 ? (entry.value / totalMinutes).clamp(0.0, 1.0) : 0,
                   child: Container(
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [color.withOpacity(0.5), color]),
+                      gradient: LinearGradient(colors: [color.withValues(alpha: 0.5), color]),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -441,19 +484,19 @@ class _PickupsHeroCard extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white.withOpacity(0.1),
-                Colors.white.withOpacity(0.03),
+                Colors.white.withValues(alpha: 0.1),
+                Colors.white.withValues(alpha: 0.03),
               ],
             ),
-            border: Border.all(color: Colors.white.withOpacity(0.12), width: 1),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.12), width: 1),
             boxShadow: [
               BoxShadow(
-                color: AppColors.neonOrange.withOpacity(0.08),
+                color: AppColors.neonOrange.withValues(alpha: 0.08),
                 blurRadius: 32,
                 spreadRadius: -8,
               ),
               BoxShadow(
-                color: Colors.black.withOpacity(0.4),
+                color: Colors.black.withValues(alpha: 0.4),
                 blurRadius: 24,
                 offset: const Offset(0, 8),
               ),
@@ -469,13 +512,13 @@ class _PickupsHeroCard extends StatelessWidget {
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppColors.neonOrange.withOpacity(0.2),
-                      AppColors.neonOrange.withOpacity(0.02),
+                      AppColors.neonOrange.withValues(alpha: 0.2),
+                      AppColors.neonOrange.withValues(alpha: 0.02),
                     ],
                   ),
-                  border: Border.all(color: AppColors.neonOrange.withOpacity(0.3)),
+                  border: Border.all(color: AppColors.neonOrange.withValues(alpha: 0.3)),
                   boxShadow: [
-                    BoxShadow(color: AppColors.neonOrange.withOpacity(0.15), blurRadius: 24, spreadRadius: -4),
+                    BoxShadow(color: AppColors.neonOrange.withValues(alpha: 0.15), blurRadius: 24, spreadRadius: -4),
                   ],
                 ),
                 child: const Center(
@@ -492,24 +535,24 @@ class _PickupsHeroCard extends StatelessWidget {
                   color: AppColors.neonOrange,
                   letterSpacing: -2,
                   shadows: [
-                    Shadow(color: AppColors.neonOrange.withOpacity(0.5), blurRadius: 20),
-                    Shadow(color: AppColors.neonOrange.withOpacity(0.2), blurRadius: 40),
+                    Shadow(color: AppColors.neonOrange.withValues(alpha: 0.5), blurRadius: 20),
+                    Shadow(color: AppColors.neonOrange.withValues(alpha: 0.2), blurRadius: 40),
                   ],
                 ),
               ),
               const Text(
-                'Kez Ele Alindi',
+                'Kez Ele Alındı',
                 style: TextStyle(fontSize: 14, color: AppColors.textSecondary, fontWeight: FontWeight.w500),
               ),
               if (topPickupApps.isNotEmpty) ...[
                 const SizedBox(height: 20),
                 Container(
                   height: 1,
-                  color: Colors.white.withOpacity(0.06),
+                  color: Colors.white.withValues(alpha: 0.06),
                 ),
                 const SizedBox(height: 16),
                 const Text(
-                  'En Cok Tetikleyenler',
+                  'En Çok Tetikleyenler',
                   style: TextStyle(fontSize: 11, color: AppColors.textTertiary, fontWeight: FontWeight.w500, letterSpacing: 1),
                 ),
                 const SizedBox(height: 12),
@@ -597,10 +640,10 @@ class _AppListWithIcons extends StatelessWidget {
                 AppColors.cardGradientEnd,
               ],
             ),
-            border: Border.all(color: app.iconColor.withOpacity(0.12)),
+            border: Border.all(color: app.iconColor.withValues(alpha: 0.12)),
             boxShadow: [
               BoxShadow(
-                color: app.iconColor.withOpacity(0.06),
+                color: app.iconColor.withValues(alpha: 0.06),
                 blurRadius: 12,
                 spreadRadius: -4,
               ),
@@ -645,7 +688,7 @@ class _AppListWithIcons extends StatelessWidget {
                     Container(
                       height: 4,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.06),
+                        color: Colors.white.withValues(alpha: 0.06),
                         borderRadius: BorderRadius.circular(2),
                       ),
                       child: FractionallySizedBox(
@@ -654,11 +697,11 @@ class _AppListWithIcons extends StatelessWidget {
                         child: Container(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              colors: [app.iconColor.withOpacity(0.5), app.iconColor],
+                              colors: [app.iconColor.withValues(alpha: 0.5), app.iconColor],
                             ),
                             borderRadius: BorderRadius.circular(2),
                             boxShadow: [
-                              BoxShadow(color: app.iconColor.withOpacity(0.3), blurRadius: 4),
+                              BoxShadow(color: app.iconColor.withValues(alpha: 0.3), blurRadius: 4),
                             ],
                           ),
                         ),
@@ -679,7 +722,7 @@ class _AppListWithIcons extends StatelessWidget {
                             Icon(Icons.touch_app_rounded, size: 10, color: AppColors.textTertiary),
                             const SizedBox(width: 2),
                             Text(
-                              '${app.pickups}x acma',
+                              '${app.pickups}x açma',
                               style: const TextStyle(fontSize: 10, color: AppColors.textTertiary),
                             ),
                           ],

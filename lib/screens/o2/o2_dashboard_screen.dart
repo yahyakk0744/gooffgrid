@@ -55,7 +55,7 @@ class O2DashboardScreen extends ConsumerWidget {
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w300,
-                              color: AppColors.neonGreen.withOpacity(0.6),
+                              color: AppColors.neonGreen.withValues(alpha: 0.6),
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -65,7 +65,7 @@ class O2DashboardScreen extends ConsumerWidget {
                               fontSize: 48,
                               fontWeight: FontWeight.w700,
                               color: AppColors.neonGreen,
-                              shadows: [Shadow(color: AppColors.neonGreen.withOpacity(0.5), blurRadius: 20)],
+                              shadows: [Shadow(color: AppColors.neonGreen.withValues(alpha: 0.5), blurRadius: 20)],
                             ),
                           ),
                         ],
@@ -150,10 +150,10 @@ class O2DashboardScreen extends ConsumerWidget {
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [AppColors.neonGreen.withOpacity(0.15), AppColors.neonGreen.withOpacity(0.05)],
+                        colors: [AppColors.neonGreen.withValues(alpha: 0.15), AppColors.neonGreen.withValues(alpha: 0.05)],
                       ),
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: AppColors.neonGreen.withOpacity(0.3)),
+                      border: Border.all(color: AppColors.neonGreen.withValues(alpha: 0.3)),
                     ),
                     child: Row(
                       children: [
@@ -161,7 +161,7 @@ class O2DashboardScreen extends ConsumerWidget {
                           width: 48,
                           height: 48,
                           decoration: BoxDecoration(
-                            color: AppColors.neonGreen.withOpacity(0.2),
+                            color: AppColors.neonGreen.withValues(alpha: 0.2),
                             shape: BoxShape.circle,
                           ),
                           child: const Center(child: Text('🛒', style: TextStyle(fontSize: 24))),
@@ -261,7 +261,7 @@ class _TransactionRow extends StatelessWidget {
           colors: [AppColors.cardGradientStart, AppColors.cardGradientEnd],
         ),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.cardBorder.withOpacity(0.3)),
+        border: Border.all(color: AppColors.cardBorder.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [

@@ -56,17 +56,17 @@ class _GlowingSkeletonLoaderState extends State<GlowingSkeletonLoader>
               begin: Alignment(-1.0 + 2.0 * _controller.value, 0),
               end: Alignment(-0.5 + 2.0 * _controller.value, 0),
               colors: [
-                AppColors.cardBorder.withOpacity(0.3),
-                glow.withOpacity(0.15),
-                glow.withOpacity(0.25),
-                glow.withOpacity(0.15),
-                AppColors.cardBorder.withOpacity(0.3),
+                AppColors.cardBorder.withValues(alpha: 0.3),
+                glow.withValues(alpha: 0.15),
+                glow.withValues(alpha: 0.25),
+                glow.withValues(alpha: 0.15),
+                AppColors.cardBorder.withValues(alpha: 0.3),
               ],
               stops: const [0.0, 0.35, 0.5, 0.65, 1.0],
             ),
             boxShadow: [
               BoxShadow(
-                color: glow.withOpacity(0.06 + 0.04 * _controller.value),
+                color: glow.withValues(alpha: 0.06 + 0.04 * _controller.value),
                 blurRadius: 12,
                 spreadRadius: -4,
               ),
@@ -120,7 +120,7 @@ class SkeletonCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         color: AppColors.cardGradientEnd,
-        border: Border.all(color: AppColors.cardBorder.withOpacity(0.3)),
+        border: Border.all(color: AppColors.cardBorder.withValues(alpha: 0.3)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),

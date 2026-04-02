@@ -143,19 +143,19 @@ class _FocusModeScreenState extends ConsumerState<FocusModeScreen> {
                       margin: const EdgeInsets.symmetric(horizontal: 24),
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.06),
+                        color: Colors.white.withValues(alpha: 0.06),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.white.withOpacity(0.1)),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('O₂', style: TextStyle(fontSize: 14, color: AppColors.neonGreen.withOpacity(0.7))),
+                          Text('O₂', style: TextStyle(fontSize: 14, color: AppColors.neonGreen.withValues(alpha: 0.7))),
                           const SizedBox(width: 6),
                           Text('${o2.balance}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.neonGreen)),
                           const SizedBox(width: 12),
-                          Container(width: 1, height: 16, color: Colors.white.withOpacity(0.15)),
+                          Container(width: 1, height: 16, color: Colors.white.withValues(alpha: 0.15)),
                           const SizedBox(width: 12),
                           Text('Kalan: ${o2.dailyRemaining}', style: TextStyle(fontSize: 12, color: AppColors.textTertiary)),
                         ],
@@ -176,7 +176,7 @@ class _FocusModeScreenState extends ConsumerState<FocusModeScreen> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                           decoration: BoxDecoration(
-                            color: AppColors.ringDanger.withOpacity(0.15),
+                            color: AppColors.ringDanger.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
@@ -194,9 +194,9 @@ class _FocusModeScreenState extends ConsumerState<FocusModeScreen> {
                           margin: const EdgeInsets.symmetric(horizontal: 32),
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: AppColors.ringDanger.withOpacity(0.1),
+                            color: AppColors.ringDanger.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: AppColors.ringDanger.withOpacity(0.3)),
+                            border: Border.all(color: AppColors.ringDanger.withValues(alpha: 0.3)),
                           ),
                           child: const Column(
                             children: [
@@ -219,7 +219,7 @@ class _FocusModeScreenState extends ConsumerState<FocusModeScreen> {
                           const SizedBox(height: 4),
                           Text(
                             '+${(session.elapsedMinutes * 3).clamp(0, 500)} O₂ (tahmini)',
-                            style: TextStyle(fontSize: 13, color: AppColors.neonGreen.withOpacity(0.7)),
+                            style: TextStyle(fontSize: 13, color: AppColors.neonGreen.withValues(alpha: 0.7)),
                           ),
                         ],
                       )
@@ -231,7 +231,7 @@ class _FocusModeScreenState extends ConsumerState<FocusModeScreen> {
                             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.neonGreen),
                           ),
                           const SizedBox(height: 4),
-                          Text('+$_earnedO2 O₂', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.gold, shadows: [Shadow(color: AppColors.gold.withOpacity(0.4), blurRadius: 8)])),
+                          Text('+$_earnedO2 O₂', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.gold, shadows: [Shadow(color: AppColors.gold.withValues(alpha: 0.4), blurRadius: 8)])),
                         ],
                       ),
 

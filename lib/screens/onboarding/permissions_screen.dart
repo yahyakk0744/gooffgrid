@@ -122,7 +122,7 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
                 height: 56,
                 child: ElevatedButton(
                   onPressed: _screenTimeGranted
-                      ? () => context.go('/onboarding/profile')
+                      ? () => context.go('/onboarding/goal')
                       : (_checking ? null : _requestScreenTime),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.neonGreen,
@@ -137,7 +137,7 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
               ),
               const SizedBox(height: 16),
               GestureDetector(
-                onTap: () => context.go('/onboarding/profile'),
+                onTap: () => context.go('/onboarding/goal'),
                 child: Text(
                   'Atla',
                   style: AppTextStyles.bodySecondary.copyWith(color: AppColors.textTertiary),

@@ -68,7 +68,7 @@ class _DuelCardState extends State<DuelCard> with SingleTickerProviderStateMixin
       builder: (context, child) {
         return AppCard(
           borderColor: isActive
-              ? AppColors.neonGreen.withOpacity(0.4 + _pulseController.value * 0.6)
+              ? AppColors.neonGreen.withValues(alpha: 0.4 + _pulseController.value * 0.6)
               : null,
           child: Row(
             children: [
@@ -86,10 +86,10 @@ class _DuelCardState extends State<DuelCard> with SingleTickerProviderStateMixin
                     colors: [Color(0xFF2A1A0A), Color(0xFF1A1410)],
                   ),
                   shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.neonOrange.withOpacity(0.4)),
+                  border: Border.all(color: AppColors.neonOrange.withValues(alpha: 0.4)),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.neonOrange.withOpacity(0.2),
+                      color: AppColors.neonOrange.withValues(alpha: 0.2),
                       blurRadius: 12,
                       spreadRadius: -2,
                     ),
@@ -102,7 +102,7 @@ class _DuelCardState extends State<DuelCard> with SingleTickerProviderStateMixin
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
                       color: AppColors.neonOrange,
-                      shadows: [Shadow(color: AppColors.neonOrange.withOpacity(0.5), blurRadius: 6)],
+                      shadows: [Shadow(color: AppColors.neonOrange.withValues(alpha: 0.5), blurRadius: 6)],
                     ),
                   ),
                 ),

@@ -44,20 +44,20 @@ class AppCard extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(borderRadius),
           border: Border.all(
-            color: borderColor ?? AppColors.cardBorder.withOpacity(0.6),
+            color: borderColor ?? AppColors.cardBorder.withValues(alpha: 0.6),
             width: borderColor != null ? 1.5 : 1,
           ),
           boxShadow: [
             // Subtle elevation
             BoxShadow(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha: 0.3),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
             // Glow effect
             if (hasGlow)
               BoxShadow(
-                color: effectiveGlowColor.withOpacity(effectiveGlowIntensity),
+                color: effectiveGlowColor.withValues(alpha: effectiveGlowIntensity),
                 blurRadius: 20,
                 spreadRadius: -2,
               ),
@@ -73,9 +73,9 @@ class AppCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      topAccentColor!.withOpacity(0.6),
+                      topAccentColor!.withValues(alpha: 0.6),
                       topAccentColor!,
-                      topAccentColor!.withOpacity(0.6),
+                      topAccentColor!.withValues(alpha: 0.6),
                     ],
                   ),
                 ),

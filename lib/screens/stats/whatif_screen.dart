@@ -10,8 +10,8 @@ class WhatIfScreen extends StatelessWidget {
   static const _items = [
     {'emoji': '\u{1F4DA}', 'text': "Instagram'da 8 saat = 2 kitap okurdun"},
     {'emoji': '\u{1F393}', 'text': "YouTube'da 6 saat = 1 online kurs bitirirdin"},
-    {'emoji': '\u{1F4D6}', 'text': "TikTok'ta 4 saat = 60 sayfa calisirdin"},
-    {'emoji': '\u{1F3D6}', 'text': 'Toplam 22 saat = 3 gun tatil'},
+    {'emoji': '\u{1F4D6}', 'text': "TikTok'ta 4 saat = 60 sayfa çalışırdın"},
+    {'emoji': '\u{1F3D6}', 'text': 'Toplam 22 saat = 3 gün tatil'},
   ];
 
   @override

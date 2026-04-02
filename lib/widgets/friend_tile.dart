@@ -73,15 +73,15 @@ class _FriendTileState extends State<FriendTile> with SingleTickerProviderStateM
           colors: [AppColors.cardGradientStart, AppColors.cardGradientEnd],
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _borderColor.withOpacity(0.2), width: 1),
+        border: Border.all(color: _borderColor.withValues(alpha: 0.2), width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withValues(alpha: 0.3),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
           BoxShadow(
-            color: _borderColor.withOpacity(0.08),
+            color: _borderColor.withValues(alpha: 0.08),
             blurRadius: 16,
             spreadRadius: -4,
           ),

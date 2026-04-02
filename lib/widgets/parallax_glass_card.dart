@@ -88,32 +88,32 @@ class _ParallaxGlassCardState extends State<ParallaxGlassCard> {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Colors.white.withOpacity(0.09),
-                  Colors.white.withOpacity(0.03),
+                  Colors.white.withValues(alpha: 0.09),
+                  Colors.white.withValues(alpha: 0.03),
                 ],
               ),
               border: Border.all(
-                color: Colors.white.withOpacity(0.12),
+                color: Colors.white.withValues(alpha: 0.12),
                 width: 1,
               ),
               boxShadow: widget.enableGlow
                   ? [
                       // Dynamik neon glow — açısı cihaz eğimine göre değişir
                       BoxShadow(
-                        color: glow.withOpacity(0.2),
+                        color: glow.withValues(alpha: 0.2),
                         blurRadius: 28,
                         spreadRadius: -6,
                         offset: Offset(_offsetX * 0.6, _offsetY * 0.6),
                       ),
                       BoxShadow(
-                        color: glow.withOpacity(0.08),
+                        color: glow.withValues(alpha: 0.08),
                         blurRadius: 50,
                         spreadRadius: -10,
                         offset: Offset(_offsetX * 0.3, _offsetY * 0.3),
                       ),
                       // Derinlik gölgesi
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.4),
+                        color: Colors.black.withValues(alpha: 0.4),
                         blurRadius: 20,
                         offset: Offset(-_offsetX * 0.2, -_offsetY * 0.2 + 6),
                       ),

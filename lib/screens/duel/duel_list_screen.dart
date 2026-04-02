@@ -6,6 +6,7 @@ import '../../widgets/duel_card.dart';
 import '../../models/duel.dart' show DuelStatus;
 import '../../providers/duel_provider.dart';
 import '../../widgets/premium_background.dart';
+import '../../widgets/empty_state.dart';
 import '../../services/haptic_service.dart';
 
 class DuelListScreen extends ConsumerWidget {
@@ -28,6 +29,15 @@ class DuelListScreen extends ConsumerWidget {
             children: [
               const Text('Duellolar', style: AppTextStyles.h1),
               const SizedBox(height: 24),
+
+              if (duels.isEmpty)
+                EmptyState(
+                  emoji: '⚡',
+                  title: 'Henüz düello yok',
+                  subtitle: 'İlk düellonu başlat!',
+                  buttonText: 'Düello Oluştur',
+                  onButtonTap: () => context.push('/duel/create'),
+                ),
 
               if (active.isNotEmpty) ...[
                 const Text('Aktif Duellolar', style: AppTextStyles.h3),

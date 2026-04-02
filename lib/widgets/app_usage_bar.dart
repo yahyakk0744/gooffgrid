@@ -32,7 +32,7 @@ class AppUsageBar extends StatelessWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: color.withOpacity(0.3),
+                  color: color.withValues(alpha: 0.3),
                   blurRadius: 8,
                   spreadRadius: -2,
                 ),
@@ -67,12 +67,12 @@ class AppUsageBar extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [color.withOpacity(0.7), color],
+                      colors: [color.withValues(alpha: 0.7), color],
                     ),
                     borderRadius: BorderRadius.circular(3),
                     boxShadow: [
                       BoxShadow(
-                        color: color.withOpacity(0.3),
+                        color: color.withValues(alpha: 0.3),
                         blurRadius: 6,
                         offset: const Offset(0, 1),
                       ),

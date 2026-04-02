@@ -1,64 +1,136 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
-import 'supabase_sync_service.dart';
 
-/// Push notification servisi.
-/// FCM token'ı Supabase'e kaydet → Edge Function bildirim gönderir.
-/// Firebase'e bağımlılık yok — sadece FCM REST API + Supabase Cron.
-class NotificationService {
-  NotificationService._();
-  static final instance = NotificationService._();
+/// Nudge/notification service — yerel bildirimlerle kullaniciyi uyarir.
+/// flutter_local_notifications eklendiginde TODO yorumlarini kaldirabiliriz.
+class NudgeService {
+  NudgeService._();
+  static final instance = NudgeService._();
 
-  String? _fcmToken;
+  // Esikler (dakika)
+  static const int _warnThreshold = 30;
+  static const int _alertThreshold = 60;
+  static const int _criticalThreshold = 90;
 
+  // Son tetiklenen esik — ayni bildirimi tekrar gondermemek icin
+  final Map<String, int> _lastNudge = {};
+
+  /// Servisi baslatir. flutter_local_notifications eklendiginde
+  /// buraya izin isteme ve kanal olusturma kodu gelecek.
   Future<void> initialize() async {
-    // TODO: firebase_messaging eklendiğinde aktifleşecek
-    // final messaging = FirebaseMessaging.instance;
-    // _fcmToken = await messaging.getToken();
-    // messaging.onTokenRefresh.listen(_onTokenRefresh);
-    debugPrint('[NotificationService] initialized');
+    // TODO: flutter_local_notifications eklendikten sonra:
+    // final plugin = FlutterLocalNotificationsPlugin();
+    // await plugin.initialize(InitializationSettings(...));
+    debugPrint('[NudgeService] initialized');
   }
 
-  /// FCM token'ı Supabase'e kaydet.
-  Future<void> registerToken(String token) async {
-    _fcmToken = token;
-    final platform = Platform.isIOS ? 'ios' : 'android';
-    await SupabaseSyncService.instance.registerDevice(
-      fcmToken: token,
-      platform: platform,
+  /// Bir uygulama icin kullanim suresi kontrolu yapar ve
+  /// esige gore bildirim gonderir.
+  ///
+  /// [appName]      — gosterilecek uygulama adi (orn. "Instagram")
+  /// [minutesUsed]  — bugun o uygulamada gecirilen dakika
+  void checkAndNudge(String appName, int minutesUsed) {
+    final last = _lastNudge[appName] ?? 0;
+
+    if (minutesUsed >= _criticalThreshold && last < _criticalThreshold) {
+      _lastNudge[appName] = _criticalThreshold;
+      _send(
+        id: appName.hashCode + 3,
+        title: 'Kritik Uyari',
+        body: "$appName'da 1.5 saat! O2 puanlarin eriyor... 🫧",
+      );
+    } else if (minutesUsed >= _alertThreshold && last < _alertThreshold) {
+      _lastNudge[appName] = _alertThreshold;
+      _send(
+        id: appName.hashCode + 2,
+        title: 'Telefonu Birak!',
+        body: "$appName'da 1 saat oldu. Telefonunu birak! 📵",
+      );
+    } else if (minutesUsed >= _warnThreshold && last < _warnThreshold) {
+      _lastNudge[appName] = _warnThreshold;
+      _send(
+        id: appName.hashCode + 1,
+        title: 'Mola Vakti',
+        body: "$appName'da 30 dakika gectin. Mola ver! 🧘",
+      );
+    }
+  }
+
+  /// Sabah motivasyon bildirimi.
+  Future<void> sendDailyReminder() async {
+    _send(
+      id: 9001,
+      title: 'Gunun Basliyor!',
+      body: 'Bugun telefona az bak, hayata cok bak. 🌅',
     );
   }
 
-  String? get fcmToken => _fcmToken;
+  /// Haftalik ozet bildirimi.
+  Future<void> sendWeeklyReport() async {
+    _send(
+      id: 9002,
+      title: 'Haftalik Rapor Hazir',
+      body: 'Bu haftaki ekran suren seni bekliyor. Nasil gecti? 📊',
+    );
+  }
 
-  /// Notify when a friend enters the shame wall.
+  // --- Eski metodlar (geriye donuk uyumluluk) ---
+
   void sendShameNotification({required String userName, required int totalMinutes}) {
-    debugPrint('[Notification] SHAME: $userName $totalMinutes dk ile utanc duvarinda!');
+    _send(
+      id: userName.hashCode,
+      title: 'Utanc Duvari',
+      body: '$userName $totalMinutes dk ile utanc duvarinda!',
+    );
   }
 
-  /// Notify duel invitation or result.
   void sendDuelNotification({required String type, required String opponentName, String? result}) {
-    debugPrint('[Notification] DUEL ($type): $opponentName ${result ?? ""}');
+    _send(
+      id: opponentName.hashCode,
+      title: 'Duello',
+      body: 'Duello ($type): $opponentName ${result ?? ""}',
+    );
   }
 
-  /// Notify streak milestone.
   void sendStreakNotification({required int streak}) {
-    debugPrint('[Notification] STREAK: $streak gun ust uste! Devam et!');
+    _send(
+      id: 8000 + streak,
+      title: 'Seri Devam!',
+      body: '$streak gun ust uste! Devam et! 🔥',
+    );
   }
 
-  /// Notify incoming reaction.
   void sendReactionNotification({required String fromName, required String emoji}) {
-    debugPrint('[Notification] REACTION: $fromName sana $emoji gonderdi');
+    _send(
+      id: fromName.hashCode,
+      title: 'Yeni Reaksiyon',
+      body: '$fromName sana $emoji gonderdi',
+    );
   }
 
-  /// Notify daily screen time warning.
   void sendScreenTimeWarning({required int currentMinutes, required int threshold}) {
-    debugPrint('[Notification] WARNING: $currentMinutes dk — esik: $threshold dk');
+    _send(
+      id: 7000,
+      title: 'Ekran Suresi Uyarisi',
+      body: '$currentMinutes dk kullandin — esik: $threshold dk',
+    );
   }
 
-  /// Notify ranking change.
   void sendRankChangeNotification({required int oldRank, required int newRank, required String scope}) {
-    debugPrint('[Notification] RANK: $scope siralamanda $oldRank -> $newRank');
+    _send(
+      id: 6000,
+      title: 'Siralama Degisti',
+      body: '$scope: $oldRank. siradan $newRank. siraya gectin',
+    );
+  }
+
+  // --- Dahili gonderici ---
+
+  void _send({required int id, required String title, required String body}) {
+    // TODO: flutter_local_notifications eklendikten sonra:
+    // await _plugin.show(id, title, body, notificationDetails);
+    debugPrint('[NudgeService] #$id | $title | $body');
   }
 }
+
+// Geriye donuk uyumluluk alias
+typedef NotificationService = NudgeService;

@@ -8,8 +8,8 @@ import '../screens/auth/login_screen.dart';
 import '../screens/onboarding/welcome_screen.dart';
 import '../screens/onboarding/permissions_screen.dart';
 import '../screens/onboarding/profile_setup_screen.dart';
+import '../screens/onboarding/goal_setup_screen.dart';
 import '../screens/home/home_screen.dart';
-import '../screens/ranking/ranking_screen.dart';
 import '../screens/duel/duel_list_screen.dart';
 import '../screens/duel/duel_active_screen.dart';
 import '../screens/duel/duel_invite_screen.dart';
@@ -31,8 +31,8 @@ import '../screens/focus/focus_mode_screen.dart';
 import '../screens/season/season_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../screens/settings/subscription_screen.dart';
-import '../screens/stories/stories_feed_screen.dart';
 import '../screens/stories/create_story_screen.dart';
+import '../screens/social/social_screen.dart';
 import '../screens/o2/o2_dashboard_screen.dart';
 import '../screens/o2/market_screen.dart';
 import '../screens/ganimet/ganimet_screen.dart';
@@ -87,6 +87,7 @@ GoRouter buildAppRouter(Ref ref) {
         builder: (_, __) => const WelcomeScreen(),
         routes: [
           GoRoute(path: 'permissions', builder: (_, __) => const PermissionsScreen()),
+          GoRoute(path: 'goal', builder: (_, __) => const GoalSetupScreen()),
           GoRoute(path: 'profile', builder: (_, __) => const ProfileSetupScreen()),
         ],
       ),
@@ -110,13 +111,6 @@ GoRouter buildAppRouter(Ref ref) {
               builder: (_, __) => const HomeScreen(),
               routes: [
                 GoRoute(path: 'breathing', builder: (_, __) => const FocusModeScreen()),
-                GoRoute(
-                  path: 'stories',
-                  builder: (_, __) => const StoriesFeedScreen(),
-                  routes: [
-                    GoRoute(path: 'create', builder: (_, __) => const CreateStoryScreen()),
-                  ],
-                ),
                 GoRoute(
                   path: 'o2',
                   builder: (_, __) => const O2DashboardScreen(),
@@ -145,13 +139,14 @@ GoRouter buildAppRouter(Ref ref) {
             ),
           ]),
 
-          // Tab 1: Ranking
+          // Tab 1: Sosyal (Sıralama + Hikayeler)
           StatefulShellBranch(routes: [
             GoRoute(
-              path: '/ranking',
-              builder: (_, __) => const RankingScreen(),
+              path: '/social',
+              builder: (_, __) => const SocialScreen(),
               routes: [
                 GoRoute(path: 'seasons', builder: (_, __) => const SeasonScreen()),
+                GoRoute(path: 'create-story', builder: (_, __) => const CreateStoryScreen()),
               ],
             ),
           ]),
@@ -178,7 +173,7 @@ GoRouter buildAppRouter(Ref ref) {
             ),
           ]),
 
-          // Tab 3: Profile
+          // Tab 3: Profile (includes settings)
           StatefulShellBranch(routes: [
             GoRoute(
               path: '/profile',
@@ -189,17 +184,8 @@ GoRouter buildAppRouter(Ref ref) {
                 GoRoute(path: 'stats/analytics', builder: (_, __) => const AnalyticsScreen()),
                 GoRoute(path: 'stats/whatif', builder: (_, __) => const WhatIfScreen()),
                 GoRoute(path: 'stats/detailed', builder: (_, __) => const AnalyticsDetailedScreen()),
-              ],
-            ),
-          ]),
-
-          // Tab 4: Settings
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: '/settings',
-              builder: (_, __) => const SettingsScreen(),
-              routes: [
-                GoRoute(path: 'subscription', builder: (_, __) => const SubscriptionScreen()),
+                GoRoute(path: 'settings', builder: (_, __) => const SettingsScreen()),
+                GoRoute(path: 'settings/subscription', builder: (_, __) => const SubscriptionScreen()),
               ],
             ),
           ]),
@@ -233,10 +219,9 @@ class _ScaffoldWithNavBar extends StatelessWidget {
 
   static const _tabs = [
     _TabItem(icon: Icons.home_rounded, label: 'Ana Sayfa'),
-    _TabItem(icon: Icons.leaderboard_rounded, label: 'Sıralama'),
+    _TabItem(icon: Icons.people_rounded, label: 'Sosyal'),
     _TabItem(icon: Icons.bolt_rounded, label: 'Düello'),
     _TabItem(icon: Icons.person_rounded, label: 'Profil'),
-    _TabItem(icon: Icons.settings_rounded, label: 'Ayarlar'),
   ];
 
   @override
@@ -250,10 +235,10 @@ class _ScaffoldWithNavBar extends StatelessWidget {
             end: Alignment.bottomCenter,
             colors: [Color(0xFF101018), Color(0xFF0A0A12)],
           ),
-          border: Border(top: BorderSide(color: AppColors.cardBorder.withOpacity(0.3), width: 0.5)),
+          border: Border(top: BorderSide(color: AppColors.cardBorder.withValues(alpha: 0.3), width: 0.5)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.5),
+              color: Colors.black.withValues(alpha: 0.5),
               blurRadius: 20,
               offset: const Offset(0, -4),
             ),
@@ -280,7 +265,7 @@ class _ScaffoldWithNavBar extends StatelessWidget {
                           size: 24,
                           color: selected ? AppColors.neonGreen : AppColors.textTertiary,
                           shadows: selected
-                              ? [Shadow(color: AppColors.neonGreen.withOpacity(0.5), blurRadius: 12)]
+                              ? [Shadow(color: AppColors.neonGreen.withValues(alpha: 0.5), blurRadius: 12)]
                               : null,
                         ),
                         const SizedBox(height: 4),
@@ -291,7 +276,7 @@ class _ScaffoldWithNavBar extends StatelessWidget {
                             fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
                             color: selected ? AppColors.neonGreen : AppColors.textTertiary,
                             shadows: selected
-                                ? [Shadow(color: AppColors.neonGreen.withOpacity(0.3), blurRadius: 8)]
+                                ? [Shadow(color: AppColors.neonGreen.withValues(alpha: 0.3), blurRadius: 8)]
                                 : null,
                           ),
                         ),

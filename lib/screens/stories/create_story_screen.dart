@@ -58,7 +58,7 @@ class _CreateStoryScreenState extends ConsumerState<CreateStoryScreen> {
                     onPressed: () => context.pop(),
                   ),
                   const Spacer(),
-                  const Text('Hikaye Paylas', style: AppTextStyles.h2),
+                  const Text('Hikaye Paylaş', style: AppTextStyles.h2),
                   const Spacer(),
                   const SizedBox(width: 48),
                 ],
@@ -192,7 +192,7 @@ class _CreateStoryScreenState extends ConsumerState<CreateStoryScreen> {
                           child: CircularProgressIndicator(
                               strokeWidth: 2, color: Colors.black),
                         )
-                      : const Text('Paylas'),
+                      : const Text('Paylaş'),
                 ),
               ),
             ),

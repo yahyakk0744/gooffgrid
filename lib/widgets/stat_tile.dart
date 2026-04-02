@@ -30,17 +30,17 @@ class StatTile extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: color.withOpacity(0.2),
+          color: color.withValues(alpha: 0.2),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withValues(alpha: 0.3),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
           BoxShadow(
-            color: color.withOpacity(0.08),
+            color: color.withValues(alpha: 0.08),
             blurRadius: 16,
             spreadRadius: -2,
           ),
@@ -62,7 +62,7 @@ class StatTile extends StatelessWidget {
               letterSpacing: -0.5,
               shadows: [
                 Shadow(
-                  color: color.withOpacity(0.4),
+                  color: color.withValues(alpha: 0.4),
                   blurRadius: 12,
                 ),
               ],

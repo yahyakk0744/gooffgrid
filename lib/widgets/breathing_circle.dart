@@ -103,8 +103,8 @@ class _BreathingCircleState extends State<BreathingCircle> with SingleTickerProv
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    const Color(0xFF1A1A6E).withOpacity(opacity),
-                    const Color(0xFF3D1A6E).withOpacity(opacity * 0.6),
+                    const Color(0xFF1A1A6E).withValues(alpha: opacity),
+                    const Color(0xFF3D1A6E).withValues(alpha: opacity * 0.6),
                   ],
                 ),
               ),
@@ -114,7 +114,7 @@ class _BreathingCircleState extends State<BreathingCircle> with SingleTickerProv
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
-                    color: Colors.white.withOpacity(0.8),
+                    color: Colors.white.withValues(alpha: 0.8),
                   ),
                 ),
               ),

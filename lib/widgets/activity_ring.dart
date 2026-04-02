@@ -117,7 +117,7 @@ class _ActivityRingState extends State<ActivityRing> with TickerProviderStateMix
                   style: AppTextStyles.heroNumber.copyWith(
                     shadows: [
                       Shadow(
-                        color: _ringColor.withOpacity(0.3),
+                        color: _ringColor.withValues(alpha: 0.3),
                         blurRadius: 20,
                       ),
                     ],
@@ -180,7 +180,7 @@ class _RingArcPainter extends CustomPainter {
 
     // Outer ambient glow (pulsing)
     final ambientPaint = Paint()
-      ..color = color.withOpacity(glowIntensity * 0.25)
+      ..color = color.withValues(alpha: glowIntensity * 0.25)
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth + 20
       ..strokeCap = StrokeCap.round
@@ -189,7 +189,7 @@ class _RingArcPainter extends CustomPainter {
 
     // Inner glow (pulsing)
     final glowPaint = Paint()
-      ..color = color.withOpacity(0.3 + glowIntensity * 0.2)
+      ..color = color.withValues(alpha: 0.3 + glowIntensity * 0.2)
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth + 8
       ..strokeCap = StrokeCap.round
@@ -205,7 +205,7 @@ class _RingArcPainter extends CustomPainter {
         startAngle: startAngle,
         endAngle: startAngle + sweepAngle,
         colors: [
-          color.withOpacity(0.7),
+          color.withValues(alpha: 0.7),
           color,
           color,
         ],
@@ -219,7 +219,7 @@ class _RingArcPainter extends CustomPainter {
     final tipX = center.dx + radius * math.cos(tipAngle);
     final tipY = center.dy + radius * math.sin(tipAngle);
     final tipPaint = Paint()
-      ..color = Colors.white.withOpacity(0.8)
+      ..color = Colors.white.withValues(alpha: 0.8)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
     canvas.drawCircle(Offset(tipX, tipY), strokeWidth * 0.35, tipPaint);
   }

@@ -24,7 +24,7 @@ class ShameWallCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Color.alphaBlend(Colors.red.withOpacity(0.05), AppColors.cardBg),
+        color: Color.alphaBlend(Colors.red.withValues(alpha: 0.05), AppColors.cardBg),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.cardBorder, width: 1),
       ),

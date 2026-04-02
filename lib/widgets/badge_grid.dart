@@ -43,26 +43,26 @@ class BadgeGrid extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: badge.isEarned
-              ? AppColors.neonGreen.withOpacity(0.3)
+              ? AppColors.neonGreen.withValues(alpha: 0.3)
               : AppColors.cardBorder,
           width: badge.isEarned ? 1.2 : 1,
         ),
         boxShadow: badge.isEarned
             ? [
                 BoxShadow(
-                  color: AppColors.neonGreen.withOpacity(0.15),
+                  color: AppColors.neonGreen.withValues(alpha: 0.15),
                   blurRadius: 16,
                   spreadRadius: -2,
                 ),
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
+                  color: Colors.black.withValues(alpha: 0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 4),
                 ),
               ]
             : [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
+                  color: Colors.black.withValues(alpha: 0.2),
                   blurRadius: 6,
                   offset: const Offset(0, 2),
                 ),
@@ -84,7 +84,7 @@ class BadgeGrid extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                     color: AppColors.textPrimary,
                     shadows: badge.isEarned
-                        ? [Shadow(color: AppColors.neonGreen.withOpacity(0.3), blurRadius: 8)]
+                        ? [Shadow(color: AppColors.neonGreen.withValues(alpha: 0.3), blurRadius: 8)]
                         : null,
                   ),
                   textAlign: TextAlign.center,

@@ -44,7 +44,7 @@ class GroupDetailScreen extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Haftalik Hedef', style: AppTextStyles.label),
+                    const Text('Haftalık Hedef', style: AppTextStyles.label),
                     const SizedBox(height: 4),
                     Text(group.challengeDescription, style: AppTextStyles.h3),
                     const SizedBox(height: 12),

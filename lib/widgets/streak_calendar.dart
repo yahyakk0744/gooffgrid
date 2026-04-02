@@ -60,7 +60,7 @@ class StreakCalendar extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: borderColor, width: filled ? 0 : 1.5),
             boxShadow: isToday
-                ? [BoxShadow(color: AppColors.neonGreen.withOpacity(0.3), blurRadius: 8, spreadRadius: 1)]
+                ? [BoxShadow(color: AppColors.neonGreen.withValues(alpha: 0.3), blurRadius: 8, spreadRadius: 1)]
                 : null,
           ),
         ),

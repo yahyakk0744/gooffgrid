@@ -50,12 +50,12 @@ class ShareableStatsCard extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
-            color: AppColors.neonGreen.withOpacity(0.3),
+            color: AppColors.neonGreen.withValues(alpha: 0.3),
             width: 1.5,
           ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.neonGreen.withOpacity(0.15),
+              color: AppColors.neonGreen.withValues(alpha: 0.15),
               blurRadius: 40,
               spreadRadius: -8,
             ),
@@ -72,7 +72,7 @@ class ShareableStatsCard extends StatelessWidget {
                 fontWeight: FontWeight.w700,
                 color: AppColors.neonGreen,
                 letterSpacing: 2,
-                shadows: [Shadow(color: AppColors.neonGreen.withOpacity(0.5), blurRadius: 12)],
+                shadows: [Shadow(color: AppColors.neonGreen.withValues(alpha: 0.5), blurRadius: 12)],
               ),
             ),
             const SizedBox(height: 20),
@@ -85,7 +85,7 @@ class ShareableStatsCard extends StatelessWidget {
                 color: avatarColor,
                 shape: BoxShape.circle,
                 boxShadow: [
-                  BoxShadow(color: avatarColor.withOpacity(0.4), blurRadius: 16),
+                  BoxShadow(color: avatarColor.withValues(alpha: 0.4), blurRadius: 16),
                 ],
               ),
               child: Center(
@@ -106,7 +106,7 @@ class ShareableStatsCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _StatColumn(label: 'Bugün', value: _formatted, color: _ringColor),
-                _StatColumn(label: 'Streak', value: '$streak gun', color: AppColors.neonGreen),
+                _StatColumn(label: 'Streak', value: '$streak gün', color: AppColors.neonGreen),
                 _StatColumn(label: 'Sıralama', value: '#$rank', color: AppColors.gold),
               ],
             ),
@@ -117,10 +117,10 @@ class ShareableStatsCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.neonGreen.withOpacity(0.3)),
+                border: Border.all(color: AppColors.neonGreen.withValues(alpha: 0.3)),
               ),
               child: const Text(
-                'Sen de katil → gooffgrid.app',
+                'Sen de katıl → gooffgrid.app',
                 style: TextStyle(fontSize: 12, color: AppColors.neonGreen, fontWeight: FontWeight.w500),
               ),
             ),
@@ -153,7 +153,7 @@ class _StatColumn extends StatelessWidget {
             fontSize: 20,
             fontWeight: FontWeight.w700,
             color: color,
-            shadows: [Shadow(color: color.withOpacity(0.4), blurRadius: 8)],
+            shadows: [Shadow(color: color.withValues(alpha: 0.4), blurRadius: 8)],
           ),
         ),
         const SizedBox(height: 2),

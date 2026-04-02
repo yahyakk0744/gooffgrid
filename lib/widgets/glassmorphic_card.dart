@@ -42,23 +42,23 @@ class GlassmorphicCard extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Colors.white.withOpacity(opacity),
-                  Colors.white.withOpacity(opacity * 0.4),
+                  Colors.white.withValues(alpha: opacity),
+                  Colors.white.withValues(alpha: opacity * 0.4),
                 ],
               ),
               border: Border.all(
-                color: Colors.white.withOpacity(borderOpacity),
+                color: Colors.white.withValues(alpha: borderOpacity),
                 width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
+                  color: Colors.black.withValues(alpha: 0.2),
                   blurRadius: 16,
                   offset: const Offset(0, 4),
                 ),
                 if (glowColor != null)
                   BoxShadow(
-                    color: glowColor!.withOpacity(0.15),
+                    color: glowColor!.withValues(alpha: 0.15),
                     blurRadius: 24,
                     spreadRadius: -4,
                   ),
@@ -102,12 +102,12 @@ class GlassChip extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               color: isSelected
-                  ? color.withOpacity(0.2)
-                  : Colors.white.withOpacity(0.06),
+                  ? color.withValues(alpha: 0.2)
+                  : Colors.white.withValues(alpha: 0.06),
               border: Border.all(
                 color: isSelected
-                    ? color.withOpacity(0.5)
-                    : Colors.white.withOpacity(0.1),
+                    ? color.withValues(alpha: 0.5)
+                    : Colors.white.withValues(alpha: 0.1),
               ),
             ),
             child: Text(

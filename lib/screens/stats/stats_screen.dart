@@ -33,7 +33,7 @@ class StatsScreen extends ConsumerWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColors.neonOrange.withOpacity(0.15),
+                      color: AppColors.neonOrange.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Text('Pro', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.neonOrange)),
@@ -91,13 +91,13 @@ class StatsScreen extends ConsumerWidget {
                           color: AppColors.neonGreen,
                           barWidth: 3,
                           dotData: const FlDotData(show: false),
-                          belowBarData: BarAreaData(show: true, color: AppColors.neonGreen.withOpacity(0.1)),
+                          belowBarData: BarAreaData(show: true, color: AppColors.neonGreen.withValues(alpha: 0.1)),
                         ),
                         // Goal line
                         LineChartBarData(
                           spots: List.generate(7, (i) => FlSpot(i.toDouble(), st.goalMinutes.toDouble())),
                           isCurved: false,
-                          color: AppColors.ringDanger.withOpacity(0.5),
+                          color: AppColors.ringDanger.withValues(alpha: 0.5),
                           barWidth: 1,
                           dashArray: [6, 4],
                           dotData: const FlDotData(show: false),
@@ -117,10 +117,10 @@ class StatsScreen extends ConsumerWidget {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [AppColors.neonGreen.withOpacity(0.12), AppColors.neonGreen.withOpacity(0.04)],
+                      colors: [AppColors.neonGreen.withValues(alpha: 0.12), AppColors.neonGreen.withValues(alpha: 0.04)],
                     ),
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: AppColors.neonGreen.withOpacity(0.2)),
+                    border: Border.all(color: AppColors.neonGreen.withValues(alpha: 0.2)),
                   ),
                   child: Row(
                     children: [

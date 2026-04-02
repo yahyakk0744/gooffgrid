@@ -6,6 +6,7 @@ import '../../widgets/premium_background.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/level_badge.dart';
 import '../../providers/friends_provider.dart';
+import '../../widgets/empty_state.dart';
 
 class FriendsListScreen extends ConsumerStatefulWidget {
   const FriendsListScreen({super.key});
@@ -60,6 +61,18 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
                 ),
               ),
               const SizedBox(height: 16),
+              if (filtered.isEmpty)
+                Expanded(
+                  child: EmptyState(
+                    emoji: '🤝',
+                    title: 'Henüz arkadaş yok',
+                    subtitle: 'Arkadaş ekleyerek başla',
+                    buttonText: 'Arkadaş Ekle',
+                    onButtonTap: () => context.push('/friend/add'),
+                  ),
+                ),
+
+              if (filtered.isNotEmpty)
               Expanded(
                 child: ListView.separated(
                   itemCount: filtered.length,

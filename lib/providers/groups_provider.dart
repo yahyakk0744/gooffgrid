@@ -5,7 +5,7 @@ import 'package:gooffgrid/models/group.dart';
 final _mockGroups = [
   Group(
     id: 'g1',
-    name: 'Orman Kurtlari',
+    name: 'Orman Kurtları',
     memberIds: const ['user1', 'u2', 'u3', 'u4', 'u5', 'u6'],
     members: const [
       GroupMember(userId: 'user1', name: 'Ege', avatarColor: Color(0xFF667EEA), level: 5, weekMinutes: 204),
@@ -16,7 +16,7 @@ final _mockGroups = [
       GroupMember(userId: 'u6', name: 'Mert', avatarColor: Color(0xFF30D158), level: 4, weekMinutes: 267),
     ],
     challengeTargetMinutes: 2400,
-    challengeDescription: 'Toplam 40 saatin altinda kal',
+    challengeDescription: 'Toplam 40 saatin altında kal',
     shameWallUserId: 'u6',
     createdAt: DateTime(2025, 2, 1),
   ),
@@ -31,7 +31,7 @@ final _mockGroups = [
       GroupMember(userId: 'u8', name: 'Ozan', avatarColor: Color(0xFFFFD700), level: 2, weekMinutes: 358),
     ],
     challengeTargetMinutes: 1680,
-    challengeDescription: 'Haftalik 28 saatin altinda kal',
+    challengeDescription: 'Haftalık 28 saatin altında kal',
     shameWallUserId: 'u8',
     createdAt: DateTime(2025, 3, 10),
   ),

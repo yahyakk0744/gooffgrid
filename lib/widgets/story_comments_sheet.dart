@@ -140,10 +140,10 @@ class _StoryCommentsSheetState extends ConsumerState<StoryCommentsSheet> {
               size: 48,
               color: AppColors.textTertiary.withValues(alpha: 0.4)),
           const SizedBox(height: 12),
-          const Text('Henuz yorum yok', style: AppTextStyles.bodySecondary),
+          const Text('Henüz yorum yok', style: AppTextStyles.bodySecondary),
           const SizedBox(height: 4),
           Text(
-            'Ilk yorumu sen yap!',
+            'İlk yorumu sen yap!',
             style: TextStyle(
                 fontSize: 12, color: AppColors.textTertiary),
           ),

@@ -75,11 +75,11 @@ class ReportCardScreen extends ConsumerWidget {
                         ),
                         border: Border.all(
                           width: 1.5,
-                          color: AppColors.neonGreen.withOpacity(0.25),
+                          color: AppColors.neonGreen.withValues(alpha: 0.25),
                         ),
                         boxShadow: [
-                          BoxShadow(color: AppColors.neonGreen.withOpacity(0.08), blurRadius: 40, spreadRadius: -8),
-                          BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 20),
+                          BoxShadow(color: AppColors.neonGreen.withValues(alpha: 0.08), blurRadius: 40, spreadRadius: -8),
+                          BoxShadow(color: Colors.black.withValues(alpha: 0.5), blurRadius: 20),
                         ],
                       ),
                       child: Column(
@@ -98,7 +98,7 @@ class ReportCardScreen extends ConsumerWidget {
                           const SizedBox(height: 4),
                           ShaderMask(
                             shaderCallback: (bounds) => LinearGradient(
-                              colors: [AppColors.neonGreen, AppColors.neonGreen.withOpacity(0.6)],
+                              colors: [AppColors.neonGreen, AppColors.neonGreen.withValues(alpha: 0.6)],
                             ).createShader(bounds),
                             child: const Text(
                               'Haftal\u0131k Rapor',
@@ -110,7 +110,7 @@ class ReportCardScreen extends ConsumerWidget {
                           // Week total hero
                           Text(weekTotal, style: AppTextStyles.wrappedHero.copyWith(
                             fontSize: 52,
-                            shadows: [Shadow(color: AppColors.neonGreen.withOpacity(0.3), blurRadius: 20)],
+                            shadows: [Shadow(color: AppColors.neonGreen.withValues(alpha: 0.3), blurRadius: 20)],
                           )),
                           const SizedBox(height: 4),
                           const Text('ekran s\u00fcresi', style: TextStyle(fontSize: 13, color: AppColors.textSecondary)),
@@ -118,9 +118,9 @@ class ReportCardScreen extends ConsumerWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                             decoration: BoxDecoration(
-                              color: AppColors.ringGood.withOpacity(0.12),
+                              color: AppColors.ringGood.withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: AppColors.ringGood.withOpacity(0.25)),
+                              border: Border.all(color: AppColors.ringGood.withValues(alpha: 0.25)),
                             ),
                             child: const Text(
                               'Ge\u00e7en haftadan %12 daha iyi',
@@ -179,7 +179,7 @@ class ReportCardScreen extends ConsumerWidget {
                                     width: 40,
                                     height: 40,
                                     decoration: BoxDecoration(
-                                      color: st.appUsage.first.iconColor.withOpacity(0.2),
+                                      color: st.appUsage.first.iconColor.withValues(alpha: 0.2),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     child: Icon(Icons.apps_rounded, color: st.appUsage.first.iconColor, size: 20),
@@ -211,7 +211,7 @@ class ReportCardScreen extends ConsumerWidget {
                                 decoration: BoxDecoration(
                                   color: AppColors.neonGreen,
                                   shape: BoxShape.circle,
-                                  boxShadow: [BoxShadow(color: AppColors.neonGreen.withOpacity(0.5), blurRadius: 6)],
+                                  boxShadow: [BoxShadow(color: AppColors.neonGreen.withValues(alpha: 0.5), blurRadius: 6)],
                                 ),
                               ),
                               const SizedBox(width: 8),
@@ -244,7 +244,7 @@ class ReportCardScreen extends ConsumerWidget {
                       color: AppColors.neonGreen,
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
-                        BoxShadow(color: AppColors.neonGreen.withOpacity(0.3), blurRadius: 16, offset: const Offset(0, 4)),
+                        BoxShadow(color: AppColors.neonGreen.withValues(alpha: 0.3), blurRadius: 16, offset: const Offset(0, 4)),
                       ],
                     ),
                     child: const Row(
@@ -309,14 +309,14 @@ class _StatBox extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        color: color.withOpacity(0.06),
-        border: Border.all(color: color.withOpacity(0.15)),
+        color: color.withValues(alpha: 0.06),
+        border: Border.all(color: color.withValues(alpha: 0.15)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, color: color, size: 18,
-            shadows: [Shadow(color: color.withOpacity(0.5), blurRadius: 8)],
+            shadows: [Shadow(color: color.withValues(alpha: 0.5), blurRadius: 8)],
           ),
           const SizedBox(height: 8),
           Text(value, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white)),

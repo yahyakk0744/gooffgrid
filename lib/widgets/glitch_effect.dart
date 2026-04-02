@@ -94,8 +94,8 @@ class _GlitchEffectState extends State<GlitchEffect>
                   colors: [
                     Colors.transparent,
                     Colors.transparent,
-                    glitchColor.withOpacity(0.6),
-                    glitchColor.withOpacity(0.6),
+                    glitchColor.withValues(alpha: 0.6),
+                    glitchColor.withValues(alpha: 0.6),
                     Colors.transparent,
                     Colors.transparent,
                   ],
@@ -115,7 +115,7 @@ class _GlitchEffectState extends State<GlitchEffect>
                     opacity: 0.7,
                     child: ColorFiltered(
                       colorFilter: ColorFilter.mode(
-                        glitchColor.withOpacity(0.3),
+                        glitchColor.withValues(alpha: 0.3),
                         BlendMode.srcATop,
                       ),
                       child: child,
@@ -157,7 +157,7 @@ class _ScanLinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = color.withOpacity(0.04 * intensity)
+      ..color = color.withValues(alpha: 0.04 * intensity)
       ..strokeWidth = 1;
 
     // Horizontal scan lines (VHS effect)
@@ -170,7 +170,7 @@ class _ScanLinePainter extends CustomPainter {
     // Moving thick glitch bar
     final barY = (progress * size.height * 1.5) % size.height;
     final barPaint = Paint()
-      ..color = color.withOpacity(0.08 * intensity)
+      ..color = color.withValues(alpha: 0.08 * intensity)
       ..style = PaintingStyle.fill;
     canvas.drawRect(
       Rect.fromLTWH(0, barY, size.width, 4 * intensity),

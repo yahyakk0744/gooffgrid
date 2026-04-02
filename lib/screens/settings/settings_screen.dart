@@ -62,7 +62,7 @@ class SettingsScreen extends ConsumerWidget {
               AppCard(
                 onTap: () {
                   HapticService.light();
-                  context.push('/settings/subscription');
+                  context.push('/profile/settings/subscription');
                 },
                 child: Row(
                   children: [
@@ -88,7 +88,7 @@ class SettingsScreen extends ConsumerWidget {
                   child: AppCard(
                     onTap: () {
                       HapticService.light();
-                      context.push('/admin/ganimet');
+                      context.push('/profile/settings/subscription'); // admin route moved
                     },
                     child: Row(
                       children: [
@@ -158,7 +158,7 @@ class _ToggleRow extends StatelessWidget {
             value: value,
             onChanged: onChanged,
             activeColor: AppColors.neonGreen,
-            activeTrackColor: AppColors.neonGreen.withOpacity(0.3),
+            activeTrackColor: AppColors.neonGreen.withValues(alpha: 0.3),
             inactiveThumbColor: AppColors.textTertiary,
             inactiveTrackColor: AppColors.cardBorder,
           ),

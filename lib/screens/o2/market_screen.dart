@@ -37,14 +37,14 @@ class MarketScreen extends ConsumerWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppColors.neonGreen.withOpacity(0.15),
+                        color: AppColors.neonGreen.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: AppColors.neonGreen.withOpacity(0.3)),
+                        border: Border.all(color: AppColors.neonGreen.withValues(alpha: 0.3)),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('O₂', style: TextStyle(fontSize: 12, color: AppColors.neonGreen.withOpacity(0.7))),
+                          Text('O₂', style: TextStyle(fontSize: 12, color: AppColors.neonGreen.withValues(alpha: 0.7))),
                           const SizedBox(width: 4),
                           Text(
                             '${o2.balance}',
@@ -111,10 +111,10 @@ class _OfferCard extends ConsumerWidget {
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: canAfford ? AppColors.neonGreen.withOpacity(0.3) : AppColors.cardBorder.withOpacity(0.3),
+          color: canAfford ? AppColors.neonGreen.withValues(alpha: 0.3) : AppColors.cardBorder.withValues(alpha: 0.3),
         ),
         boxShadow: canAfford
-            ? [BoxShadow(color: AppColors.neonGreen.withOpacity(0.08), blurRadius: 16)]
+            ? [BoxShadow(color: AppColors.neonGreen.withValues(alpha: 0.08), blurRadius: 16)]
             : null,
       ),
       child: Padding(
@@ -127,8 +127,8 @@ class _OfferCard extends ConsumerWidget {
               height: 52,
               decoration: BoxDecoration(
                 color: canAfford
-                    ? AppColors.neonGreen.withOpacity(0.1)
-                    : AppColors.cardBorder.withOpacity(0.3),
+                    ? AppColors.neonGreen.withValues(alpha: 0.1)
+                    : AppColors.cardBorder.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Center(
@@ -215,9 +215,9 @@ class _OfferCard extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppColors.neonGreen.withOpacity(0.1),
+                  color: AppColors.neonGreen.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.neonGreen.withOpacity(0.3)),
+                  border: Border.all(color: AppColors.neonGreen.withValues(alpha: 0.3)),
                 ),
                 child: Text(
                   result.redeemCode,

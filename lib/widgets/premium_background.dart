@@ -57,7 +57,7 @@ class AmbientGlow extends StatelessWidget {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    (color ?? AppColors.neonGreen).withOpacity(intensity),
+                    (color ?? AppColors.neonGreen).withValues(alpha: intensity),
                     Colors.transparent,
                   ],
                 ),

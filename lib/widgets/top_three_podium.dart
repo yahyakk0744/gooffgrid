@@ -66,17 +66,17 @@ class TopThreePodium extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: glowColor.withOpacity(rank == 1 ? 0.6 : 0.3),
+          color: glowColor.withValues(alpha: rank == 1 ? 0.6 : 0.3),
           width: rank == 1 ? 1.5 : 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.4),
+            color: Colors.black.withValues(alpha: 0.4),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
           BoxShadow(
-            color: glowColor.withOpacity(rank == 1 ? 0.25 : 0.1),
+            color: glowColor.withValues(alpha: rank == 1 ? 0.25 : 0.1),
             blurRadius: rank == 1 ? 24 : 16,
             spreadRadius: rank == 1 ? -2 : -4,
           ),
@@ -101,7 +101,7 @@ class TopThreePodium extends StatelessWidget {
                 fontWeight: FontWeight.w700,
                 color: glowColor,
                 shadows: [
-                  Shadow(color: glowColor.withOpacity(0.5), blurRadius: 8),
+                  Shadow(color: glowColor.withValues(alpha: 0.5), blurRadius: 8),
                 ],
               ),
             ),
@@ -115,7 +115,7 @@ class TopThreePodium extends StatelessWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: glowColor.withOpacity(0.3),
+                  color: glowColor.withValues(alpha: 0.3),
                   blurRadius: 12,
                   spreadRadius: 1,
                 ),
@@ -124,7 +124,7 @@ class TopThreePodium extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: glowColor.withOpacity(0.6), width: 2),
+                border: Border.all(color: glowColor.withValues(alpha: 0.6), width: 2),
               ),
               child: Container(
                 decoration: BoxDecoration(color: entry.avatarColor, shape: BoxShape.circle),
@@ -152,7 +152,7 @@ class TopThreePodium extends StatelessWidget {
               fontWeight: FontWeight.w600,
               color: glowColor,
               shadows: [
-                Shadow(color: glowColor.withOpacity(0.5), blurRadius: 6),
+                Shadow(color: glowColor.withValues(alpha: 0.5), blurRadius: 6),
               ],
             ),
           ),

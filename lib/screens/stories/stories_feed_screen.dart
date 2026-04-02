@@ -10,7 +10,9 @@ import '../../widgets/story_comments_sheet.dart';
 
 /// TikTok/Reels tarzinda dikey swipe hikaye akisi.
 class StoriesFeedScreen extends ConsumerStatefulWidget {
-  const StoriesFeedScreen({super.key});
+  const StoriesFeedScreen({super.key, this.embedded = false});
+
+  final bool embedded;
 
   @override
   ConsumerState<StoriesFeedScreen> createState() => _StoriesFeedScreenState();
@@ -65,11 +67,12 @@ class _StoriesFeedScreenState extends ConsumerState<StoriesFeedScreen> {
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Row(
                   children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back_ios_rounded,
-                          color: Colors.white, size: 20),
-                      onPressed: () => context.pop(),
-                    ),
+                    if (!widget.embedded)
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back_ios_rounded,
+                            color: Colors.white, size: 20),
+                        onPressed: () => context.pop(),
+                      ),
                     const Spacer(),
                     _FilterTab(
                       label: 'Arkadaslarim',
@@ -97,7 +100,7 @@ class _StoriesFeedScreenState extends ConsumerState<StoriesFeedScreen> {
             child: GestureDetector(
               onTap: () {
                 HapticService.medium();
-                context.go('/stories/create');
+                context.go('/social/create-story');
               },
               child: Container(
                 width: 56,
@@ -132,10 +135,10 @@ class _StoriesFeedScreenState extends ConsumerState<StoriesFeedScreen> {
               size: 64,
               color: AppColors.textTertiary.withValues(alpha: 0.4)),
           const SizedBox(height: 12),
-          const Text('Henuz hikaye yok', style: AppTextStyles.bodySecondary),
+          const Text('Henüz hikaye yok', style: AppTextStyles.bodySecondary),
           const SizedBox(height: 4),
           Text(
-            'Ilk hikayeni paylasarak baslat!',
+            'İlk hikayeni paylaşarak başlat!',
             style: TextStyle(fontSize: 12, color: AppColors.textTertiary),
           ),
         ],
