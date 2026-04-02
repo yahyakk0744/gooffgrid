@@ -66,12 +66,18 @@ class DuelActiveScreen extends ConsumerWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: _PlayerSide(
-                        name: p1Name,
-                        minutes: p1Minutes,
-                        isWinning: p1Winning,
-                        isOnline: true,
-                        avatarColor: const Color(0xFF667EEA),
+                      child: GestureDetector(
+                        onTap: () {
+                          HapticService.light();
+                          context.push('/user/user1');
+                        },
+                        child: _PlayerSide(
+                          name: p1Name,
+                          minutes: p1Minutes,
+                          isWinning: p1Winning,
+                          isOnline: true,
+                          avatarColor: const Color(0xFF667EEA),
+                        ),
                       ),
                     ),
                     Padding(
@@ -98,12 +104,18 @@ class DuelActiveScreen extends ConsumerWidget {
                       ),
                     ),
                     Expanded(
-                      child: _PlayerSide(
-                        name: p2Name,
-                        minutes: p2Minutes,
-                        isWinning: !p1Winning,
-                        isOnline: false,
-                        avatarColor: const Color(0xFF30D158),
+                      child: GestureDetector(
+                        onTap: () {
+                          HapticService.light();
+                          context.push('/user/f6'); // Mert's mock ID
+                        },
+                        child: _PlayerSide(
+                          name: p2Name,
+                          minutes: p2Minutes,
+                          isWinning: !p1Winning,
+                          isOnline: false,
+                          avatarColor: const Color(0xFF30D158),
+                        ),
                       ),
                     ),
                   ],

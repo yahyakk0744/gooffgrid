@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
 import '../../widgets/ranking_row.dart';
 import '../../widgets/top_three_podium.dart';
@@ -107,14 +108,20 @@ class RankingScreen extends ConsumerWidget {
                 itemCount: entries.length,
                 itemBuilder: (context, i) {
                   final e = entries[i];
-                  return RankingRow(
-                    rank: i + 1,
-                    name: e.name,
-                    avatarColor: e.avatarColor,
-                    level: e.level,
-                    totalMinutes: e.totalMinutes,
-                    change: e.change,
-                    isCurrentUser: e.userId == 'user1',
+                  return GestureDetector(
+                    onTap: () {
+                      HapticService.light();
+                      context.push('/user/${e.userId}');
+                    },
+                    child: RankingRow(
+                      rank: i + 1,
+                      name: e.name,
+                      avatarColor: e.avatarColor,
+                      level: e.level,
+                      totalMinutes: e.totalMinutes,
+                      change: e.change,
+                      isCurrentUser: e.userId == 'user1',
+                    ),
                   );
                 },
               ),

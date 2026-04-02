@@ -336,49 +336,56 @@ class _StoryPageState extends ConsumerState<_StoryPage>
             bottom: MediaQuery.of(context).padding.bottom + 24,
             left: 16,
             right: 80,
-            child: Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: widget.story.userAvatarColor ??
-                        AppColors.textTertiary,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Text(
-                      (widget.story.userName ?? '?')[0].toUpperCase(),
-                      style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white),
+            child: GestureDetector(
+              onTap: () {
+                HapticService.light();
+                context.push('/user/${widget.story.userId}');
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: widget.story.userAvatarColor ??
+                          AppColors.textTertiary,
+                      shape: BoxShape.circle,
                     ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        widget.story.userName ?? 'Kullanici',
+                    child: Center(
+                      child: Text(
+                        (widget.story.userName ?? '?')[0].toUpperCase(),
                         style: const TextStyle(
-                            fontSize: 14,
+                            fontSize: 18,
                             fontWeight: FontWeight.w600,
                             color: Colors.white),
                       ),
-                      Text(
-                        widget.story.remainingLabel,
-                        style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.white.withValues(alpha: 0.6)),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          widget.story.userName ?? 'Kullanıcı',
+                          style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white),
+                        ),
+                        Text(
+                          widget.story.remainingLabel,
+                          style: TextStyle(
+                              fontSize: 11,
+                              color: Colors.white.withValues(alpha: 0.6)),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
 

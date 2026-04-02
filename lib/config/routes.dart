@@ -37,6 +37,8 @@ import '../screens/o2/o2_dashboard_screen.dart';
 import '../screens/o2/market_screen.dart';
 import '../screens/ganimet/ganimet_screen.dart';
 import '../screens/admin/admin_ganimet_screen.dart';
+import '../screens/stats/analytics_detailed_screen.dart';
+import '../screens/profile/user_profile_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -87,6 +89,13 @@ GoRouter buildAppRouter(Ref ref) {
           GoRoute(path: 'permissions', builder: (_, __) => const PermissionsScreen()),
           GoRoute(path: 'profile', builder: (_, __) => const ProfileSetupScreen()),
         ],
+      ),
+
+      // Universal user profile (accessible from anywhere)
+      GoRoute(
+        path: '/user/:id',
+        builder: (_, state) =>
+            UserProfileScreen(userId: state.pathParameters['id']!),
       ),
 
       // Tabbed shell
@@ -179,6 +188,7 @@ GoRouter buildAppRouter(Ref ref) {
                 GoRoute(path: 'stats', builder: (_, __) => const StatsScreen()),
                 GoRoute(path: 'stats/analytics', builder: (_, __) => const AnalyticsScreen()),
                 GoRoute(path: 'stats/whatif', builder: (_, __) => const WhatIfScreen()),
+                GoRoute(path: 'stats/detailed', builder: (_, __) => const AnalyticsDetailedScreen()),
               ],
             ),
           ]),
