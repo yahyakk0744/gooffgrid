@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 
@@ -53,11 +54,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
   StreamSubscription<sb.AuthState>? _sub;
 
   /// Demo modu — Supabase bağlantısı olmadan UI test etmek için.
-  /// Production'da false yapılmalı.
+  /// Production'da false yapılmalı. Web'de her zaman demo.
   static const _demoMode = false;
 
   void _init() {
-    if (_demoMode) {
+    if (_demoMode || kIsWeb) {
       state = const AuthState(
         isLoading: false,
         isLoggedIn: true,
