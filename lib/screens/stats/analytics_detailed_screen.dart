@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/haptic_service.dart';
 import '../../widgets/glassmorphic_card.dart';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gooffgrid/config/theme.dart';
 import 'package:gooffgrid/models/duel.dart';
 
 final _now = DateTime.now();
@@ -48,7 +49,7 @@ final _mockDuels = [
   Duel(
     id: 'd5',
     player1: const DuelPlayer(userId: 'user1', name: 'Eren', avatarColor: Color(0xFF667EEA), totalMinutes: 120),
-    player2: const DuelPlayer(userId: 'u5', name: 'Selin', avatarColor: Color(0xFFFF6B00), totalMinutes: 185),
+    player2: const DuelPlayer(userId: 'u5', name: 'Selin', avatarColor: AppColors.neonOrange, totalMinutes: 185),
     durationMinutes: 1440,
     startTime: _now.subtract(const Duration(days: 14)),
     endTime: _now.subtract(const Duration(days: 13)),

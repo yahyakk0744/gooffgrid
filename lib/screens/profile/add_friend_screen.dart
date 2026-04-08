@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/premium_background.dart';
 import '../../widgets/app_card.dart';
@@ -25,7 +26,7 @@ class AddFriendScreen extends StatelessWidget {
                 children: [
                   GestureDetector(onTap: () => context.pop(), child: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary)),
                   const SizedBox(width: 12),
-                  Text(l.addFriend, style: AppTextStyles.h1),
+                  Text(l.addFriend, style: AppType.h1),
                 ],
               ),
               const SizedBox(height: 32),
@@ -36,14 +37,14 @@ class AddFriendScreen extends StatelessWidget {
                   children: [
                     const Icon(Icons.qr_code_2_rounded, size: 120, color: AppColors.textPrimary),
                     const SizedBox(height: 12),
-                    Text(l.showQrCode, style: AppTextStyles.bodySecondary),
+                    Text(l.showQrCode, style: AppType.body.copyWith(color: AppColors.textSecondary)),
                   ],
                 ),
               ),
               const SizedBox(height: 16),
 
               // Code input
-              Text(l.enterCode, style: AppTextStyles.label),
+              Text(l.enterCode, style: AppType.caption),
               const SizedBox(height: 8),
               TextField(
                 style: const TextStyle(color: AppColors.textPrimary, letterSpacing: 4, fontSize: 20, fontWeight: FontWeight.w600),

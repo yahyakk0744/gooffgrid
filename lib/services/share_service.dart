@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:gooffgrid/models/report_card.dart';
 import 'package:gooffgrid/services/screen_time_service.dart';
+import 'package:gooffgrid/config/theme.dart';
 import 'package:gooffgrid/widgets/share_card.dart';
 
 class ShareService {
@@ -148,9 +149,9 @@ class _SharePreviewSheetState extends State<_SharePreviewSheet> {
       child: Container(
         margin: const EdgeInsets.only(top: 24),
         decoration: const BoxDecoration(
-          color: Color(0xFF0A0A0A),
+          color: AppColors.bg,
           borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-          border: Border(top: BorderSide(color: Color(0xFF222222))),
+          border: Border(top: BorderSide(color: AppColors.cardBorder)),
         ),
         padding: const EdgeInsets.fromLTRB(20, 14, 20, 24),
         child: Column(
@@ -221,8 +222,8 @@ class _SharePreviewSheetState extends State<_SharePreviewSheet> {
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: widget.won
-                      ? const Color(0xFF39FF14)
-                      : const Color(0xFFFF4444),
+                      ? AppColors.neonGreen
+                      : AppColors.ringDanger,
                   foregroundColor: Colors.black,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),

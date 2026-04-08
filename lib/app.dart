@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import 'config/theme.dart';
 import 'config/routes.dart';
+import 'providers/theme_provider.dart';
 
 /// Router provider — auth state değişince redirect tetiklenir.
 final routerProvider = Provider<GoRouter>((ref) => buildAppRouter(ref));
@@ -16,11 +17,12 @@ class GoOffGridApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
+    final activeTheme = ref.watch(activeThemeProvider);
 
     return MaterialApp.router(
       title: 'gooffgrid',
       debugShowCheckedModeBanner: false,
-      theme: buildAppTheme(),
+      theme: buildAppTheme(activeTheme),
       routerConfig: router,
       // Localization
       localizationsDelegates: const [

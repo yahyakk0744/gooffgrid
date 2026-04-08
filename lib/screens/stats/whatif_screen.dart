@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/premium_background.dart';
 import '../../widgets/app_card.dart';
@@ -31,7 +32,7 @@ class WhatIfScreen extends StatelessWidget {
                 children: [
                   GestureDetector(onTap: () => context.pop(), child: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary)),
                   const SizedBox(width: 12),
-                  Text(l.whatCouldYouDo, style: AppTextStyles.h1),
+                  Text(l.whatCouldYouDo, style: AppType.h1),
                 ],
               ),
               const SizedBox(height: 24),
@@ -42,7 +43,7 @@ class WhatIfScreen extends StatelessWidget {
                     children: [
                       Text(item['emoji']!, style: const TextStyle(fontSize: 36)),
                       const SizedBox(width: 16),
-                      Expanded(child: Text(item['text']!, style: AppTextStyles.body)),
+                      Expanded(child: Text(item['text']!, style: AppType.body)),
                     ],
                   ),
                 ),

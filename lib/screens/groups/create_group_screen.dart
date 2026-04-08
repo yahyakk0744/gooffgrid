@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
+import '../../config/app_shadows.dart';
 import '../../widgets/premium_background.dart';
 import '../../services/haptic_service.dart';
 import '../../l10n/app_localizations.dart';
@@ -27,7 +29,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
     _MockFriend('Zeynep', const Color(0xFFF093FB)),
     _MockFriend('Burak', const Color(0xFF4FACFE)),
     _MockFriend('Elif', const Color(0xFFA8EB12)),
-    _MockFriend('Can', const Color(0xFFFF6B00)),
+    _MockFriend('Can', AppColors.neonOrange),
     _MockFriend('Selin', const Color(0xFF667EEA)),
     _MockFriend('Arda', const Color(0xFF00D4AA)),
     _MockFriend('Defne', const Color(0xFFFF6B6B)),
@@ -80,7 +82,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                 child: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
               ),
               const SizedBox(width: 12),
-              Text(l.createGroup, style: AppTextStyles.h1),
+              Text(l.createGroup, style: AppType.h2),
             ],
           ),
         ),
@@ -92,7 +94,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Group name
-                Text(l.groupNameLabel, style: AppTextStyles.label),
+                Text(l.groupNameLabel, style: AppType.caption),
                 const SizedBox(height: 8),
                 TextField(
                   controller: _nameController,
@@ -102,7 +104,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                     hintText: l.groupNameHint,
                     hintStyle: const TextStyle(color: AppColors.textTertiary),
                     filled: true,
-                    fillColor: AppColors.cardBg,
+                    fillColor: AppColors.surface,
                     counterStyle: const TextStyle(color: AppColors.textTertiary),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.cardBorder)),
                     enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.cardBorder)),
@@ -112,7 +114,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                 const SizedBox(height: 24),
 
                 // Daily goal
-                Text(l.dailyGoalHours(_targetHours.round()), style: AppTextStyles.label),
+                Text(l.dailyGoalHours(_targetHours.round()), style: AppType.caption),
                 const SizedBox(height: 8),
                 Slider(
                   value: _targetHours,
@@ -128,7 +130,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                 // Add members
                 Row(
                   children: [
-                    Text(l.addMember, style: AppTextStyles.label),
+                    Text(l.addMember, style: AppType.caption),
                     const Spacer(),
                     if (_selectedFriends.isNotEmpty)
                       Text(
@@ -149,7 +151,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                     hintStyle: const TextStyle(color: AppColors.textTertiary, fontSize: 14),
                     prefixIcon: const Icon(Icons.search_rounded, color: AppColors.textTertiary, size: 20),
                     filled: true,
-                    fillColor: AppColors.cardBg,
+                    fillColor: AppColors.surface,
                     contentPadding: const EdgeInsets.symmetric(vertical: 10),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.cardBorder)),
                     enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.cardBorder)),
@@ -237,15 +239,21 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
           child: SizedBox(
             width: double.infinity,
             height: 56,
-            child: ElevatedButton(
-              onPressed: _onCreate,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.neonGreen,
-                foregroundColor: Colors.black,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                boxShadow: AppShadow.glow(AppColors.neonGreen),
+                borderRadius: BorderRadius.circular(14),
               ),
-              child: Text(l.create),
+              child: ElevatedButton(
+                onPressed: _onCreate,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.neonGreen,
+                  foregroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+                child: Text(l.create),
+              ),
             ),
           ),
         ),
@@ -273,7 +281,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
           const SizedBox(height: 20),
           Text(
             l.groupCreated(_nameController.text.trim()),
-            style: AppTextStyles.h1,
+            style: AppType.h2,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
@@ -293,7 +301,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
             ),
             child: Column(
               children: [
-                Text(l.inviteLink, style: AppTextStyles.label),
+                Text(l.inviteLink, style: AppType.caption),
                 const SizedBox(height: 12),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/user_profile.dart';
 import '../../providers/user_provider.dart';
@@ -150,9 +151,9 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                 const SizedBox(height: 12),
 
                 // Username + name
-                Text(profile.name, style: AppTextStyles.h1),
+                Text(profile.name, style: AppType.h1),
                 const SizedBox(height: 4),
-                Text(profile.title, style: AppTextStyles.bodySecondary),
+                Text(profile.title, style: AppType.body.copyWith(color: AppColors.textSecondary)),
                 const SizedBox(height: 16),
 
                 // XP Progress Bar
@@ -166,7 +167,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                           const Spacer(),
                           Text(
                             '$xpCurrent / $xpNeeded XP',
-                            style: AppTextStyles.label,
+                            style: AppType.caption,
                           ),
                         ],
                       ),
@@ -401,7 +402,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
       children: [
         Row(
           children: [
-            Text(l.recentBadges, style: AppTextStyles.h3),
+            Text(l.recentBadges, style: AppType.h3),
             const Spacer(),
             GestureDetector(
               onTap: () => HapticService.light(),
@@ -441,7 +442,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                         ),
                         const SizedBox(height: 4),
                         Text(b.$2,
-                            style: AppTextStyles.labelSmall,
+                            style: AppType.label,
                             textAlign: TextAlign.center),
                       ],
                     ))
@@ -537,7 +538,7 @@ class _StatItem extends StatelessWidget {
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimary)),
         const SizedBox(height: 2),
-        Text(label, style: AppTextStyles.labelSmall),
+        Text(label, style: AppType.label),
       ],
     );
   }

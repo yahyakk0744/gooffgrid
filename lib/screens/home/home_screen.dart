@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../widgets/floating_timer_overlay.dart';
 import '../../providers/screen_time_provider.dart';
 import '../../providers/user_provider.dart';
@@ -43,7 +44,7 @@ class HomeScreen extends ConsumerWidget {
     final ghostOpacity = (1.0 - screenRatio).clamp(0.3, 1.0);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF050505),
+      backgroundColor: AppColors.bg,
       body: Stack(
         children: [
           // Ambient glow behind hero ring

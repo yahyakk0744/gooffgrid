@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../config/theme.dart';
+import '../config/design_tokens.dart';
 
 class StatTile extends StatelessWidget {
   const StatTile({
@@ -69,7 +70,7 @@ class StatTile extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(label, style: AppTextStyles.labelSmall, textAlign: TextAlign.center),
+          Text(label, style: AppType.label, textAlign: TextAlign.center),
         ],
       ),
     );

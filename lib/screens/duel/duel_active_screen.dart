@@ -82,7 +82,7 @@ class _DuelActiveScreenState extends ConsumerState<DuelActiveScreen> {
         body: Center(
           child: Text(
             'Aktif düello bulunamadı.',
-            style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
+            style: AppType.body.copyWith(color: AppColors.textSecondary),
           ),
         ),
       );
@@ -121,7 +121,7 @@ class _DuelActiveScreenState extends ConsumerState<DuelActiveScreen> {
                           color: AppColors.textPrimary),
                     ),
                     const SizedBox(width: AppSpacing.s3),
-                    Text(l.duel, style: AppTextStyles.h1),
+                    Text(l.duel, style: AppType.h2),
                     const Spacer(),
                     _RemainingBadge(
                       hours: remainHours,
@@ -214,7 +214,7 @@ class _DuelActiveScreenState extends ConsumerState<DuelActiveScreen> {
                         '${remainHours.toString().padLeft(2, '0')}:'
                         '${remainMin.toString().padLeft(2, '0')}:'
                         '${remainSec.toString().padLeft(2, '0')}',
-                        style: AppTextStyles.heroNumber.copyWith(
+                        style: AppType.monoDisplay.copyWith(
                           fontSize: 48,
                           color: _remaining.inMinutes < 60
                               ? AppColors.ringDanger
@@ -302,10 +302,10 @@ class _DuelActiveScreenState extends ConsumerState<DuelActiveScreen> {
         backgroundColor: AppColors.cardBg,
         shape: RoundedRectangleBorder(borderRadius: AppRadius.rM),
         title: Text('Düellodan çekil?',
-            style: AppTextStyles.h2.copyWith(color: AppColors.textPrimary)),
+            style: AppType.title.copyWith(color: AppColors.textPrimary)),
         content: Text(
           'Pes edersen düelloyu kaybetmiş sayılırsın.',
-          style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
+          style: AppType.body.copyWith(color: AppColors.textSecondary),
         ),
         actions: [
           TextButton(
@@ -444,7 +444,7 @@ class _PlayerSide extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppSpacing.s2),
-          Text(player.name, style: AppTextStyles.h3),
+          Text(player.name, style: AppType.body),
           const SizedBox(height: AppSpacing.s1),
           // Screen time number
           Text(

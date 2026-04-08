@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../config/theme.dart';
+import '../config/design_tokens.dart';
 
 class ShameWallCard extends StatelessWidget {
   const ShameWallCard({
@@ -52,7 +53,7 @@ class ShameWallCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(name, style: AppTextStyles.h3),
+                    Text(name, style: AppType.h3),
                     const SizedBox(height: 2),
                     Text(
                       '${totalMinutes}dk',
@@ -67,7 +68,7 @@ class ShameWallCard extends StatelessWidget {
 
           Text(
             'En çok: $topApp (${topAppMinutes}dk)',
-            style: AppTextStyles.bodySecondary,
+            style: AppType.body.copyWith(color: AppColors.textSecondary),
           ),
         ],
       ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../providers/app_block_provider.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -94,7 +95,7 @@ class _BlockScheduleScreenState extends ConsumerState<BlockScheduleScreen> {
             ),
           ),
           const SizedBox(width: 12),
-          Text(l.appBlockScheduleTitle, style: AppTextStyles.h1),
+          Text(l.appBlockScheduleTitle, style: AppType.h1),
         ],
       ),
     );
@@ -279,11 +280,11 @@ class _DayCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(day, style: AppTextStyles.h3),
+                        Text(day, style: AppType.h3),
                         if (hasRanges)
                           Text(
                             '${ranges.length} blok',
-                            style: AppTextStyles.label.copyWith(
+                            style: AppType.caption.copyWith(
                                 color: AppColors.neonGreen),
                           ),
                       ],
@@ -336,7 +337,7 @@ class _DayCard extends StatelessWidget {
                           const SizedBox(width: 6),
                           Text(
                             'Zaman Aralığı Ekle',
-                            style: AppTextStyles.label.copyWith(
+                            style: AppType.caption.copyWith(
                                 color: AppColors.neonGreen),
                           ),
                         ],
@@ -406,7 +407,7 @@ class _RangeTile extends StatelessWidget {
           const Icon(Icons.access_time_rounded,
               size: 14, color: AppColors.neonGreen),
           const SizedBox(width: 8),
-          Text(range.format(), style: AppTextStyles.body),
+          Text(range.format(), style: AppType.body),
           const Spacer(),
           GestureDetector(
             onTap: onRemove,

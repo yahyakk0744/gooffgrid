@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../config/theme.dart';
+import '../config/design_tokens.dart';
 import 'level_badge.dart';
 
 class RankingRow extends StatelessWidget {
@@ -84,7 +85,7 @@ class RankingRow extends StatelessWidget {
                 Flexible(
                   child: Text(
                     name,
-                    style: AppTextStyles.h3,
+                    style: AppType.h3,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

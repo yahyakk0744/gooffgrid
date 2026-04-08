@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
+import '../../config/app_shadows.dart';
 import '../../models/duel_type.dart';
 import '../../providers/friends_provider.dart';
 import '../../providers/duel_provider.dart';
@@ -194,7 +196,7 @@ class _CreateDuelScreenState extends ConsumerState<CreateDuelScreen> {
                     const SizedBox(width: 12),
                     Text(
                       _titleForKind(_currentKind, l),
-                      style: AppTextStyles.h1,
+                      style: AppType.h2,
                     ),
                     const Spacer(),
                     ...List.generate(_totalSteps, (i) => Container(
@@ -225,7 +227,12 @@ class _CreateDuelScreenState extends ConsumerState<CreateDuelScreen> {
                 child: SizedBox(
                   width: double.infinity,
                   height: 56,
-                  child: ElevatedButton(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      boxShadow: _canProceed ? AppShadow.glow(AppColors.neonGreen) : AppShadow.none,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: ElevatedButton(
                     onPressed: _canProceed ? _onProceed : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.neonGreen,
@@ -239,6 +246,7 @@ class _CreateDuelScreenState extends ConsumerState<CreateDuelScreen> {
                     child: Text(_step == _totalSteps - 1
                         ? l.duelStartButton
                         : l.continueButton),
+                  ),
                   ),
                 ),
               ),
@@ -305,13 +313,7 @@ class _CreateDuelScreenState extends ConsumerState<CreateDuelScreen> {
                 width: isSelected ? 2 : 1,
               ),
               boxShadow: isSelected
-                  ? [
-                      BoxShadow(
-                        color: AppColors.neonGreen.withValues(alpha: 0.25),
-                        blurRadius: 16,
-                        spreadRadius: -2,
-                      )
-                    ]
+                  ? AppShadow.glow(AppColors.neonGreen)
                   : null,
             ),
             child: Stack(
@@ -323,12 +325,12 @@ class _CreateDuelScreenState extends ConsumerState<CreateDuelScreen> {
                         style: const TextStyle(fontSize: 32)),
                     const SizedBox(height: 8),
                     Text(type.name,
-                        style: AppTextStyles.h3,
+                        style: AppType.body,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),
                     const SizedBox(height: 4),
                     Text(type.description,
-                        style: AppTextStyles.labelSmall,
+                        style: AppType.label,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis),
                   ],
@@ -422,16 +424,16 @@ class _CreateDuelScreenState extends ConsumerState<CreateDuelScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(type.name, style: AppTextStyles.h2),
+                      Text(type.name, style: AppType.h2),
                       Text(type.description,
-                          style: AppTextStyles.bodySecondary),
+                          style: AppType.body.copyWith(color: AppColors.textSecondary)),
                     ],
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 24),
-            Text(l.quickSelect, style: AppTextStyles.label),
+            Text(l.quickSelect, style: AppType.caption),
             const SizedBox(height: 12),
             Wrap(
               spacing: 10,
@@ -469,7 +471,7 @@ class _CreateDuelScreenState extends ConsumerState<CreateDuelScreen> {
               }).toList(),
             ),
             const SizedBox(height: 24),
-            Text(l.customDuration, style: AppTextStyles.label),
+            Text(l.customDuration, style: AppType.caption),
             const SizedBox(height: 12),
             Container(
               height: 180,
@@ -508,20 +510,20 @@ class _CreateDuelScreenState extends ConsumerState<CreateDuelScreen> {
               Center(
                 child: Text(
                   l.selectedDuration(displayText),
-                  style: AppTextStyles.h3.copyWith(color: AppColors.neonGreen),
+                  style: AppType.body.copyWith(color: AppColors.neonGreen),
                 ),
               ),
             if (_selectedDuration != null && totalMin < 10)
               Center(
                 child: Text(
                   l.minDurationWarning,
-                  style: AppTextStyles.label
+                  style: AppType.caption
                       .copyWith(color: AppColors.ringWarning),
                 ),
               ),
             if (type.id == 'penalty') ...[
               const SizedBox(height: 24),
-              Text(l.selectPenalty, style: AppTextStyles.label),
+              Text(l.selectPenalty, style: AppType.caption),
               const SizedBox(height: 12),
               Wrap(
                 spacing: 8,
@@ -680,7 +682,7 @@ class _CreateDuelScreenState extends ConsumerState<CreateDuelScreen> {
             ),
             child: TextField(
               controller: _searchController,
-              style: AppTextStyles.body,
+              style: AppType.body,
               decoration: InputDecoration(
                 hintText: l.searchFriend,
                 hintStyle: const TextStyle(color: AppColors.textTertiary),
@@ -774,9 +776,9 @@ class _CreateDuelScreenState extends ConsumerState<CreateDuelScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(f.profile.name,
-                                  style: AppTextStyles.h3),
+                                  style: AppType.body),
                               Text(l.todayMinutesLabel(f.todayMinutes),
-                                  style: AppTextStyles.labelSmall),
+                                  style: AppType.label),
                             ],
                           ),
                         ),

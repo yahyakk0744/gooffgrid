@@ -1,0 +1,114 @@
+GOOGLE PLAY — VERİ GÜVENLİĞİ FORMU
+=====================================
+Uygulama: gooffgrid
+Versiyon: 1.0
+Tarih: 2026-04
+
+---
+
+## 1. VERİ TOPLAMA VE PAYLAŞIM
+
+Uygulamanız hiç veri topluyor mu?
+→ EVET
+
+Tüm veri aktarımları şifreli (HTTPS/TLS) mi gerçekleşiyor?
+→ EVET — Tüm ağ iletişimi TLS 1.2+ ile şifrelenmektedir.
+
+Kullanıcılar veri silinmesini talep edebiliyor mu?
+→ EVET — Kullanıcılar uygulama içinden "Hesabı Sil" seçeneğiyle tüm verilerini kalıcı olarak silebilir. Talep anında 30 gün içinde tüm veriler sunuculardan kaldırılır.
+
+---
+
+## 2. TOPLANAN VERİ TÜRLERİ
+
+### A. Kişisel Bilgiler
+
+| Veri | Toplanıyor mu? | Amaç | Kullanıcıya Bağlı mı? |
+|------|----------------|------|----------------------|
+| Ad / Kullanıcı adı | EVET | Profil oluşturma, arkadaş eşleştirme | EVET |
+| E-posta adresi | EVET | Hesap doğrulama, bildirimler, şifre sıfırlama | EVET |
+| Profil fotoğrafı | EVET (opsiyonel) | Profil görüntüleme, düello ekranları | EVET |
+| Telefon numarası | HAYIR | — | — |
+
+### B. Kullanım Verileri (Ekran Süresi)
+
+| Veri | Toplanıyor mu? | Amaç | Kullanıcıya Bağlı mı? |
+|------|----------------|------|----------------------|
+| Günlük ekran süresi | EVET | Kişisel takip, sıralamalar, düellolar | EVET |
+| Uygulama bazlı kullanım istatistiği | EVET | Detaylı ekran süresi analizi | EVET |
+| Haftalık / aylık trend verileri | EVET | İstatistik gösterimi, ilerleme takibi | EVET |
+| Hedef tamamlama durumu | EVET | Rozet sistemi, bildirimler | EVET |
+
+### C. Konum Verisi
+
+| Veri | Toplanıyor mu? | Amaç | Kullanıcıya Bağlı mı? |
+|------|----------------|------|----------------------|
+| Yaklaşık konum | EVET (opsiyonel) | Sıralama listeleri için ülke/şehir belirleme | EVET |
+| Kesin konum | HAYIR | — | — |
+
+Konum verisi yalnızca kullanıcı onayı ile ve ülke/bölge düzeyinde işlenir. Sürekli arka plan konum takibi yapılmaz.
+
+### D. Uygulama Performansı ve Tanılama
+
+| Veri | Toplanıyor mu? | Amaç | Kullanıcıya Bağlı mı? |
+|------|----------------|------|----------------------|
+| Çökme raporları | EVET | Hata tespiti ve düzeltme | HAYIR (anonim) |
+| Uygulama performans metrikleri | EVET | Teknik iyileştirme | HAYIR (anonim) |
+
+---
+
+## 3. VERİ KULLANIM AMAÇLARI
+
+Toplanan veriler yalnızca şu amaçlarla kullanılır:
+
+- Uygulama işlevselliği: Ekran süresi takibi, düello sistemi, sıralamalar, hikayeler
+- Kişiselleştirme: Kullanıcıya özel hedefler, rozetler, bildirimler
+- Hesap yönetimi: Kimlik doğrulama ve profil işlemleri
+- Hizmet iyileştirme: Anonim teknik verilerle uygulama kalitesi artırma
+- İletişim: Hesap ile ilgili kritik bildirimler (şifre sıfırlama, güvenlik)
+
+Veriler reklam amaçlı kullanılmaz. Kullanıcı davranışı profilleme yapılmaz.
+
+---
+
+## 4. VERİ PAYLAŞIMI
+
+Üçüncü taraflarla veri paylaşılıyor mu?
+→ KISITLI — Yalnızca aşağıdaki durumlar geçerlidir:
+
+| Taraf | Paylaşılan Veri | Amaç |
+|-------|----------------|------|
+| Ödeme işlemcisi (ör. Google Play Billing) | Satın alma doğrulaması | Premium üyelik doğrulama |
+| Hata raporlama servisi (anonim) | Çökme logları | Teknik hata düzeltme |
+
+Veriler hiçbir koşulda reklam ağlarına, veri brokerlarına veya üçüncü taraf analitik şirketlerine satılmaz veya kiralanmaz.
+
+---
+
+## 5. VERİ GÜVENLİĞİ
+
+- Tüm veri iletişimi TLS 1.2 veya üstü ile şifrelenir.
+- Kullanıcı parolaları bcrypt ile hashlenerek saklanır; düz metin olarak tutulmaz.
+- Sunucu tarafı veriler endüstri standardı şifreleme ile depolanır.
+- Düzenli güvenlik denetimleri yapılır.
+
+---
+
+## 6. ÇOCUK GÜVENLİĞİ
+
+gooffgrid 13 yaş ve üzeri kullanıcılara yöneliktir. 13 yaşın altındaki çocuklardan bilerek veri toplanmaz. Böyle bir durumun farkına varılması halinde ilgili hesap ve veriler derhal silinir.
+
+---
+
+## 7. VERİ SİLME
+
+Kullanıcılar şu yollarla verilerini silebilir:
+1. Uygulama içi: Profil > Ayarlar > Hesabı Sil
+2. E-posta ile talep: privacy@gooffgrid.com
+
+Silme taleplerini 30 gün içinde işleme alınır. Yasal yükümlülükler gerektiren veriler minimum süre dışında tutulmaz.
+
+---
+
+Privacy Policy: https://gooffgrid.com/privacy
+İletişim: privacy@gooffgrid.com

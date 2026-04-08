@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'theme.dart';
 
 class AppConstants {
   AppConstants._();
@@ -56,7 +57,7 @@ class AppConstants {
     Color(0xFFF093FB),
     Color(0xFF4FACFE),
     Color(0xFFA8EB12),
-    Color(0xFFFF6B00),
+    AppColors.neonOrange,
     Color(0xFFFF453A),
     Color(0xFF30D158),
     Color(0xFF69C9D0),

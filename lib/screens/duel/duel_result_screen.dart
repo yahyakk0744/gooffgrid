@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../widgets/premium_background.dart';
 import '../../services/haptic_service.dart';
 import '../../services/share_service.dart';
@@ -62,7 +63,7 @@ class _DuelResultScreenState extends ConsumerState<DuelResultScreen> {
                     // Result title
                     Text(
                       _won ? l.duelWon : l.duelLost,
-                      style: AppTextStyles.heroNumber.copyWith(
+                      style: AppType.monoDisplay.copyWith(
                         fontSize: 36,
                         color:
                             _won ? AppColors.neonGreen : AppColors.ringDanger,
@@ -273,7 +274,7 @@ class _StatColumn extends StatelessWidget {
         if (isWinner)
           const Text('👑', style: TextStyle(fontSize: 20)),
         const SizedBox(height: 4),
-        Text(name, style: AppTextStyles.h3),
+        Text(name, style: AppType.body),
         const SizedBox(height: 8),
         Text(
           '${hours}s ${mins}dk',

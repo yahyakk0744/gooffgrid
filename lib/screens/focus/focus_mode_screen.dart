@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:confetti/confetti.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../providers/o2_provider.dart';
 import '../../widgets/breathing_circle.dart';
 import '../../widgets/growing_tree.dart';
@@ -98,7 +99,7 @@ class _FocusModeScreenState extends ConsumerState<FocusModeScreen>
       context: context,
       barrierDismissible: false,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF1A1A2E),
+        backgroundColor: AppColors.cardBg,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text(l.focusTimeout, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
         content: Text(

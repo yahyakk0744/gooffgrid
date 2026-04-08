@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../widgets/app_card.dart';
 import '../../providers/user_provider.dart';
 import '../../widgets/premium_background.dart';
@@ -31,7 +32,7 @@ class SettingsScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(l.settings, style: AppTextStyles.h1),
+              Text(l.settings, style: AppType.h2),
               const SizedBox(height: 24),
 
               // Profile summary — tappable to edit
@@ -53,8 +54,8 @@ class SettingsScreen extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(user.name, style: AppTextStyles.h3),
-                          Text('${user.city}, ${user.country}', style: AppTextStyles.bodySecondary),
+                          Text(user.name, style: AppType.body),
+                          Text('${user.city}, ${user.country}', style: AppType.bodySmall.copyWith(color: AppColors.textSecondary)),
                         ],
                       ),
                     ),
@@ -76,7 +77,7 @@ class SettingsScreen extends ConsumerWidget {
                   children: [
                     const Icon(Icons.star_rounded, color: AppColors.gold, size: 24),
                     const SizedBox(width: 12),
-                    Expanded(child: Text(l.subscription, style: AppTextStyles.h3)),
+                    Expanded(child: Text(l.subscription, style: AppType.body)),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(color: AppColors.cardBorder, borderRadius: BorderRadius.circular(8)),
@@ -102,7 +103,7 @@ class SettingsScreen extends ConsumerWidget {
                       children: [
                         const Icon(Icons.admin_panel_settings, color: AppColors.ringDanger, size: 24),
                         const SizedBox(width: 12),
-                        Text(l.adminAddLoot, style: AppTextStyles.h3),
+                        Text(l.adminAddLoot, style: AppType.body),
                         const Spacer(),
                         const Icon(Icons.chevron_right_rounded, color: AppColors.textTertiary),
                       ],
@@ -115,11 +116,11 @@ class SettingsScreen extends ConsumerWidget {
                 child: Column(
                   children: [
                     _ToggleRow(label: l.notifications, value: true, onChanged: (_) {}),
-                    const Divider(color: AppColors.cardBorder, height: 1),
+                    const Divider(color: AppColors.divider, height: 1),
                     _ToggleRow(label: l.dailyReminder, value: true, onChanged: (_) {}),
-                    const Divider(color: AppColors.cardBorder, height: 1),
+                    const Divider(color: AppColors.divider, height: 1),
                     _ToggleRow(label: l.duelNotifications, value: false, onChanged: (_) {}),
-                    const Divider(color: AppColors.cardBorder, height: 1),
+                    const Divider(color: AppColors.divider, height: 1),
                     _ToggleRow(label: l.locationSharing, value: true, onChanged: (_) {}),
                   ],
                 ),
@@ -127,15 +128,15 @@ class SettingsScreen extends ConsumerWidget {
               const SizedBox(height: 16),
 
               // Legal
-              Text(l.legal, style: AppTextStyles.label),
+              Text(l.legal, style: AppType.caption),
               const SizedBox(height: 8),
               AppCard(
                 child: Column(
                   children: [
                     _LinkRow(label: l.privacyPolicy, icon: Icons.privacy_tip_outlined, onTap: () => context.push('/profile/settings/privacy')),
-                    const Divider(color: AppColors.cardBorder, height: 1),
+                    const Divider(color: AppColors.divider, height: 1),
                     _LinkRow(label: l.termsOfService, icon: Icons.description_outlined, onTap: () => context.push('/profile/settings/terms')),
-                    const Divider(color: AppColors.cardBorder, height: 1),
+                    const Divider(color: AppColors.divider, height: 1),
                     _LinkRow(label: l.kvkkText, icon: Icons.shield_outlined, onTap: () => context.push('/profile/settings/kvkk')),
                   ],
                 ),
@@ -164,7 +165,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 24),
               Center(
-                child: Text('gooffgrid v1.0.0', style: AppTextStyles.labelSmall),
+                child: Text('gooffgrid v1.0.0', style: AppType.label),
               ),
               const SizedBox(height: 100),
             ],
@@ -193,7 +194,7 @@ class _LinkRow extends StatelessWidget {
           children: [
             Icon(icon, size: 20, color: AppColors.textSecondary),
             const SizedBox(width: 12),
-            Expanded(child: Text(label, style: AppTextStyles.body)),
+            Expanded(child: Text(label, style: AppType.body)),
             const Icon(Icons.chevron_right_rounded, size: 20, color: AppColors.textTertiary),
           ],
         ),
@@ -214,7 +215,7 @@ class _ToggleRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Expanded(child: Text(label, style: AppTextStyles.body)),
+          Expanded(child: Text(label, style: AppType.body)),
           Switch(
             value: value,
             onChanged: onChanged,

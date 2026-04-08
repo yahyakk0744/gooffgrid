@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
+import '../../config/app_shadows.dart';
 import '../../models/story.dart';
 import '../../providers/stories_provider.dart';
 import '../../services/haptic_service.dart';
@@ -110,13 +112,7 @@ class _StoriesFeedScreenState extends ConsumerState<StoriesFeedScreen> {
                 decoration: BoxDecoration(
                   color: AppColors.neonGreen,
                   shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.neonGreen.withValues(alpha: 0.4),
-                      blurRadius: 16,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+                  boxShadow: AppShadow.glow(AppColors.neonGreen, intensity: 0.4),
                 ),
                 child: const Icon(Icons.add_rounded,
                     color: Colors.black, size: 28),
@@ -137,7 +133,7 @@ class _StoriesFeedScreenState extends ConsumerState<StoriesFeedScreen> {
               size: 64,
               color: AppColors.textTertiary.withValues(alpha: 0.4)),
           const SizedBox(height: 12),
-          Text(l.noStories, style: AppTextStyles.bodySecondary),
+          Text(l.noStories, style: AppType.body.copyWith(color: AppColors.textSecondary)),
           const SizedBox(height: 4),
           Text(
             l.shareFirstStory,
@@ -438,7 +434,7 @@ class _StoryPageState extends ConsumerState<_StoryPage>
               children: [
                 const Icon(Icons.visibility_rounded, color: AppColors.textSecondary, size: 20),
                 const SizedBox(width: 8),
-                Text(l.viewsCount(widget.story.viewCount), style: AppTextStyles.h3),
+                Text(l.viewsCount(widget.story.viewCount), style: AppType.body),
               ],
             ),
             const SizedBox(height: 16),
@@ -449,8 +445,8 @@ class _StoryPageState extends ConsumerState<_StoryPage>
                 children: [
                   CircleAvatar(radius: 18, backgroundColor: v.$2, child: Text(v.$1[0], style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600))),
                   const SizedBox(width: 12),
-                  Expanded(child: Text(v.$1, style: AppTextStyles.body)),
-                  Text(v.$3, style: AppTextStyles.labelSmall),
+                  Expanded(child: Text(v.$1, style: AppType.body)),
+                  Text(v.$3, style: AppType.label),
                 ],
               ),
             )),
@@ -464,7 +460,7 @@ class _StoryPageState extends ConsumerState<_StoryPage>
   static const _mockViewers = [
     ('Zeynep', Color(0xFFF093FB), '2s önce'),
     ('Burak', Color(0xFF4FACFE), '3s önce'),
-    ('Can', Color(0xFFFF6B00), '5s önce'),
+    ('Can', AppColors.neonOrange, '5s önce'),
     ('Selin', Color(0xFF667EEA), '6s önce'),
   ];
 

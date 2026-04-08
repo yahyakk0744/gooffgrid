@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../models/o2_transaction.dart';
 import '../../providers/o2_provider.dart';
 import '../../services/o2_service.dart';
@@ -34,7 +35,7 @@ class MarketScreen extends ConsumerWidget {
                       child: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
                     ),
                     const SizedBox(width: 12),
-                    Text(l.offGridMarket, style: AppTextStyles.h1),
+                    Text(l.offGridMarket, style: AppType.h2),
                     const Spacer(),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -70,7 +71,7 @@ class MarketScreen extends ConsumerWidget {
                       ? Center(
                           child: Padding(
                             padding: const EdgeInsets.all(32),
-                            child: Text(l.noOffersYet, style: AppTextStyles.bodySecondary),
+                            child: Text(l.noOffersYet, style: AppType.bodySmall.copyWith(color: AppColors.textSecondary)),
                           ),
                         )
                       : Column(
@@ -82,7 +83,7 @@ class MarketScreen extends ConsumerWidget {
                       child: CircularProgressIndicator(color: AppColors.neonGreen),
                     ),
                   ),
-                  error: (_, __) => Text(l.loadFailed, style: AppTextStyles.bodySecondary),
+                  error: (_, __) => Text(l.loadFailed, style: AppType.bodySmall.copyWith(color: AppColors.textSecondary)),
                 ),
                 const SizedBox(height: 100),
               ],
@@ -146,7 +147,7 @@ class _OfferCard extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(offer.partnerName, style: const TextStyle(fontSize: 11, color: AppColors.textTertiary)),
-                  Text(offer.title, style: AppTextStyles.h3),
+                  Text(offer.title, style: AppType.body),
                   if (offer.description != null)
                     Text(offer.description!, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
                   if (offer.city != null)
@@ -214,7 +215,7 @@ class _OfferCard extends ConsumerWidget {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(l.couponCode, style: AppTextStyles.bodySecondary),
+              Text(l.couponCode, style: AppType.bodySmall.copyWith(color: AppColors.textSecondary)),
               const SizedBox(height: 12),
               Container(
                 padding: const EdgeInsets.all(16),
@@ -234,7 +235,7 @@ class _OfferCard extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              Text(l.o2SpentMsg(result.o2Spent), style: AppTextStyles.bodySecondary),
+              Text(l.o2SpentMsg(result.o2Spent), style: AppType.bodySmall.copyWith(color: AppColors.textSecondary)),
             ],
           ),
           actions: [

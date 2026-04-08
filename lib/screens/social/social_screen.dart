@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../widgets/premium_background.dart';
 import '../../l10n/app_localizations.dart';
 import '../ranking/ranking_screen.dart';
@@ -22,11 +23,7 @@ class SocialScreen extends StatelessWidget {
             elevation: 0,
             title: Text(
               l.social,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-              ),
+              style: AppType.h3,
             ),
             centerTitle: true,
             bottom: TabBar(

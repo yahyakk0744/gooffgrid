@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../providers/o2_provider.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/glassmorphic_card.dart';
@@ -37,7 +38,7 @@ class O2DashboardScreen extends ConsumerWidget {
                       child: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
                     ),
                     const SizedBox(width: 12),
-                    Text(l.oxygenTitle, style: AppTextStyles.h1),
+                    Text(l.oxygenTitle, style: AppType.h2),
                   ],
                 ),
                 const SizedBox(height: 24),
@@ -47,7 +48,7 @@ class O2DashboardScreen extends ConsumerWidget {
                   glowColor: AppColors.neonGreen,
                   child: Column(
                     children: [
-                      Text(l.o2Balance, style: AppTextStyles.label),
+                      Text(l.o2Balance, style: AppType.caption),
                       const SizedBox(height: 8),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -122,7 +123,7 @@ class O2DashboardScreen extends ConsumerWidget {
                         child: Column(
                           children: [
                             Text('${o2.dailyRemaining}', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
-                            Text(l.remainingShort, style: AppTextStyles.labelSmall),
+                            Text(l.remainingShort, style: AppType.label),
                           ],
                         ),
                       ),
@@ -133,7 +134,7 @@ class O2DashboardScreen extends ConsumerWidget {
                         child: Column(
                           children: [
                             Text('${o2.lifetimeO2}', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: AppColors.gold)),
-                            Text(l.totalO2, style: AppTextStyles.labelSmall),
+                            Text(l.totalO2, style: AppType.label),
                           ],
                         ),
                       ),
@@ -173,8 +174,8 @@ class O2DashboardScreen extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(l.offGridMarket, style: AppTextStyles.h3),
-                              Text(l.offGridMarketHint, style: AppTextStyles.bodySecondary),
+                              Text(l.offGridMarket, style: AppType.body),
+                              Text(l.offGridMarketHint, style: AppType.bodySmall.copyWith(color: AppColors.textSecondary)),
                             ],
                           ),
                         ),
@@ -190,7 +191,7 @@ class O2DashboardScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(l.o2Rules, style: AppTextStyles.h3),
+                      Text(l.o2Rules, style: AppType.body),
                       const SizedBox(height: 12),
                       _RuleRow(emoji: '🕗', text: l.o2RuleTime),
                       _RuleRow(emoji: '📊', text: l.o2RuleDaily),
@@ -202,21 +203,21 @@ class O2DashboardScreen extends ConsumerWidget {
                 const SizedBox(height: 24),
 
                 // Transaction history
-                Text(l.recentTransactions, style: AppTextStyles.h3),
+                Text(l.recentTransactions, style: AppType.body),
                 const SizedBox(height: 12),
                 txAsync.when(
                   data: (txs) => txs.isEmpty
                       ? Center(
                           child: Padding(
                             padding: const EdgeInsets.all(24),
-                            child: Text(l.noTransactions, style: AppTextStyles.bodySecondary),
+                            child: Text(l.noTransactions, style: AppType.bodySmall.copyWith(color: AppColors.textSecondary)),
                           ),
                         )
                       : Column(
                           children: txs.take(20).map((tx) => _TransactionRow(tx: tx)).toList(),
                         ),
                   loading: () => const Center(child: CircularProgressIndicator(color: AppColors.neonGreen)),
-                  error: (_, __) => Text(l.loadFailed, style: AppTextStyles.bodySecondary),
+                  error: (_, __) => Text(l.loadFailed, style: AppType.bodySmall.copyWith(color: AppColors.textSecondary)),
                 ),
                 const SizedBox(height: 100),
               ],
@@ -241,7 +242,7 @@ class _RuleRow extends StatelessWidget {
         children: [
           Text(emoji, style: const TextStyle(fontSize: 16)),
           const SizedBox(width: 10),
-          Expanded(child: Text(text, style: AppTextStyles.bodySecondary)),
+          Expanded(child: Text(text, style: AppType.bodySmall.copyWith(color: AppColors.textSecondary))),
         ],
       ),
     );

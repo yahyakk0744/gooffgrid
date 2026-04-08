@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../widgets/premium_background.dart';
 import '../../widgets/app_card.dart';
 import '../../providers/groups_provider.dart';
@@ -25,7 +26,7 @@ class GroupsScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(l.groups, style: AppTextStyles.h1),
+              Text(l.groups, style: AppType.h2),
               const SizedBox(height: 24),
               if (groups.isEmpty)
                 EmptyState(
@@ -43,9 +44,9 @@ class GroupsScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(g.name, style: AppTextStyles.h3),
+                      Text(g.name, style: AppType.body),
                       const SizedBox(height: 4),
-                      Text('${g.memberCount} uye  |  ${g.weekTotalMinutes ~/ 60}s haftalik', style: AppTextStyles.bodySecondary),
+                      Text('${g.memberCount} uye  |  ${g.weekTotalMinutes ~/ 60}s haftalik', style: AppType.bodySmall.copyWith(color: AppColors.textSecondary)),
                     ],
                   ),
                 ),

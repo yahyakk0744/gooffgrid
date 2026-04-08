@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/premium_background.dart';
 import '../../widgets/app_card.dart';
@@ -45,7 +46,7 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
                 children: [
                   GestureDetector(onTap: () => context.pop(), child: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary)),
                   const SizedBox(width: 12),
-                  Text(l.friends, style: AppTextStyles.h1),
+                  Text(l.friends, style: AppType.h1),
                 ],
               ),
               const SizedBox(height: 16),
@@ -95,13 +96,13 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
                           Expanded(
                             child: Row(
                               children: [
-                                Text(f.profile.name, style: AppTextStyles.h3),
+                                Text(f.profile.name, style: AppType.h3),
                                 const SizedBox(width: 6),
                                 LevelBadge(level: f.profile.level),
                               ],
                             ),
                           ),
-                          Text('${f.todayMinutes}dk', style: AppTextStyles.bodySecondary),
+                          Text('${f.todayMinutes}dk', style: AppType.body.copyWith(color: AppColors.textSecondary)),
                         ],
                       ),
                     );

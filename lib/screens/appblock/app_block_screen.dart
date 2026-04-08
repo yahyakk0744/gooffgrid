@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../providers/app_block_provider.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -111,7 +112,7 @@ class _Header extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          Text(l.appBlockTitle, style: AppTextStyles.h1),
+          Text(l.appBlockTitle, style: AppType.h1),
           const Spacer(),
           GestureDetector(
             onTap: () => context.push('/app-block/schedule'),
@@ -216,11 +217,11 @@ class _MainToggleCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(l.appBlockEnableBlocking,
-                        style: AppTextStyles.h3),
+                        style: AppType.h3),
                     const SizedBox(height: 2),
                     Text(
                       isOn ? l.appBlockActive : l.appBlockInactive,
-                      style: AppTextStyles.label.copyWith(
+                      style: AppType.caption.copyWith(
                         color: isOn
                             ? AppColors.neonGreen
                             : AppColors.textTertiary,
@@ -311,10 +312,10 @@ class _StrictModeCardState extends State<_StrictModeCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(widget.l.appBlockStrictMode,
-                            style: AppTextStyles.h3),
+                            style: AppType.h3),
                         const SizedBox(height: 2),
                         Text(widget.l.appBlockStrictDesc,
-                            style: AppTextStyles.label),
+                            style: AppType.caption),
                       ],
                     ),
                   ),
@@ -354,7 +355,7 @@ class _StrictModeCardState extends State<_StrictModeCard> {
                       const SizedBox(width: 8),
                       Text(
                         _formatCountdown(until),
-                        style: AppTextStyles.label.copyWith(
+                        style: AppType.caption.copyWith(
                             color: AppColors.ringDanger),
                       ),
                     ],
@@ -408,11 +409,11 @@ class _StrictModeCardState extends State<_StrictModeCard> {
             ),
             const SizedBox(height: 16),
             Text(widget.l.appBlockStrictDurationTitle,
-                style: AppTextStyles.h2),
+                style: AppType.h2),
             const SizedBox(height: 16),
             ...options.map(
               (opt) => ListTile(
-                title: Text(opt.$1, style: AppTextStyles.body),
+                title: Text(opt.$1, style: AppType.body),
                 trailing: const Icon(Icons.chevron_right_rounded,
                     color: AppColors.textTertiary),
                 onTap: () {
@@ -474,9 +475,9 @@ class _ScheduleCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(l.appBlockScheduleTitle, style: AppTextStyles.h3),
+                      Text(l.appBlockScheduleTitle, style: AppType.h3),
                       Text(l.appBlockScheduleDesc,
-                          style: AppTextStyles.label),
+                          style: AppType.caption),
                     ],
                   ),
                 ),
@@ -501,7 +502,7 @@ class _SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       title.toUpperCase(),
-      style: AppTextStyles.label.copyWith(letterSpacing: 1),
+      style: AppType.caption.copyWith(letterSpacing: 1),
     );
   }
 }
@@ -528,7 +529,7 @@ class _EmptyAppsHint extends StatelessWidget {
           Icon(Icons.apps_rounded,
               size: 40, color: AppColors.textTertiary),
           const SizedBox(height: 8),
-          Text(l.appBlockNoApps, style: AppTextStyles.bodySecondary),
+          Text(l.appBlockNoApps, style: AppType.body.copyWith(color: AppColors.textSecondary)),
         ],
       ),
     );
@@ -583,7 +584,7 @@ class _BlockedAppTile extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: Text(name, style: AppTextStyles.h3),
+            child: Text(name, style: AppType.h3),
           ),
           GestureDetector(
             onTap: onRemove,
@@ -684,7 +685,7 @@ class _AddAppFab extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 14),
-                  Text(l.appBlockPickerTitle, style: AppTextStyles.h2),
+                  Text(l.appBlockPickerTitle, style: AppType.h2),
                 ],
               ),
             ),
@@ -706,7 +707,7 @@ class _AddAppFab extends StatelessWidget {
                       ),
                       child: Icon(app.icon, color: app.color, size: 20),
                     ),
-                    title: Text(app.name, style: AppTextStyles.body),
+                    title: Text(app.name, style: AppType.body),
                     trailing: isAdded
                         ? const Icon(Icons.check_circle_rounded,
                             color: AppColors.neonGreen)

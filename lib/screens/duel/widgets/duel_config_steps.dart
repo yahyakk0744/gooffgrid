@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../../../config/theme.dart';
+import '../../../config/design_tokens.dart';
+import '../../../config/app_shadows.dart';
 import '../../../models/duel_type.dart';
 import '../../../services/haptic_service.dart';
 
@@ -37,11 +39,11 @@ class AppPickerStep extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Yasaklanacak uygulamayı seç',
-              style: AppTextStyles.h2),
+          Text('Yasaklanacak uygulamayı seç',
+              style: AppType.h2),
           const SizedBox(height: 4),
-          const Text('Rakibin 24 saat bu uygulamayı açamayacak',
-              style: AppTextStyles.bodySecondary),
+          Text('Rakibin 24 saat bu uygulamayı açamayacak',
+              style: AppType.body.copyWith(color: AppColors.textSecondary)),
           const SizedBox(height: 16),
           Expanded(
             child: GridView.builder(
@@ -74,14 +76,7 @@ class AppPickerStep extends StatelessWidget {
                         width: isSelected ? 2 : 1,
                       ),
                       boxShadow: isSelected
-                          ? [
-                              BoxShadow(
-                                color: AppColors.neonGreen
-                                    .withValues(alpha: 0.25),
-                                blurRadius: 14,
-                                spreadRadius: -2,
-                              )
-                            ]
+                          ? AppShadow.glow(AppColors.neonGreen)
                           : null,
                     ),
                     child: Column(
@@ -137,11 +132,11 @@ class CategoryPickerStep extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Hangi kategoride yarışıyorsunuz?',
-              style: AppTextStyles.h2),
+          Text('Hangi kategoride yarışıyorsunuz?',
+              style: AppType.h2),
           const SizedBox(height: 4),
-          const Text('Sadece bu kategorideki süre sayılacak',
-              style: AppTextStyles.bodySecondary),
+          Text('Sadece bu kategorideki süre sayılacak',
+              style: AppType.body.copyWith(color: AppColors.textSecondary)),
           const SizedBox(height: 16),
           Expanded(
             child: ListView.separated(
@@ -174,7 +169,7 @@ class CategoryPickerStep extends StatelessWidget {
                             style: const TextStyle(fontSize: 32)),
                         const SizedBox(width: 14),
                         Expanded(
-                          child: Text(cat.$2, style: AppTextStyles.h2),
+                          child: Text(cat.$2, style: AppType.h2),
                         ),
                         Icon(
                           isSelected
@@ -257,11 +252,11 @@ class _DiceRollerStepState extends State<DiceRollerStep>
       child: Column(
         children: [
           const SizedBox(height: 16),
-          const Text('Zar at, hedefini belirlesin',
-              style: AppTextStyles.h2),
+          Text('Zar at, hedefini belirlesin',
+              style: AppType.h2),
           const SizedBox(height: 4),
-          const Text('Zarın değeri × 30 dakika = hedef süre',
-              style: AppTextStyles.bodySecondary),
+          Text('Zarın değeri × 30 dakika = hedef süre',
+              style: AppType.body.copyWith(color: AppColors.textSecondary)),
           const SizedBox(height: 40),
           GestureDetector(
             onTap: _roll,
@@ -292,14 +287,7 @@ class _DiceRollerStepState extends State<DiceRollerStep>
                         width: 2,
                       ),
                       boxShadow: locked
-                          ? [
-                              BoxShadow(
-                                color: AppColors.neonGreen
-                                    .withValues(alpha: 0.3),
-                                blurRadius: 30,
-                                spreadRadius: -4,
-                              )
-                            ]
+                          ? AppShadow.glow(AppColors.neonGreen, blur: 30)
                           : null,
                     ),
                     child: Center(
@@ -319,17 +307,17 @@ class _DiceRollerStepState extends State<DiceRollerStep>
           if (locked) ...[
             Text(
               'Sonuç: $result',
-              style: AppTextStyles.h1.copyWith(color: AppColors.neonGreen),
+              style: AppType.h1.copyWith(color: AppColors.neonGreen),
             ),
             const SizedBox(height: 8),
             Text(
               'Hedef süre: ${result * 30} dk',
-              style: AppTextStyles.bodySecondary,
+              style: AppType.body.copyWith(color: AppColors.textSecondary),
             ),
           ] else
             Text(
               _rolling ? 'Zar dönüyor...' : 'Atmak için dokun',
-              style: AppTextStyles.bodySecondary,
+              style: AppType.body.copyWith(color: AppColors.textSecondary),
             ),
         ],
       ),
@@ -368,7 +356,7 @@ class NightDuelInfoStep extends StatelessWidget {
               children: [
                 const Text('🌙', style: TextStyle(fontSize: 56)),
                 const SizedBox(height: 16),
-                const Text('Gece Düellosu', style: AppTextStyles.h1),
+                Text('Gece Düellosu', style: AppType.h1),
                 const SizedBox(height: 12),
                 Container(
                   padding: const EdgeInsets.symmetric(
@@ -387,9 +375,9 @@ class NightDuelInfoStep extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                const Text(
+                Text(
                   'Telefona bakmadan uyu. Kim daha uzun dokunmazsa kazanır. Süre sabit 8 saat.',
-                  style: AppTextStyles.body,
+                  style: AppType.body,
                 ),
                 const SizedBox(height: 12),
                 Row(
@@ -400,7 +388,7 @@ class NightDuelInfoStep extends StatelessWidget {
                     Expanded(
                       child: Text(
                         'Bu düello saat 23:00\'de otomatik başlar.',
-                        style: AppTextStyles.labelSmall,
+                        style: AppType.label,
                       ),
                     ),
                   ],
@@ -447,10 +435,10 @@ class _MysteryRevealStepState extends State<MysteryRevealStep>
       child: Column(
         children: [
           const SizedBox(height: 8),
-          const Text('Gizemli Görev', style: AppTextStyles.h1),
+          Text('Gizemli Görev', style: AppType.h1),
           const SizedBox(height: 4),
-          const Text('Görev düello başlayınca açıklanır',
-              style: AppTextStyles.bodySecondary),
+          Text('Görev düello başlayınca açıklanır',
+              style: AppType.body.copyWith(color: AppColors.textSecondary)),
           const SizedBox(height: 40),
           AnimatedBuilder(
             animation: _shake,
@@ -475,14 +463,7 @@ class _MysteryRevealStepState extends State<MysteryRevealStep>
                     borderRadius: BorderRadius.circular(24),
                     border: Border.all(
                         color: AppColors.neonOrange, width: 2),
-                    boxShadow: [
-                      BoxShadow(
-                        color:
-                            AppColors.neonOrange.withValues(alpha: 0.25),
-                        blurRadius: 24,
-                        spreadRadius: -4,
-                      )
-                    ],
+                    boxShadow: AppShadow.glow(AppColors.neonOrange, blur: 24),
                   ),
                   child: const Center(
                     child: Text(
@@ -499,10 +480,10 @@ class _MysteryRevealStepState extends State<MysteryRevealStep>
             },
           ),
           const SizedBox(height: 32),
-          const Text(
+          Text(
             'Düelloyu başlattığında rastgele bir görev seçilir.',
             textAlign: TextAlign.center,
-            style: AppTextStyles.bodySecondary,
+            style: AppType.body.copyWith(color: AppColors.textSecondary),
           ),
         ],
       ),

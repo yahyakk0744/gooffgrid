@@ -61,7 +61,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [Color(0xFF39FF14), Color(0xFF00C9DB)],
+                          colors: [AppColors.neonGreen, Color(0xFF00C9DB)],
                         ),
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -284,7 +284,7 @@ class _WeeklyBarChart extends StatelessWidget {
                           reservedSize: 36,
                           getTitlesWidget: (v, _) => Text(
                             '${(v / 60).floor()}s',
-                            style: AppTextStyles.labelSmall,
+                            style: AppType.label,
                           ),
                         ),
                       ),

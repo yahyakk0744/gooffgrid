@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../providers/subscription_provider.dart';
 import '../../services/haptic_service.dart';
 import '../../l10n/app_localizations.dart';
@@ -82,7 +83,7 @@ class ThemesScreen extends ConsumerWidget {
                     child: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
                   ),
                   const SizedBox(width: 12),
-                  Text(l.themesTitle, style: AppTextStyles.h1),
+                  Text(l.themesTitle, style: AppType.h2),
                   const Spacer(),
                   if (!sub.isProPlus)
                     Container(

@@ -1,0 +1,66 @@
+APP STORE METADATA — ENGLISH
+============================
+
+App Name: gooffgrid
+
+Subtitle (30 chars): Digital Detox & Screen Time
+
+Keywords (100 chars):
+screen time,digital detox,phone addiction,focus,duel,social,breathing,ranking,friends,goals
+
+Promotional Text (170 chars):
+Race your friends to use your phone less. Duel, rank up, win badges — the real champion is whoever puts the phone down first.
+
+Description:
+-----------
+Quitting your phone is hard. Quitting alone is even harder.
+
+gooffgrid tracks your screen time, builds digital detox habits, and turns the whole thing into a friendly — but fierce — competition with your friends.
+
+--- WHAT IT DOES ---
+
+Screen Time Tracking
+See exactly how many hours you spend on your phone each day, which apps consume your time, and how your habits trend week over week.
+
+Duel System
+Challenge a friend: "Who uses their phone less this week?" The winner earns a badge. The loser owes an apology. Social accountability is the strongest motivator there is.
+
+Leaderboards
+Compete in weekly screen time rankings with your friends. Climb to the top — but this time, the least addicted wins. Are you the real digital champion?
+
+Stories
+Share your daily detox wins. "I stayed phone-free for 3 hours today." Inspire others, get inspired. Grow together with your community.
+
+Breathing Exercises
+When you feel the urge to reach for your phone, pause and breathe. Guided breathing exercises help you manage stress in the moment and break the cycle of phone dependency.
+
+Personal Goals
+Set daily and weekly screen time targets. The app nudges you gently when you're close to your limit and celebrates every win.
+
+Badge System
+Earn badges for every milestone: "3-day streak", "Weekly duel champion", "Detox master", and more.
+
+Real-Time Notifications
+Get alerted when you approach your daily limit. Stay aware of your progress throughout the day.
+
+--- WHO IS IT FOR? ---
+
+- Anyone who knows they're on their phone too much and wants to change
+- Friends who want to build healthy habits together
+- Students and professionals seeking better focus and productivity
+- Parents who want to model healthy digital behavior for their kids
+
+--- WHY gooffgrid? ---
+
+Most digital detox apps are boring. You set a goal, try for a few days, then give up. gooffgrid is different: social competition is baked into the core. When your friend sends a duel request, you can't just quit.
+
+Phone addiction is a real problem. But the solution is just as real: community, competition, and small daily wins.
+
+Leave the grid. Come back to life.
+
+--- PRIVACY ---
+
+Your data is stored on your device and on encrypted servers. It is never sold to third parties. You can delete your account at any time to remove all your data. Details: gooffgrid.com/privacy
+
+Privacy Policy URL: https://gooffgrid.com/privacy
+Support URL: https://gooffgrid.com/support

@@ -49,8 +49,12 @@
 	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>gooffgrid needs access to your screen time data to show app usage statistics and compete with friends.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>gooffgrid, seni şehrindeki sıralamaya eklemek için konumunu kullanır.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>gooffgrid, hikayene fotoğraf eklemek için galeriye erişir.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>gooffgrid, hikayene fotoğraf çekmek için kamerana erişir.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

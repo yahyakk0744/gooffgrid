@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 
 class HeatmapWidget extends StatelessWidget {
   const HeatmapWidget({super.key});

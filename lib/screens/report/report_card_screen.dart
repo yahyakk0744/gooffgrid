@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../widgets/glassmorphic_card.dart';
 import '../../widgets/premium_background.dart';
 import '../../services/haptic_service.dart';
@@ -48,7 +49,7 @@ class ReportCardScreen extends ConsumerWidget {
                       child: const Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.textSecondary, size: 20),
                     ),
                     const Spacer(),
-                    Text(l.shareReportCard, style: AppTextStyles.h1),
+                    Text(l.shareReportCard, style: AppType.h1),
                     const Spacer(),
                     const SizedBox(width: 20),
                   ],
@@ -110,7 +111,7 @@ class ReportCardScreen extends ConsumerWidget {
                           const SizedBox(height: 28),
 
                           // Week total hero
-                          Text(weekTotal, style: AppTextStyles.wrappedHero.copyWith(
+                          Text(weekTotal, style: AppType.display.copyWith(
                             fontSize: 52,
                             shadows: [Shadow(color: AppColors.neonGreen.withValues(alpha: 0.3), blurRadius: 20)],
                           )),
@@ -192,7 +193,7 @@ class ReportCardScreen extends ConsumerWidget {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(l.mostUsed, style: const TextStyle(fontSize: 10, color: AppColors.textTertiary)),
-                                        Text(st.appUsage.first.name, style: AppTextStyles.h3),
+                                        Text(st.appUsage.first.name, style: AppType.h3),
                                       ],
                                     ),
                                   ),

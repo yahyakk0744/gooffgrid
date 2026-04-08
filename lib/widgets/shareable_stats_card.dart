@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../config/theme.dart';
+import '../config/design_tokens.dart';
 
 /// Instagram Stories paylaşımı için RepaintBoundary ile sarılmış stats kartı.
 /// [shareKey] ile ekran görüntüsü alınır.
@@ -96,9 +97,9 @@ class ShareableStatsCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            Text(userName, style: AppTextStyles.h2),
+            Text(userName, style: AppType.h2),
             const SizedBox(height: 4),
-            Text('Seviye $level', style: AppTextStyles.bodySecondary),
+            Text('Seviye $level', style: AppType.body.copyWith(color: AppColors.textSecondary)),
             const SizedBox(height: 24),
 
             // Stats grid
@@ -157,7 +158,7 @@ class _StatColumn extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 2),
-        Text(label, style: AppTextStyles.labelSmall),
+        Text(label, style: AppType.label),
       ],
     );
   }

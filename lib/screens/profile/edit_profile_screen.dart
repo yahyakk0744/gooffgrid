@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../l10n/app_localizations.dart';
 import '../../providers/user_provider.dart';
 import '../../services/haptic_service.dart';
@@ -179,7 +180,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                           color: AppColors.textPrimary),
                     ),
                     const SizedBox(width: 12),
-                    Text(l.editProfile, style: AppTextStyles.h1),
+                    Text(l.editProfile, style: AppType.h1),
                   ],
                 ),
               ),
@@ -217,7 +218,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                               onTap: _pickPhoto,
                               child: Text(
                                 l.changePhoto,
-                                style: AppTextStyles.body.copyWith(
+                                style: AppType.body.copyWith(
                                   color: AppColors.neonGreen,
                                 ),
                               ),
@@ -228,19 +229,19 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       const SizedBox(height: 32),
 
                       // Ad
-                      Text(l.firstName, style: AppTextStyles.label),
+                      Text(l.firstName, style: AppType.caption),
                       const SizedBox(height: 8),
                       _buildTextField(_firstNameCtrl, l.firstNameHint),
                       const SizedBox(height: 20),
 
                       // Soyad
-                      Text(l.lastName, style: AppTextStyles.label),
+                      Text(l.lastName, style: AppType.caption),
                       const SizedBox(height: 8),
                       _buildTextField(_lastNameCtrl, l.lastNameHint),
                       const SizedBox(height: 20),
 
                       // Username
-                      Text(l.usernameLabel, style: AppTextStyles.label),
+                      Text(l.usernameLabel, style: AppType.caption),
                       const SizedBox(height: 8),
                       TextField(
                         controller: _usernameCtrl,
@@ -280,7 +281,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       const SizedBox(height: 20),
 
                       // City
-                      Text(l.city, style: AppTextStyles.label),
+                      Text(l.city, style: AppType.caption),
                       const SizedBox(height: 8),
                       Container(
                         padding: const EdgeInsets.all(14),
@@ -298,7 +299,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                             Expanded(
                               child: Text(
                                 _city.isEmpty ? l.locationUnknown : _city,
-                                style: AppTextStyles.body,
+                                style: AppType.body,
                               ),
                             ),
                             GestureDetector(
@@ -315,7 +316,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                                     )
                                   : Text(
                                       l.updateLocation,
-                                      style: AppTextStyles.label.copyWith(
+                                      style: AppType.caption.copyWith(
                                         color: AppColors.neonGreen,
                                       ),
                                     ),
@@ -426,16 +427,16 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     return switch (_usernameStatus) {
       _UsernameStatus.available => Text(
           l.usernameAvailable,
-          style: AppTextStyles.labelSmall.copyWith(color: AppColors.ringGood),
+          style: AppType.label.copyWith(color: AppColors.ringGood),
         ),
       _UsernameStatus.taken => Text(
           l.usernameTaken,
-          style: AppTextStyles.labelSmall.copyWith(color: AppColors.ringDanger),
+          style: AppType.label.copyWith(color: AppColors.ringDanger),
         ),
       _UsernameStatus.formatError => Text(
           l.usernameFormatError,
           style:
-              AppTextStyles.labelSmall.copyWith(color: AppColors.ringWarning),
+              AppType.label.copyWith(color: AppColors.ringWarning),
         ),
       _ => const SizedBox.shrink(),
     };

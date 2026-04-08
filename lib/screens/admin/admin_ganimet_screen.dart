@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../services/google_places_service.dart';
 import '../../services/haptic_service.dart';
 import '../../widgets/glassmorphic_card.dart';
@@ -125,9 +126,9 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.cardBg,
-        title: Text(AppLocalizations.of(ctx)!.adminDeleteTitle, style: AppTextStyles.h2),
+        title: Text(AppLocalizations.of(ctx)!.adminDeleteTitle, style: AppType.h2),
         content: Text(AppLocalizations.of(ctx)!.adminDeleteMsg,
-            style: AppTextStyles.body),
+            style: AppType.body),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx, false),
@@ -169,7 +170,7 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
       backgroundColor: AppColors.bg,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: Text(l.adminAddLoot, style: AppTextStyles.h1),
+        title: Text(l.adminAddLoot, style: AppType.h1),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded,
               color: AppColors.textSecondary, size: 20),
@@ -194,7 +195,7 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
                 _buildSaveButton(),
               ],
               const SizedBox(height: 32),
-              Text(l.adminExistingPoints, style: AppTextStyles.h2),
+              Text(l.adminExistingPoints, style: AppType.h2),
               const SizedBox(height: 12),
               ..._existingItems.map(_buildExistingItem),
               const SizedBox(height: 100),
@@ -209,10 +210,10 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
     return TextField(
       controller: _searchCtrl,
       onChanged: _onSearchChanged,
-      style: AppTextStyles.body,
+      style: AppType.body,
       decoration: InputDecoration(
         hintText: AppLocalizations.of(context)!.adminSearchPlace,
-        hintStyle: AppTextStyles.bodySecondary,
+        hintStyle: AppType.body.copyWith(color: AppColors.textSecondary),
         prefixIcon:
             const Icon(Icons.search_rounded, color: AppColors.textTertiary),
         filled: true,
@@ -251,9 +252,9 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
           final p = _predictions[i];
           return ListTile(
             dense: true,
-            title: Text(p.mainText, style: AppTextStyles.h3),
+            title: Text(p.mainText, style: AppType.h3),
             subtitle: Text(p.description,
-                style: AppTextStyles.labelSmall, maxLines: 1,
+                style: AppType.label, maxLines: 1,
                 overflow: TextOverflow.ellipsis),
             onTap: () => _onPredictionTap(p),
           );
@@ -287,12 +288,12 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
             ),
           const SizedBox(height: 12),
           Text(place.name,
-              style: AppTextStyles.h2.copyWith(fontWeight: FontWeight.w700)),
+              style: AppType.h2.copyWith(fontWeight: FontWeight.w700)),
           const SizedBox(height: 4),
-          Text(place.address, style: AppTextStyles.bodySecondary),
+          Text(place.address, style: AppType.body.copyWith(color: AppColors.textSecondary)),
           const SizedBox(height: 4),
           Text('${place.lat.toStringAsFixed(5)}, ${place.lng.toStringAsFixed(5)}',
-              style: AppTextStyles.labelSmall),
+              style: AppType.label),
         ],
       ),
     );
@@ -303,13 +304,13 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
       children: [
         TextField(
           controller: _odulCtrl,
-          style: AppTextStyles.body,
+          style: AppType.body,
           decoration: _inputDeco(AppLocalizations.of(context)!.adminRewardTitle),
         ),
         const SizedBox(height: 12),
         TextField(
           controller: _o2Ctrl,
-          style: AppTextStyles.body,
+          style: AppType.body,
           keyboardType: TextInputType.number,
           decoration: _inputDeco(AppLocalizations.of(context)!.adminO2Cost),
         ),
@@ -319,7 +320,7 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
 
   InputDecoration _inputDeco(String hint) => InputDecoration(
         hintText: hint,
-        hintStyle: AppTextStyles.bodySecondary,
+        hintStyle: AppType.body.copyWith(color: AppColors.textSecondary),
         filled: true,
         fillColor: AppColors.cardBg,
         border: OutlineInputBorder(
@@ -394,9 +395,9 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(name, style: AppTextStyles.h3, maxLines: 1,
+                  Text(name, style: AppType.h3, maxLines: 1,
                       overflow: TextOverflow.ellipsis),
-                  Text('$o2 O\u2082', style: AppTextStyles.label),
+                  Text('$o2 O\u2082', style: AppType.caption),
                 ],
               ),
             ),

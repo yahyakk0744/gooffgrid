@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/premium_background.dart';
 import '../../widgets/app_card.dart';
@@ -59,12 +60,12 @@ class FriendProfileScreen extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(p.name, style: AppTextStyles.h1),
+                  Text(p.name, style: AppType.h1),
                   const SizedBox(width: 8),
                   LevelBadge(level: p.level),
                 ],
               ),
-              Text(p.title, style: AppTextStyles.bodySecondary),
+              Text(p.title, style: AppType.body.copyWith(color: AppColors.textSecondary)),
               const SizedBox(height: 24),
 
               // Today
@@ -72,11 +73,11 @@ class FriendProfileScreen extends ConsumerWidget {
                 child: Center(
                   child: Column(
                     children: [
-                      Text(l.today, style: AppTextStyles.label),
+                      Text(l.today, style: AppType.caption),
                       const SizedBox(height: 4),
                       Text(
                         '${friend.todayMinutes}dk',
-                        style: AppTextStyles.heroNumber.copyWith(
+                        style: AppType.monoDisplay.copyWith(
                           color: friend.todayMinutes < 120 ? AppColors.ringGood : friend.todayMinutes < 240 ? AppColors.ringWarning : AppColors.ringDanger,
                         ),
                       ),
@@ -103,11 +104,11 @@ class FriendProfileScreen extends ConsumerWidget {
               AppCard(
                 child: Row(
                   children: [
-                    Text(l.mostUsedLabel, style: AppTextStyles.label),
+                    Text(l.mostUsedLabel, style: AppType.caption),
                     const SizedBox(width: 8),
-                    Text(friend.topApp, style: AppTextStyles.h3),
+                    Text(friend.topApp, style: AppType.h3),
                     const Spacer(),
-                    Text('${friend.topAppMinutes}dk', style: AppTextStyles.bodySecondary),
+                    Text('${friend.topAppMinutes}dk', style: AppType.body.copyWith(color: AppColors.textSecondary)),
                   ],
                 ),
               ),
@@ -149,7 +150,7 @@ class _Stat extends StatelessWidget {
     return Column(
       children: [
         Text(value, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
-        Text(label, style: AppTextStyles.labelSmall),
+        Text(label, style: AppType.label),
       ],
     );
   }

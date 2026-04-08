@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../config/theme.dart';
 import '../models/blocklist.dart';
 
 const _kPrefsKey = 'gooffgrid_blocklists';
@@ -39,7 +40,7 @@ final _seed = <Blocklist>[
     id: 'social',
     name: 'Sosyal Medya',
     emoji: '📱',
-    color: Color(0xFFFF6B00),
+    color: AppColors.neonOrange,
     appIds: ['instagram', 'tiktok', 'twitter', 'facebook', 'snapchat'],
     isDefault: true,
   ),

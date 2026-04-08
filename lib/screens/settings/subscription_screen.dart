@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../services/haptic_service.dart';
 import '../../services/revenue_cat_service.dart';
 import '../../l10n/app_localizations.dart';
@@ -48,7 +49,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(l.offGridClub, style: AppTextStyles.h1),
+                            Text(l.offGridClub, style: AppType.h2),
                             Text(l.clubSubtitle, style: const TextStyle(fontSize: 12, color: AppColors.textTertiary)),
                           ],
                         ),

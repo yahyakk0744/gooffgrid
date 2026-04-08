@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../services/haptic_service.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -35,7 +36,7 @@ class _DeleteAccountScreenState extends ConsumerState<DeleteAccountScreen> {
                     child: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
                   ),
                   const SizedBox(width: 12),
-                  Text(l.deleteAccount, style: AppTextStyles.h1),
+                  Text(l.deleteAccount, style: AppType.h2),
                 ],
               ),
               const SizedBox(height: 32),

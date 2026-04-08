@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../widgets/duel_card.dart';
 import '../../models/duel.dart' show DuelStatus;
 import '../../providers/duel_provider.dart';
@@ -29,7 +30,7 @@ class DuelListScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(l.duels, style: AppTextStyles.h1),
+              Text(l.duels, style: AppType.h2),
               const SizedBox(height: 24),
 
               if (duels.isEmpty)
@@ -42,7 +43,7 @@ class DuelListScreen extends ConsumerWidget {
                 ),
 
               if (active.isNotEmpty) ...[
-                Text(l.activeDuelsTitle, style: AppTextStyles.h3),
+                Text(l.activeDuelsTitle, style: AppType.body),
                 const SizedBox(height: 12),
                 ...active.map((d) => Padding(
                   padding: const EdgeInsets.only(bottom: 12),
@@ -64,7 +65,7 @@ class DuelListScreen extends ConsumerWidget {
               ],
 
               if (past.isNotEmpty) ...[
-                Text(l.pastDuels, style: AppTextStyles.h3),
+                Text(l.pastDuels, style: AppType.body),
                 const SizedBox(height: 12),
                 ...past.map((d) => Padding(
                   padding: const EdgeInsets.only(bottom: 12),

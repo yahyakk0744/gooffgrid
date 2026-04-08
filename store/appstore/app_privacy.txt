@@ -1,0 +1,109 @@
+APPLE APP STORE — UYGULAMA GİZLİLİK ETİKETLERİ
+================================================
+Uygulama: gooffgrid
+Tarih: 2026-04
+
+Apple App Store Connect'te "App Privacy" bölümü için doldurulacak bilgiler.
+
+---
+
+## 1. VERİ TOPLAMA
+
+Uygulama veri topluyor mu?
+→ EVET
+
+---
+
+## 2. KULLANICIYA BAĞLI VERİLER
+(Bu veriler kullanıcı kimliğiyle ilişkilendirilir)
+
+### Kişisel Bilgiler
+- Ad
+  Kullanım: Uygulama işlevselliği (profil, düello ekranları, sıralamalar)
+  Kullanıcıya bağlı: EVET
+  İzleme: HAYIR
+
+- E-posta Adresi
+  Kullanım: Hesap yönetimi (doğrulama, şifre sıfırlama, güvenlik bildirimleri)
+  Kullanıcıya bağlı: EVET
+  İzleme: HAYIR
+
+- Profil Fotoğrafı
+  Kullanım: Uygulama işlevselliği (profil gösterimi, düello ekranları)
+  Kullanıcıya bağlı: EVET
+  Opsiyonel: EVET (kullanıcı fotoğraf yüklemek zorunda değil)
+  İzleme: HAYIR
+
+### Kullanım Verileri
+- Ekran Süresi İstatistikleri
+  Kullanım: Uygulama işlevselliği (kişisel takip, sıralamalar, düellolar, hikayeler)
+  Kullanıcıya bağlı: EVET
+  İzleme: HAYIR
+
+- Uygulama Kullanım Geçmişi (cihaz bazlı)
+  Kullanım: Uygulama işlevselliği (detaylı ekran süresi analizi)
+  Kullanıcıya bağlı: EVET
+  İzleme: HAYIR
+
+- Hedef ve Rozet Durumu
+  Kullanım: Uygulama işlevselliği (ilerleme takibi, bildirimler)
+  Kullanıcıya bağlı: EVET
+  İzleme: HAYIR
+
+### Konum
+- Yaklaşık Konum
+  Kullanım: Uygulama işlevselliği (ülke/bölge bazlı sıralamalar için isteğe bağlı özellik)
+  Kullanıcıya bağlı: EVET
+  İzleme: HAYIR
+  Not: Yalnızca kullanıcı onayı ile ve ülke düzeyinde kullanılır. Sürekli takip yapılmaz.
+
+---
+
+## 3. KULLANICIYA BAĞLI OLMAYAN VERİLER
+(Anonim, kimlikle ilişkilendirilmez)
+
+### Tanılama
+- Çökme Raporları
+  Kullanım: Uygulama iyileştirme (hata tespiti, düzeltme)
+  Kullanıcıya bağlı: HAYIR
+  İzleme: HAYIR
+
+- Uygulama Performans Metrikleri
+  Kullanım: Uygulama iyileştirme (teknik performans analizi)
+  Kullanıcıya bağlı: HAYIR
+  İzleme: HAYIR
+
+---
+
+## 4. İZLEME İÇİN KULLANILAN VERİLER
+
+Herhangi bir veri izleme (tracking) amacıyla kullanılıyor mu?
+→ HAYIR
+
+gooffgrid, kullanıcı verilerini üçüncü taraf reklam ağlarıyla ilişkilendirmez. AppTrackingTransparency izni talep edilmez.
+
+---
+
+## 5. ÜÇüncü TARAF VERİ PAYLAŞIMI
+
+Veriler üçüncü taraflara satılıyor mu?
+→ HAYIR
+
+Sınırlı paylaşım:
+- Ödeme doğrulama: Apple In-App Purchase ile satın alma doğrulaması
+- Anonim hata raporlama: Çökme logları (kimlik içermez)
+
+---
+
+## 6. VERİ SAKLAMA VE SİLME
+
+Kullanıcılar verilerini şu yollarla silebilir:
+- Uygulama içi: Profil > Ayarlar > Hesabı Sil
+- E-posta: privacy@gooffgrid.com
+
+Hesap silindiğinde tüm kullanıcıya bağlı veriler 30 gün içinde kalıcı olarak kaldırılır.
+
+---
+
+Privacy Policy: https://gooffgrid.com/privacy
+İletişim: privacy@gooffgrid.com

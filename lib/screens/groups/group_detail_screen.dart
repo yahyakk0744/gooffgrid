@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../widgets/premium_background.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/ranking_row.dart';
@@ -33,11 +34,11 @@ class GroupDetailScreen extends ConsumerWidget {
                 children: [
                   GestureDetector(onTap: () => context.pop(), child: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary)),
                   const SizedBox(width: 12),
-                  Expanded(child: Text(group.name, style: AppTextStyles.h1)),
+                  Expanded(child: Text(group.name, style: AppType.h2)),
                 ],
               ),
               const SizedBox(height: 8),
-              Text(l.memberCount(group.memberCount), style: AppTextStyles.bodySecondary),
+              Text(l.memberCount(group.memberCount), style: AppType.bodySmall.copyWith(color: AppColors.textSecondary)),
               const SizedBox(height: 24),
 
               // Challenge
@@ -46,9 +47,9 @@ class GroupDetailScreen extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(l.weeklyGoal, style: AppTextStyles.label),
+                    Text(l.weeklyGoal, style: AppType.caption),
                     const SizedBox(height: 4),
-                    Text(group.challengeDescription, style: AppTextStyles.h3),
+                    Text(group.challengeDescription, style: AppType.body),
                     const SizedBox(height: 12),
                     ClipRRect(
                       borderRadius: BorderRadius.circular(4),
@@ -60,14 +61,14 @@ class GroupDetailScreen extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Text(l.challengeProgress((group.challengeProgress * 100).round()), style: AppTextStyles.labelSmall),
+                    Text(l.challengeProgress((group.challengeProgress * 100).round()), style: AppType.label),
                   ],
                 ),
               ),
               const SizedBox(height: 16),
 
               // Member ranking
-              Text(l.membersLabel, style: AppTextStyles.h3),
+              Text(l.membersLabel, style: AppType.body),
               const SizedBox(height: 12),
               ...List.generate(sorted.length, (i) {
                 final m = sorted[i];

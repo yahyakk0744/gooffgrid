@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../providers/app_block_provider.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -101,7 +102,7 @@ class _InterventionScreenState extends ConsumerState<InterventionScreen>
       body: Stack(
         children: [
           // Full-screen blurred dark background
-          Container(color: const Color(0xFF050508)),
+          Container(color: AppColors.bg),
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
             child: Container(
@@ -127,7 +128,7 @@ class _InterventionScreenState extends ConsumerState<InterventionScreen>
                   opacity: _fadeAnim,
                   child: Text(
                     l.appBlockInterventionTitle,
-                    style: AppTextStyles.h1.copyWith(fontSize: 26),
+                    style: AppType.h1.copyWith(fontSize: 26),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -138,7 +139,7 @@ class _InterventionScreenState extends ConsumerState<InterventionScreen>
                   opacity: _fadeAnim,
                   child: Text(
                     l.appBlockInterventionSubtitle,
-                    style: AppTextStyles.bodySecondary,
+                    style: AppType.body.copyWith(color: AppColors.textSecondary),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -182,7 +183,8 @@ class _InterventionScreenState extends ConsumerState<InterventionScreen>
                             onTap: () => context.pop(),
                             child: Text(
                               l.appBlockInterventionOpenAnyway,
-                              style: AppTextStyles.bodySecondary.copyWith(
+                              style: AppType.body.copyWith(
+                                color: AppColors.textSecondary,
                                 decoration: TextDecoration.underline,
                                 decorationColor: AppColors.textSecondary,
                               ),
@@ -205,7 +207,7 @@ class _InterventionScreenState extends ConsumerState<InterventionScreen>
                                 const SizedBox(width: 8),
                                 Text(
                                   l.appBlockStrictModeActive,
-                                  style: AppTextStyles.label.copyWith(
+                                  style: AppType.caption.copyWith(
                                       color: AppColors.ringDanger),
                                 ),
                               ],
@@ -220,7 +222,7 @@ class _InterventionScreenState extends ConsumerState<InterventionScreen>
                 // Motivational counter
                 Text(
                   l.appBlockGaveUpCount(_monthGiveUpCount),
-                  style: AppTextStyles.label,
+                  style: AppType.caption,
                 ),
 
                 const SizedBox(height: 24),
@@ -360,7 +362,7 @@ class _BreathingWidget extends StatelessWidget {
         const SizedBox(height: 16),
         Text(
           'Tam 1 döngü nef al / ver',
-          style: AppTextStyles.bodySecondary,
+          style: AppType.body.copyWith(color: AppColors.textSecondary),
         ),
       ],
     );
@@ -413,7 +415,7 @@ class _StatsCard extends StatelessWidget {
               children: [
                 Text(
                   l.appBlockStatsTitle(appName, weeklyHours),
-                  style: AppTextStyles.h3,
+                  style: AppType.h3,
                 ),
                 const SizedBox(height: 16),
                 // Bar chart
@@ -441,7 +443,7 @@ class _StatsCard extends StatelessWidget {
                             const SizedBox(height: 4),
                             Text(
                               days[i],
-                              style: AppTextStyles.labelSmall.copyWith(
+                              style: AppType.label.copyWith(
                                 color: isToday
                                     ? AppColors.neonGreen
                                     : AppColors.textTertiary,

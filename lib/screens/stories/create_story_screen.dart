@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
+import '../../config/app_shadows.dart';
 import '../../providers/stories_provider.dart';
 import '../../providers/subscription_provider.dart';
 import '../../services/haptic_service.dart';
@@ -61,7 +63,7 @@ class _CreateStoryScreenState extends ConsumerState<CreateStoryScreen> {
                     onPressed: () => context.pop(),
                   ),
                   const Spacer(),
-                  Text(l.createStoryTitle, style: AppTextStyles.h2),
+                  Text(l.createStoryTitle, style: AppType.h2),
                   const Spacer(),
                   const SizedBox(width: 48),
                 ],
@@ -188,7 +190,7 @@ class _CreateStoryScreenState extends ConsumerState<CreateStoryScreen> {
                     const SizedBox(height: 16),
 
                     // Text input
-                    Text(l.whatAreYouDoing, style: AppTextStyles.label),
+                    Text(l.whatAreYouDoing, style: AppType.caption),
                     const SizedBox(height: 8),
                     TextField(
                       controller: _captionController,
@@ -217,7 +219,7 @@ class _CreateStoryScreenState extends ConsumerState<CreateStoryScreen> {
                     const SizedBox(height: 24),
 
                     // Duration
-                    Text(l.howLongVisible, style: AppTextStyles.label),
+                    Text(l.howLongVisible, style: AppType.caption),
                     const SizedBox(height: 12),
                     _buildDurationPicker(),
                     const SizedBox(height: 12),
@@ -226,7 +228,7 @@ class _CreateStoryScreenState extends ConsumerState<CreateStoryScreen> {
                     const SizedBox(height: 24),
 
                     // Privacy
-                    Text(l.whoCanSee, style: AppTextStyles.label),
+                    Text(l.whoCanSee, style: AppType.caption),
                     const SizedBox(height: 12),
                     _buildPrivacyCards(l),
 
@@ -243,7 +245,12 @@ class _CreateStoryScreenState extends ConsumerState<CreateStoryScreen> {
               child: SizedBox(
                 width: double.infinity,
                 height: 52,
-                child: ElevatedButton(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    boxShadow: !_isPosting ? AppShadow.glow(AppColors.neonGreen) : AppShadow.none,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: ElevatedButton(
                   onPressed: _isPosting ? null : _post,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.neonGreen,
@@ -261,6 +268,7 @@ class _CreateStoryScreenState extends ConsumerState<CreateStoryScreen> {
                               strokeWidth: 2, color: Colors.black),
                         )
                       : Text(l.postStory),
+                ),
                 ),
               ),
             ),

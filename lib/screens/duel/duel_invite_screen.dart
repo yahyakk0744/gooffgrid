@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../widgets/premium_background.dart';
 import '../../widgets/app_card.dart';
 import '../../providers/friends_provider.dart';
@@ -52,7 +53,7 @@ class _DuelInviteScreenState extends ConsumerState<DuelInviteScreen> {
                     child: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
                   ),
                   const SizedBox(width: 12),
-                  Text(l.newDuel, style: AppTextStyles.h1),
+                  Text(l.newDuel, style: AppType.h2),
                 ],
               ),
               const SizedBox(height: 24),
@@ -67,7 +68,7 @@ class _DuelInviteScreenState extends ConsumerState<DuelInviteScreen> {
                 const SizedBox(height: 24),
               ],
 
-              Text(l.duration, style: AppTextStyles.label),
+              Text(l.duration, style: AppType.caption),
               const SizedBox(height: 12),
               Row(
                 children: List.generate(5, (i) {
@@ -100,7 +101,7 @@ class _DuelInviteScreenState extends ConsumerState<DuelInviteScreen> {
               ),
               const SizedBox(height: 24),
 
-              Text(l.selectFriend, style: AppTextStyles.label),
+              Text(l.selectFriend, style: AppType.caption),
               const SizedBox(height: 12),
               ...friends.map((f) {
                 final selected = _selectedFriend == f.profile.id;
@@ -120,8 +121,8 @@ class _DuelInviteScreenState extends ConsumerState<DuelInviteScreen> {
                           ),
                         ),
                         const SizedBox(width: 12),
-                        Expanded(child: Text(f.profile.name, style: AppTextStyles.h3)),
-                        Text('${f.todayMinutes}dk', style: AppTextStyles.bodySecondary),
+                        Expanded(child: Text(f.profile.name, style: AppType.body)),
+                        Text('${f.todayMinutes}dk', style: AppType.body.copyWith(color: AppColors.textSecondary)),
                       ],
                     ),
                   ),
@@ -134,7 +135,7 @@ class _DuelInviteScreenState extends ConsumerState<DuelInviteScreen> {
                   children: [
                     const Icon(Icons.link_rounded, color: AppColors.textSecondary, size: 32),
                     const SizedBox(height: 8),
-                    Text(l.orSendLink, style: AppTextStyles.bodySecondary),
+                    Text(l.orSendLink, style: AppType.body.copyWith(color: AppColors.textSecondary)),
                   ],
                 ),
               ),
@@ -188,7 +189,7 @@ class _DuelInviteScreenState extends ConsumerState<DuelInviteScreen> {
                   color: AppColors.neonOrange, size: 22),
               const SizedBox(width: 10),
               Expanded(
-                child: Text(label, style: AppTextStyles.h3),
+                child: Text(label, style: AppType.body),
               ),
             ],
           ),

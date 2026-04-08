@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../l10n/app_localizations.dart';
 
 enum LegalType { privacy, terms, kvkk }
@@ -39,7 +40,7 @@ class LegalScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Text(title, style: AppTextStyles.h2, overflow: TextOverflow.ellipsis),
+                    child: Text(title, style: AppType.title, overflow: TextOverflow.ellipsis),
                   ),
                 ],
               ),

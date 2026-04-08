@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gooffgrid/config/theme.dart';
 import 'package:gooffgrid/models/group.dart';
 
 final _mockGroups = [
@@ -12,7 +13,7 @@ final _mockGroups = [
       GroupMember(userId: 'u2', name: 'Aylin', avatarColor: Color(0xFFF093FB), level: 7, weekMinutes: 95),
       GroupMember(userId: 'u3', name: 'Deniz', avatarColor: Color(0xFF4FACFE), level: 6, weekMinutes: 132),
       GroupMember(userId: 'u4', name: 'Burak', avatarColor: Color(0xFFA8EB12), level: 5, weekMinutes: 156),
-      GroupMember(userId: 'u5', name: 'Selin', avatarColor: Color(0xFFFF6B00), level: 4, weekMinutes: 210),
+      GroupMember(userId: 'u5', name: 'Selin', avatarColor: AppColors.neonOrange, level: 4, weekMinutes: 210),
       GroupMember(userId: 'u6', name: 'Mert', avatarColor: Color(0xFF30D158), level: 4, weekMinutes: 267),
     ],
     challengeTargetMinutes: 2400,

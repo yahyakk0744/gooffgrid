@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/story.dart';
 import '../models/story_comment.dart';
+import '../config/theme.dart';
 import '../services/supabase_sync_service.dart';
 
 // ──────────────────────────────────────────────
@@ -153,7 +154,7 @@ final _mockStories = [
     id: 'mock-4',
     userId: 'u4',
     userName: 'Can',
-    userAvatarColor: const Color(0xFFFF6B00),
+    userAvatarColor: AppColors.neonOrange,
     date: DateTime.now(),
     caption: 'Parkta koşu, kulaklıkları evde bıraktım. Kuş sesleri > Spotify.',
     activityType: 'Koşu',

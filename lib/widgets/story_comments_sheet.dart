@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../config/theme.dart';
+import '../config/design_tokens.dart';
 import '../models/story_comment.dart';
 import '../providers/stories_provider.dart';
 import '../services/haptic_service.dart';
@@ -115,9 +116,9 @@ class _StoryCommentsSheetState extends ConsumerState<StoryCommentsSheet> {
           const SizedBox(height: 12),
           Row(
             children: [
-              Text('Yorumlar', style: AppTextStyles.h2),
+              Text('Yorumlar', style: AppType.h2),
               const SizedBox(width: 8),
-              Text('$count', style: AppTextStyles.bodySecondary),
+              Text('$count', style: AppType.body.copyWith(color: AppColors.textSecondary)),
               const Spacer(),
               IconButton(
                 icon: const Icon(Icons.close_rounded,
@@ -140,7 +141,7 @@ class _StoryCommentsSheetState extends ConsumerState<StoryCommentsSheet> {
               size: 48,
               color: AppColors.textTertiary.withValues(alpha: 0.4)),
           const SizedBox(height: 12),
-          const Text('Henüz yorum yok', style: AppTextStyles.bodySecondary),
+          Text('Henüz yorum yok', style: AppType.body.copyWith(color: AppColors.textSecondary)),
           const SizedBox(height: 4),
           Text(
             'İlk yorumu sen yap!',

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/interactive_gooffgrid_logo.dart';
 import '../../l10n/app_localizations.dart';
@@ -75,7 +76,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               const SizedBox(height: 8),
               Text(
                 l.welcomeSubtitle,
-                style: AppTextStyles.bodySecondary,
+                style: AppType.body.copyWith(color: AppColors.textSecondary),
                 textAlign: TextAlign.center,
               ),
 
@@ -106,7 +107,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   const Expanded(child: Divider(color: AppColors.cardBorder)),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(l.orDivider, style: AppTextStyles.bodySecondary),
+                    child: Text(l.orDivider, style: AppType.body.copyWith(color: AppColors.textSecondary)),
                   ),
                   const Expanded(child: Divider(color: AppColors.cardBorder)),
                 ],
@@ -153,7 +154,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     },
                     child: Text(
                       l.forgotPassword,
-                      style: AppTextStyles.label.copyWith(color: AppColors.neonGreen),
+                      style: AppType.caption.copyWith(color: AppColors.neonGreen),
                     ),
                   ),
                 ),
@@ -191,7 +192,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 onTap: () => setState(() => _isSignUp = !_isSignUp),
                 child: RichText(
                   text: TextSpan(
-                    style: AppTextStyles.bodySecondary,
+                    style: AppType.body.copyWith(color: AppColors.textSecondary),
                     children: [
                       TextSpan(text: _isSignUp ? l.alreadyHaveAccount : l.noAccountYet),
                       TextSpan(

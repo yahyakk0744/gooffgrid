@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../widgets/premium_background.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/progress_ring.dart';
@@ -34,9 +35,9 @@ class SeasonScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(l.season1Title, style: AppTextStyles.h1),
+                        Text(l.season1Title, style: AppType.h1),
                         const SizedBox(height: 4),
-                        Text(l.season1Subtitle, style: AppTextStyles.bodySecondary),
+                        Text(l.season1Subtitle, style: AppType.body.copyWith(color: AppColors.textSecondary)),
                       ],
                     ),
                   ),
@@ -68,7 +69,7 @@ class SeasonScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(t['desc'] as String, style: AppTextStyles.h3),
+                            Text(t['desc'] as String, style: AppType.h3),
                             const SizedBox(height: 8),
                             ClipRRect(
                               borderRadius: BorderRadius.circular(3),
@@ -80,7 +81,7 @@ class SeasonScreen extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 4),
-                            Text(t['reward'] as String, style: AppTextStyles.labelSmall.copyWith(color: AppColors.gold)),
+                            Text(t['reward'] as String, style: AppType.label.copyWith(color: AppColors.gold)),
                           ],
                         ),
                       ),

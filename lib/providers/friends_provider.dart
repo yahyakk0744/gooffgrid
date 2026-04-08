@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../config/theme.dart';
 import '../models/user_profile.dart';
 
 class FriendData {
@@ -33,7 +34,7 @@ final friendsProvider = Provider<List<FriendData>>((ref) {
       todayMinutes: 48, isOnline: true, topApp: 'WhatsApp', topAppMinutes: 20,
     ),
     FriendData(
-      profile: UserProfile(id: 'f4', name: 'Can', avatarColor: const Color(0xFFFF6B00), city: 'Ankara', country: 'Türkiye', ageGroup: '18-24', level: 4, title: 'Farkında Gezgin', streak: 5, bestStreak: 9, totalPoints: 750, createdAt: DateTime(2025, 1, 20)),
+      profile: UserProfile(id: 'f4', name: 'Can', avatarColor: AppColors.neonOrange, city: 'Ankara', country: 'Türkiye', ageGroup: '18-24', level: 4, title: 'Farkında Gezgin', streak: 5, bestStreak: 9, totalPoints: 750, createdAt: DateTime(2025, 1, 20)),
       todayMinutes: 178, isOnline: false, topApp: 'YouTube', topAppMinutes: 65,
     ),
     FriendData(

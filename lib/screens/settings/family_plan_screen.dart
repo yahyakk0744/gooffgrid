@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../providers/subscription_provider.dart';
 import '../../services/haptic_service.dart';
 import '../../l10n/app_localizations.dart';
@@ -52,7 +53,7 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
                 children: [
                   GestureDetector(onTap: () => context.pop(), child: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary)),
                   const SizedBox(width: 12),
-                  Text(l.familyPlanTitle, style: AppTextStyles.h1),
+                  Text(l.familyPlanTitle, style: AppType.h2),
                   const Spacer(),
                   Text('${allMembers.length}/5', style: TextStyle(fontSize: 13, color: AppColors.textTertiary)),
                 ],
@@ -100,7 +101,7 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
                     const SizedBox(height: 20),
 
                     // Family ranking
-                    Text(l.familyRanking, style: AppTextStyles.label),
+                    Text(l.familyRanking, style: AppType.caption),
                     const SizedBox(height: 12),
                     ...List.generate(allMembers.length, (i) {
                       final m = allMembers[i];
@@ -151,7 +152,7 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
 
                     // Add member
                     if (allMembers.length < 5) ...[
-                      Text(l.addMember, style: AppTextStyles.label),
+                      Text(l.addMember, style: AppType.caption),
                       const SizedBox(height: 8),
                       Row(
                         children: [
@@ -163,7 +164,7 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
                                 hintText: l.enterName,
                                 hintStyle: const TextStyle(color: AppColors.textTertiary, fontSize: 14),
                                 filled: true,
-                                fillColor: AppColors.cardBg,
+                                fillColor: AppColors.surface,
                                 contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.cardBorder)),
                                 enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.cardBorder)),
@@ -231,13 +232,13 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
                 children: [
                   GestureDetector(onTap: () => context.pop(), child: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary)),
                   const SizedBox(width: 12),
-                  Text(l.familyPlanTitle, style: AppTextStyles.h1),
+                  Text(l.familyPlanTitle, style: AppType.h2),
                 ],
               ),
               const Spacer(),
               Icon(Icons.family_restroom_rounded, size: 64, color: AppColors.gold.withValues(alpha: 0.4)),
               const SizedBox(height: 16),
-              Text(l.familyPlanLocked, style: AppTextStyles.h2),
+              Text(l.familyPlanLocked, style: AppType.title),
               const SizedBox(height: 8),
               Text(
                 l.familyPlanLockedDesc,

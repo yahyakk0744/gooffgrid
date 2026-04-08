@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'app_theme_data.dart';
 
 class AppColors {
   AppColors._();
@@ -136,22 +137,24 @@ class AppTextStyles {
   );
 }
 
-ThemeData buildAppTheme() {
+ThemeData buildAppTheme([GoOffGridTheme? theme]) {
   final baseText = GoogleFonts.plusJakartaSansTextTheme(
     ThemeData.dark().textTheme,
   );
 
+  final t = theme;
+
   return ThemeData(
     brightness: Brightness.dark,
-    scaffoldBackgroundColor: AppColors.bg,
-    colorScheme: const ColorScheme.dark(
-      primary: AppColors.neonGreen,
-      secondary: AppColors.neonOrange,
-      surface: AppColors.surface,
+    scaffoldBackgroundColor: t?.bg ?? AppColors.bg,
+    colorScheme: ColorScheme.dark(
+      primary: t?.accent ?? AppColors.neonGreen,
+      secondary: t?.accentSecondary ?? AppColors.neonOrange,
+      surface: t?.surface ?? AppColors.surface,
     ),
     textTheme: baseText.apply(
-      bodyColor: AppColors.textPrimary,
-      displayColor: AppColors.textPrimary,
+      bodyColor: t?.textPrimary ?? AppColors.textPrimary,
+      displayColor: t?.textPrimary ?? AppColors.textPrimary,
     ),
     useMaterial3: true,
   );

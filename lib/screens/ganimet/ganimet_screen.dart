@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../services/haptic_service.dart';
 import '../../providers/o2_provider.dart';
 import '../../widgets/glassmorphic_card.dart';
@@ -86,7 +87,7 @@ class _GanimetScreenState extends ConsumerState<GanimetScreen> {
                     CircularProgressIndicator(color: AppColors.neonGreen)),
             error: (_, __) => Center(
                 child: Text(l.mapLoadFailed,
-                    style: AppTextStyles.bodySecondary)),
+                    style: AppType.body.copyWith(color: AppColors.textSecondary))),
           ),
 
           // Top bar
@@ -103,7 +104,7 @@ class _GanimetScreenState extends ConsumerState<GanimetScreen> {
                     },
                   ),
                   const SizedBox(width: 12),
-                  Text(l.offGridMarket, style: AppTextStyles.h1),
+                  Text(l.offGridMarket, style: AppType.h1),
                   const Spacer(),
                   _o2Chip(o2.balance),
                 ],
@@ -243,11 +244,11 @@ class _GanimetScreenState extends ConsumerState<GanimetScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(name,
-                        style: AppTextStyles.h1
+                        style: AppType.h1
                             .copyWith(fontWeight: FontWeight.w700)),
                     if (address.isNotEmpty) ...[
                       const SizedBox(height: 4),
-                      Text(address, style: AppTextStyles.bodySecondary),
+                      Text(address, style: AppType.body.copyWith(color: AppColors.textSecondary)),
                     ],
                     const SizedBox(height: 12),
                     // O2 badge + odul
@@ -273,7 +274,7 @@ class _GanimetScreenState extends ConsumerState<GanimetScreen> {
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(odul,
-                              style: AppTextStyles.h3
+                              style: AppType.h3
                                   .copyWith(color: AppColors.gold)),
                         ),
                       ],
@@ -334,8 +335,8 @@ class _GanimetScreenState extends ConsumerState<GanimetScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.cardBg,
-        title: Text(l.confirm, style: AppTextStyles.h2),
-        content: Text(l.confirmRedeemMsg(odul), style: AppTextStyles.body),
+        title: Text(l.confirm, style: AppType.h2),
+        content: Text(l.confirmRedeemMsg(odul), style: AppType.body),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx),

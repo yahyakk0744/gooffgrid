@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
 import '../../services/haptic_service.dart';
 
 /// Instagram Stories tarzı aylık top 10 — her sayfa otomatik ilerler,
@@ -66,7 +67,7 @@ class _MonthlyTop10ScreenState extends State<MonthlyTop10Screen> {
       body: null,
       entries: [
         ('Selin', Color(0xFF667EEA), '2s 30dk', '4'),
-        ('Can', Color(0xFFFF6B00), '2s 45dk', '5'),
+        ('Can', AppColors.neonOrange, '2s 45dk', '5'),
         ('Eren', Color(0xFF667EEA), '3s 00dk', '6'),
         ('Deniz', Color(0xFF00C9DB), '3s 15dk', '7'),
         ('Ayşe', Color(0xFFFF6B9D), '3s 30dk', '8'),
@@ -92,7 +93,7 @@ class _MonthlyTop10ScreenState extends State<MonthlyTop10Screen> {
       subtitle: '#1 En Çok Ekran Süresi',
       body: null,
       userName: 'Kaan',
-      userColor: Color(0xFFFF6B00),
+      userColor: AppColors.neonOrange,
       stat: '8s 30dk/gün',
       meme: _memes[_month % _memes.length][3],
     ),
@@ -127,7 +128,7 @@ class _MonthlyTop10ScreenState extends State<MonthlyTop10Screen> {
         ('Burak', Color(0xFF4FACFE), '-%42', '🚀'),
         ('Zeynep', Color(0xFFF093FB), '-%38', '🔥'),
         ('Elif', Color(0xFFA8EB12), '-%35', '💪'),
-        ('Can', Color(0xFFFF6B00), '-%28', '⚡'),
+        ('Can', AppColors.neonOrange, '-%28', '⚡'),
         ('Selin', Color(0xFF667EEA), '-%22', '✨'),
       ],
       meme: _memes[_month % _memes.length][4],
