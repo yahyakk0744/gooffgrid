@@ -5,36 +5,10 @@ import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
 import '../../config/design_tokens.dart';
 import '../../providers/app_block_provider.dart';
+import '../../providers/installed_apps_provider.dart';
+import '../../widgets/app_icon_widget.dart';
 import '../../l10n/app_localizations.dart';
-
-// Mock app data for the picker bottom sheet
-class _MockApp {
-  const _MockApp({
-    required this.id,
-    required this.name,
-    required this.color,
-    required this.icon,
-  });
-  final String id;
-  final String name;
-  final Color color;
-  final IconData icon;
-}
-
-const _mockApps = [
-  _MockApp(id: 'com.instagram.android', name: 'Instagram', color: AppColors.instagram, icon: Icons.camera_alt_rounded),
-  _MockApp(id: 'com.zhiliaoapp.musically', name: 'TikTok', color: AppColors.tiktok, icon: Icons.music_note_rounded),
-  _MockApp(id: 'com.google.android.youtube', name: 'YouTube', color: AppColors.youtube, icon: Icons.play_circle_filled_rounded),
-  _MockApp(id: 'com.twitter.android', name: 'X (Twitter)', color: AppColors.twitter, icon: Icons.tag_rounded),
-  _MockApp(id: 'com.snapchat.android', name: 'Snapchat', color: AppColors.snapchat, icon: Icons.face_rounded),
-  _MockApp(id: 'com.facebook.katana', name: 'Facebook', color: Color(0xFF1877F2), icon: Icons.facebook),
-  _MockApp(id: 'com.reddit.frontpage', name: 'Reddit', color: AppColors.reddit, icon: Icons.reddit),
-  _MockApp(id: 'com.whatsapp', name: 'WhatsApp', color: AppColors.whatsapp, icon: Icons.chat_bubble_rounded),
-  _MockApp(id: 'org.telegram.messenger', name: 'Telegram', color: AppColors.telegram, icon: Icons.send_rounded),
-  _MockApp(id: 'com.netflix.mediaclient', name: 'Netflix', color: Color(0xFFE50914), icon: Icons.movie_rounded),
-  _MockApp(id: 'com.spotify.music', name: 'Spotify', color: Color(0xFF1DB954), icon: Icons.headphones_rounded),
-  _MockApp(id: 'com.discord', name: 'Discord', color: Color(0xFF5865F2), icon: Icons.forum_rounded),
-];
+import '../../services/platform_screen_time_service.dart';
 
 class AppBlockScreen extends ConsumerWidget {
   const AppBlockScreen({super.key});
@@ -154,6 +128,46 @@ class _MainToggleCard extends StatelessWidget {
   final AppBlockNotifier notifier;
   final AppLocalizations l;
 
+  Future<void> _handleToggle(BuildContext context) async {
+    if (state.isStrictMode) return;
+
+    // Engellemeyi açarken accessibility izni kontrol et
+    if (!state.isBlockingEnabled) {
+      final service = PlatformScreenTimeService.instance;
+      final hasPermission = await service.hasAccessibilityPermission();
+      if (!hasPermission) {
+        if (!context.mounted) return;
+        final shouldOpen = await showDialog<bool>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            backgroundColor: AppColors.cardBg,
+            title: Text('Erişilebilirlik İzni', style: AppType.h2),
+            content: Text(
+              'Uygulamaları engelleyebilmek için Erişilebilirlik Servisi iznine ihtiyacımız var. Ayarlarda GoOffGrid servisini açmanız gerekiyor.',
+              style: AppType.body.copyWith(color: AppColors.textSecondary),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: Text('İptal', style: AppType.body),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: Text('Ayarlara Git',
+                    style: AppType.body.copyWith(color: AppColors.neonGreen)),
+              ),
+            ],
+          ),
+        );
+        if (shouldOpen == true) {
+          await service.requestAccessibilityPermission();
+        }
+        return;
+      }
+    }
+    notifier.toggleBlocking();
+  }
+
   @override
   Widget build(BuildContext context) {
     final isOn = state.isBlockingEnabled;
@@ -232,7 +246,7 @@ class _MainToggleCard extends StatelessWidget {
               ),
               Switch(
                 value: isOn,
-                onChanged: state.isStrictMode ? null : (_) => notifier.toggleBlocking(),
+                onChanged: state.isStrictMode ? null : (_) => _handleToggle(context),
                 activeColor: AppColors.neonGreen,
                 activeTrackColor: AppColors.neonGreen.withValues(alpha: 0.3),
                 inactiveThumbColor: AppColors.textTertiary,
@@ -538,20 +552,19 @@ class _EmptyAppsHint extends StatelessWidget {
 
 // ── Blocked App Tile ───────────────────────────────────────────────────────────
 
-class _BlockedAppTile extends StatelessWidget {
+class _BlockedAppTile extends ConsumerWidget {
   const _BlockedAppTile({required this.appId, required this.onRemove});
   final String appId;
   final VoidCallback onRemove;
 
-  _MockApp? get _app => _mockApps.where((a) => a.id == appId).firstOrNull;
-
   @override
-  Widget build(BuildContext context) {
-    final app = _app;
-    final name = app?.name ?? appId;
-    final color = app?.color ?? AppColors.textTertiary;
-    final icon = app?.icon ?? Icons.android_rounded;
-    final letter = name.isNotEmpty ? name[0].toUpperCase() : '?';
+  Widget build(BuildContext context, WidgetRef ref) {
+    final installedApps = ref.watch(installedAppsProvider);
+    final app = installedApps.whenOrNull(
+      data: (list) => list.where((a) => a.packageName == appId).firstOrNull,
+    );
+    final name = app?.name ?? appId.split('.').last;
+    final color = PlatformScreenTimeService.appColorFor(appId);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
@@ -563,24 +576,14 @@ class _BlockedAppTile extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: app != null
-                ? Icon(icon, color: color, size: 20)
-                : Center(
-                    child: Text(
-                      letter,
-                      style: TextStyle(
-                          color: color,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16),
-                    ),
-                  ),
+          AppIconWidget(
+            iconBytes: app?.iconBytes,
+            packageName: appId,
+            color: color,
+            size: 40,
+            borderRadius: 10,
+            glowIntensity: 0.2,
+            showGlass: false,
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -607,7 +610,7 @@ class _BlockedAppTile extends StatelessWidget {
 
 // ── Add App FAB ────────────────────────────────────────────────────────────────
 
-class _AddAppFab extends StatelessWidget {
+class _AddAppFab extends ConsumerWidget {
   const _AddAppFab(
       {required this.l, required this.state, required this.notifier});
   final AppLocalizations l;
@@ -615,9 +618,9 @@ class _AddAppFab extends StatelessWidget {
   final AppBlockNotifier notifier;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
-      onTap: () => _showAppPicker(context),
+      onTap: () => _showAppPicker(context, ref),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 32),
         height: 52,
@@ -656,75 +659,155 @@ class _AddAppFab extends StatelessWidget {
     );
   }
 
-  void _showAppPicker(BuildContext context) {
+  void _showAppPicker(BuildContext context, WidgetRef ref) {
     showModalBottomSheet<void>(
       context: context,
       backgroundColor: AppColors.surface,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
-      builder: (_) => DraggableScrollableSheet(
-        initialChildSize: 0.65,
-        maxChildSize: 0.9,
-        minChildSize: 0.4,
-        expand: false,
-        builder: (_, scrollCtrl) => Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
-              child: Column(
-                children: [
-                  Center(
-                    child: Container(
-                      width: 36,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: AppColors.cardBorder,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
+      builder: (_) => _AppPickerSheet(
+        blockedApps: state.blockedApps,
+        notifier: notifier,
+        l: l,
+      ),
+    );
+  }
+}
+
+/// Gerçek yüklü uygulama listesiyle arama destekli picker.
+class _AppPickerSheet extends ConsumerStatefulWidget {
+  const _AppPickerSheet({
+    required this.blockedApps,
+    required this.notifier,
+    required this.l,
+  });
+  final List<String> blockedApps;
+  final AppBlockNotifier notifier;
+  final AppLocalizations l;
+
+  @override
+  ConsumerState<_AppPickerSheet> createState() => _AppPickerSheetState();
+}
+
+class _AppPickerSheetState extends ConsumerState<_AppPickerSheet> {
+  String _search = '';
+
+  @override
+  Widget build(BuildContext context) {
+    final apps = ref.watch(installedAppsSearchProvider(_search));
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.7,
+      maxChildSize: 0.9,
+      minChildSize: 0.4,
+      expand: false,
+      builder: (_, scrollCtrl) => Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+            child: Column(
+              children: [
+                Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColors.cardBorder,
+                      borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                  const SizedBox(height: 14),
-                  Text(l.appBlockPickerTitle, style: AppType.h2),
-                ],
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                controller: scrollCtrl,
-                padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
-                itemCount: _mockApps.length,
-                itemBuilder: (_, i) {
-                  final app = _mockApps[i];
-                  final isAdded = state.blockedApps.contains(app.id);
-                  return ListTile(
-                    leading: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: app.color.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(10),
+                ),
+                const SizedBox(height: 14),
+                Text(widget.l.appBlockPickerTitle, style: AppType.h2),
+                const SizedBox(height: 12),
+                // Arama alanı
+                Container(
+                  height: 44,
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  decoration: BoxDecoration(
+                    color: AppColors.cardBg,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.cardBorder),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.search_rounded,
+                          size: 18, color: AppColors.textTertiary),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: TextField(
+                          onChanged: (v) => setState(() => _search = v),
+                          style: AppType.body,
+                          decoration: InputDecoration(
+                            hintText: 'Uygulama ara...',
+                            hintStyle: AppType.body.copyWith(
+                                color: AppColors.textTertiary),
+                            border: InputBorder.none,
+                            isDense: true,
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                        ),
                       ),
-                      child: Icon(app.icon, color: app.color, size: 20),
-                    ),
-                    title: Text(app.name, style: AppType.body),
-                    trailing: isAdded
-                        ? const Icon(Icons.check_circle_rounded,
-                            color: AppColors.neonGreen)
-                        : Icon(Icons.add_circle_outline_rounded,
-                            color: AppColors.textTertiary),
-                    onTap: isAdded
-                        ? null
-                        : () {
-                            notifier.addApp(app.id);
-                            Navigator.pop(context);
-                          },
-                  );
-                },
-              ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          Expanded(
+            child: apps.isEmpty
+                ? Center(
+                    child: ref.watch(installedAppsProvider).when(
+                      loading: () => const CircularProgressIndicator(
+                          color: AppColors.neonGreen),
+                      error: (_, __) => Text('Uygulamalar yüklenemedi',
+                          style: AppType.caption),
+                      data: (_) => Text('Uygulama bulunamadı',
+                          style: AppType.caption),
+                    ),
+                  )
+                : ListView.builder(
+                    controller: scrollCtrl,
+                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+                    itemCount: apps.length,
+                    itemBuilder: (_, i) {
+                      final app = apps[i];
+                      final isAdded = widget.blockedApps.contains(
+                          app.packageName);
+                      final color = PlatformScreenTimeService.appColorFor(
+                          app.packageName);
+                      return ListTile(
+                        leading: AppIconWidget(
+                          iconBytes: app.iconBytes,
+                          packageName: app.packageName,
+                          color: color,
+                          size: 40,
+                          borderRadius: 10,
+                          glowIntensity: 0.2,
+                          showGlass: false,
+                        ),
+                        title: Text(app.name, style: AppType.body),
+                        subtitle: Text(
+                          app.category,
+                          style: AppType.caption.copyWith(fontSize: 10),
+                        ),
+                        trailing: isAdded
+                            ? const Icon(Icons.check_circle_rounded,
+                                color: AppColors.neonGreen)
+                            : Icon(Icons.add_circle_outline_rounded,
+                                color: AppColors.textTertiary),
+                        onTap: isAdded
+                            ? null
+                            : () {
+                                widget.notifier.addApp(app.packageName);
+                                Navigator.pop(context);
+                              },
+                      );
+                    },
+                  ),
+          ),
+        ],
       ),
     );
   }

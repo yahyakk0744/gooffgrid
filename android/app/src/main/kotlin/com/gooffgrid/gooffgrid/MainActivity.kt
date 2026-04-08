@@ -14,6 +14,8 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
+import android.accessibilityservice.AccessibilityServiceInfo
+import android.view.accessibility.AccessibilityManager
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -73,6 +75,30 @@ class MainActivity : FlutterActivity() {
                     } else {
                         result.error("INVALID_ARG", "packageName required", null)
                     }
+                }
+                "getInstalledApps" -> {
+                    result.success(getInstalledApps())
+                }
+                "getCategoryUsage" -> {
+                    val daysAgo = call.argument<Int>("daysAgo") ?: 0
+                    result.success(getCategoryUsage(daysAgo))
+                }
+                "hasAccessibilityPermission" -> {
+                    result.success(hasAccessibilityServiceEnabled())
+                }
+                "requestAccessibilityPermission" -> {
+                    startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+                    result.success(null)
+                }
+                "setBlockedApps" -> {
+                    val apps = call.argument<List<String>>("apps") ?: emptyList()
+                    AppBlockService.blockedPackages = apps.toMutableSet()
+                    result.success(true)
+                }
+                "setBlockingEnabled" -> {
+                    val enabled = call.argument<Boolean>("enabled") ?: false
+                    AppBlockService.isEnabled = enabled
+                    result.success(true)
                 }
                 else -> result.notImplemented()
             }
@@ -542,4 +568,114 @@ class MainActivity : FlutterActivity() {
         }
         return resolveInfo?.activityInfo?.packageName == packageName
     }
+
+    // ──────────────────────────────────────────────
+    // INSTALLED APPS — Kullanıcının yüklü uygulamaları
+    // ──────────────────────────────────────────────
+
+    private fun getInstalledApps(): List<Map<String, Any?>> {
+        val pm = packageManager
+        val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
+        val resolveInfos = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            pm.queryIntentActivities(intent, PackageManager.ResolveInfoFlags.of(0))
+        } else {
+            @Suppress("DEPRECATION")
+            pm.queryIntentActivities(intent, 0)
+        }
+
+        return resolveInfos.mapNotNull { ri ->
+            val pkgName = ri.activityInfo?.packageName ?: return@mapNotNull null
+            // Kendi uygulamamızı listeden çıkar
+            if (pkgName == packageName) return@mapNotNull null
+
+            val appName = ri.loadLabel(pm).toString()
+            val category = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                try {
+                    val appInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        pm.getApplicationInfo(pkgName, PackageManager.ApplicationInfoFlags.of(0))
+                    } else {
+                        @Suppress("DEPRECATION")
+                        pm.getApplicationInfo(pkgName, 0)
+                    }
+                    categoryToString(appInfo.category)
+                } catch (_: Exception) { "other" }
+            } else { "other" }
+
+            val iconBytes = getAppIconBytes(pkgName)
+
+            mapOf(
+                "packageName" to pkgName,
+                "name" to appName,
+                "category" to category,
+                "iconBytes" to iconBytes
+            )
+        }.sortedBy { (it["name"] as String).lowercase() }
+    }
+
+    // ──────────────────────────────────────────────
+    // CATEGORY USAGE — Kategoriye göre toplam kullanım
+    // ──────────────────────────────────────────────
+
+    private fun getCategoryUsage(daysAgo: Int): Map<String, Any> {
+        if (!hasUsageStatsPermission()) {
+            return mapOf("error" to "no_permission")
+        }
+
+        val (startTime, endTime) = getDayRange(daysAgo)
+        val usm = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+        val statsMap = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, startTime, endTime) ?: emptyList()
+        val pm = packageManager
+
+        val categoryMinutes = mutableMapOf<String, Int>()
+
+        for (stat in statsMap) {
+            val foregroundMs = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                stat.totalTimeVisible
+            } else {
+                stat.totalTimeInForeground
+            }
+            if (foregroundMs < 60_000) continue
+            if (isSystemApp(pm, stat.packageName)) continue
+
+            val minutes = (foregroundMs / 60_000).toInt()
+            val category = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                try {
+                    val appInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        pm.getApplicationInfo(stat.packageName, PackageManager.ApplicationInfoFlags.of(0))
+                    } else {
+                        @Suppress("DEPRECATION")
+                        pm.getApplicationInfo(stat.packageName, 0)
+                    }
+                    categoryToString(appInfo.category)
+                } catch (_: Exception) { "other" }
+            } else { "other" }
+
+            categoryMinutes[category] = (categoryMinutes[category] ?: 0) + minutes
+        }
+
+        return mapOf("categories" to categoryMinutes)
+    }
+
+    // ──────────────────────────────────────────────
+    // ACCESSIBILITY SERVICE — Engelleme izni kontrolü
+    // ──────────────────────────────────────────────
+
+    private fun hasAccessibilityServiceEnabled(): Boolean {
+        val am = getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+        val enabledServices = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
+        return enabledServices.any { it.resolveInfo.serviceInfo.packageName == packageName }
+    }
+}
+
+// ──────────────────────────────────────────────
+// APP BLOCK SERVICE — Accessibility Service
+// ──────────────────────────────────────────────
+
+/**
+ * Singleton companion nesne üzerinden engelli liste ve durum yönetilir.
+ * MainActivity'den setBlockedApps/setBlockingEnabled ile güncellenir.
+ */
+object AppBlockService {
+    var blockedPackages: MutableSet<String> = mutableSetOf()
+    var isEnabled: Boolean = false
 }

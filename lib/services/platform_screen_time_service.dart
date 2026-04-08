@@ -154,6 +154,87 @@ class PlatformScreenTimeService {
   /// Android cihaz mı?
   bool get isAndroid => _isAndroid;
 
+  // ──────────────────────────────────────────────
+  // INSTALLED APPS — Cihazda yüklü uygulamalar
+  // ──────────────────────────────────────────────
+
+  /// Kullanıcının yüklü uygulamalarını (launcher'da görünen) döner.
+  /// Her biri: { packageName, name, category, iconBytes? }
+  Future<List<Map<String, dynamic>>> getInstalledApps() async {
+    if (_isWeb || (!_isAndroid && !_isIOS)) return [];
+    try {
+      final result = await _channel.invokeMethod<List>('getInstalledApps');
+      if (result == null) return [];
+      return result.map((item) => Map<String, dynamic>.from(item as Map)).toList();
+    } on PlatformException catch (e) {
+      debugPrint('getInstalledApps error: $e');
+      return [];
+    }
+  }
+
+  /// Kategorilere göre toplam kullanım dakikası.
+  /// Dönen: { categories: { "social": 42, "video": 18, ... } }
+  Future<Map<String, int>> getCategoryUsage(int daysAgo) async {
+    if (_isWeb || (!_isAndroid && !_isIOS)) return {};
+    try {
+      final result = await _channel.invokeMethod<Map>('getCategoryUsage', {
+        'daysAgo': daysAgo,
+      });
+      if (result == null) return {};
+      final cats = result['categories'] as Map?;
+      if (cats == null) return {};
+      return cats.map((k, v) => MapEntry(k.toString(), v as int));
+    } on PlatformException catch (e) {
+      debugPrint('getCategoryUsage error: $e');
+      return {};
+    }
+  }
+
+  // ──────────────────────────────────────────────
+  // APP BLOCKING — Accessibility Service
+  // ──────────────────────────────────────────────
+
+  /// Accessibility Service izni var mı?
+  Future<bool> hasAccessibilityPermission() async {
+    if (_isWeb || !_isAndroid) return false;
+    try {
+      final result = await _channel.invokeMethod<bool>('hasAccessibilityPermission');
+      return result ?? false;
+    } on PlatformException {
+      return false;
+    }
+  }
+
+  /// Accessibility Service ayarlar ekranını açar.
+  Future<void> requestAccessibilityPermission() async {
+    if (_isWeb || !_isAndroid) return;
+    try {
+      await _channel.invokeMethod('requestAccessibilityPermission');
+    } on PlatformException catch (e) {
+      debugPrint('requestAccessibilityPermission error: $e');
+    }
+  }
+
+  /// Native tarafta engelli uygulama listesini günceller.
+  Future<void> setBlockedApps(List<String> packageNames) async {
+    if (_isWeb || !_isAndroid) return;
+    try {
+      await _channel.invokeMethod('setBlockedApps', {'apps': packageNames});
+    } on PlatformException catch (e) {
+      debugPrint('setBlockedApps error: $e');
+    }
+  }
+
+  /// Native tarafta engelleme durumunu günceller.
+  Future<void> setBlockingEnabled(bool enabled) async {
+    if (_isWeb || !_isAndroid) return;
+    try {
+      await _channel.invokeMethod('setBlockingEnabled', {'enabled': enabled});
+    } on PlatformException catch (e) {
+      debugPrint('setBlockingEnabled error: $e');
+    }
+  }
+
   ScreenTimeData _parseResultWithIcons(Map<dynamic, dynamic> result, int daysAgo) {
     final rawApps = (result['apps'] as List?) ?? [];
     final totalMinutes = (result['totalMinutes'] as int?) ?? 0;
@@ -251,6 +332,8 @@ class PlatformScreenTimeService {
   bool get _isIOS => !kIsWeb && Platform.isIOS;
 
   /// Bilinen uygulamalara renk atar.
+  static Color appColorFor(String packageName) => _appColor(packageName);
+
   static Color _appColor(String packageName) {
     const colorMap = {
       'com.instagram.android': AppColors.instagram,
