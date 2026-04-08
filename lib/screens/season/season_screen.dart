@@ -3,6 +3,7 @@ import '../../config/theme.dart';
 import '../../widgets/premium_background.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/progress_ring.dart';
+import '../../l10n/app_localizations.dart';
 
 class SeasonScreen extends StatelessWidget {
   const SeasonScreen({super.key});
@@ -17,6 +18,7 @@ class SeasonScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: PremiumBackground(
@@ -28,13 +30,13 @@ class SeasonScreen extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Sezon 1', style: AppTextStyles.h1),
-                        SizedBox(height: 4),
-                        Text('Bahar Uyanışı', style: AppTextStyles.bodySecondary),
+                        Text(l.season1Title, style: AppTextStyles.h1),
+                        const SizedBox(height: 4),
+                        Text(l.season1Subtitle, style: AppTextStyles.bodySecondary),
                       ],
                     ),
                   ),
@@ -89,13 +91,13 @@ class SeasonScreen extends StatelessWidget {
                               color: AppColors.bg.withValues(alpha: 0.7),
                               borderRadius: BorderRadius.circular(16),
                             ),
-                            child: const Center(
+                            child: Center(
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(Icons.lock_rounded, color: AppColors.textTertiary, size: 24),
-                                  SizedBox(height: 4),
-                                  Text('Sezon Pass', style: TextStyle(fontSize: 12, color: AppColors.textTertiary)),
+                                  const Icon(Icons.lock_rounded, color: AppColors.textTertiary, size: 24),
+                                  const SizedBox(height: 4),
+                                  Text(l.seasonPassLabel, style: const TextStyle(fontSize: 12, color: AppColors.textTertiary)),
                                 ],
                               ),
                             ),
@@ -118,7 +120,7 @@ class SeasonScreen extends StatelessWidget {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
-                  child: const Text('Sezon Pass (99TL)'),
+                  child: Text(l.seasonPassBtn),
                 ),
               ),
               const SizedBox(height: 100),

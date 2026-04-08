@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
+import '../../config/app_shadows.dart';
 import '../../widgets/premium_background.dart';
 import '../../config/constants.dart';
 // import '../../providers/user_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class ProfileSetupScreen extends ConsumerStatefulWidget {
   const ProfileSetupScreen({super.key});
@@ -26,6 +29,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: PremiumBackground(
@@ -36,38 +40,38 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 24),
-              const Text('Profilini Oluştur', style: AppTextStyles.h1),
+              Text(l.setupProfile, style: AppType.h1),
               const SizedBox(height: 32),
 
               // Name
-              const Text('Ismin', style: AppTextStyles.label),
+              Text(l.yourName, style: AppType.label),
               const SizedBox(height: 8),
               TextField(
                 controller: _nameController,
-                style: const TextStyle(color: AppColors.textPrimary),
+                style: TextStyle(color: AppColors.textPrimary),
                 decoration: InputDecoration(
-                  hintText: 'Adini yaz',
-                  hintStyle: const TextStyle(color: AppColors.textTertiary),
+                  hintText: l.nameHint,
+                  hintStyle: TextStyle(color: AppColors.textTertiary),
                   filled: true,
-                  fillColor: AppColors.cardBg,
+                  fillColor: AppColors.surface,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.cardBorder),
+                    borderSide: BorderSide(color: AppColors.cardBorder),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.cardBorder),
+                    borderSide: BorderSide(color: AppColors.cardBorder),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.neonGreen),
+                    borderSide: BorderSide(color: AppColors.neonGreen),
                   ),
                 ),
               ),
               const SizedBox(height: 32),
 
               // Avatar
-              const Text('Avatar', style: AppTextStyles.label),
+              Text('Avatar', style: AppType.label),
               const SizedBox(height: 12),
               Wrap(
                 spacing: 12,
@@ -102,7 +106,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
               const SizedBox(height: 32),
 
               // Age group
-              const Text('Yas Grubu', style: AppTextStyles.label),
+              Text(l.ageGroup, style: AppType.label),
               const SizedBox(height: 12),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -137,9 +141,13 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
               const SizedBox(height: 48),
 
               // Submit
-              SizedBox(
+              Container(
                 width: double.infinity,
                 height: 56,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: AppShadow.glow(AppColors.neonGreen),
+                ),
                 child: ElevatedButton(
                   onPressed: () {
                     context.go('/');
@@ -150,7 +158,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
-                  child: const Text('Hazirim'),
+                  child: Text(l.imReady),
                 ),
               ),
               const SizedBox(height: 100),

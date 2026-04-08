@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../config/theme.dart';
+import '../l10n/app_localizations.dart';
 import '../providers/auth_provider.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/onboarding/welcome_screen.dart';
+import '../screens/onboarding/shock_screen.dart';
 import '../screens/onboarding/permissions_screen.dart';
 import '../screens/onboarding/profile_setup_screen.dart';
 import '../screens/onboarding/goal_setup_screen.dart';
@@ -28,6 +30,11 @@ import '../screens/stats/analytics_screen.dart';
 import '../screens/stats/whatif_screen.dart';
 import '../screens/report/report_card_screen.dart';
 import '../screens/focus/focus_mode_screen.dart';
+import '../screens/sessions/deep_focus_setup_screen.dart';
+import '../screens/sessions/active_session_screen.dart';
+import '../screens/sessions/session_complete_screen.dart';
+import '../screens/sessions/blocklists_screen.dart';
+import '../screens/limits/app_limits_screen.dart';
 import '../screens/season/season_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../screens/settings/subscription_screen.dart';
@@ -38,7 +45,13 @@ import '../screens/o2/market_screen.dart';
 import '../screens/ganimet/ganimet_screen.dart';
 import '../screens/admin/admin_ganimet_screen.dart';
 import '../screens/stats/analytics_detailed_screen.dart';
+import '../screens/stats/monthly_top10_screen.dart';
 import '../screens/profile/user_profile_screen.dart';
+import '../screens/settings/legal_screen.dart';
+import '../screens/settings/delete_account_screen.dart';
+import '../screens/appblock/app_block_screen.dart';
+import '../screens/appblock/block_schedule_screen.dart';
+import '../screens/appblock/intervention_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -86,10 +99,39 @@ GoRouter buildAppRouter(Ref ref) {
         path: '/onboarding',
         builder: (_, __) => const WelcomeScreen(),
         routes: [
+          GoRoute(path: 'shock', builder: (_, __) => const ShockScreen()),
           GoRoute(path: 'permissions', builder: (_, __) => const PermissionsScreen()),
           GoRoute(path: 'goal', builder: (_, __) => const GoalSetupScreen()),
           GoRoute(path: 'profile', builder: (_, __) => const ProfileSetupScreen()),
         ],
+      ),
+
+      // Deep Focus sessions (full-screen, outside tab shell)
+      GoRoute(
+        path: '/sessions/setup',
+        builder: (_, __) => const DeepFocusSetupScreen(),
+      ),
+      GoRoute(
+        path: '/sessions/blocklists',
+        builder: (_, __) => const BlocklistsScreen(),
+      ),
+      GoRoute(
+        path: '/limits',
+        builder: (_, __) => const AppLimitsScreen(),
+      ),
+      GoRoute(
+        path: '/sessions/active',
+        builder: (_, __) => const ActiveSessionScreen(),
+      ),
+      GoRoute(
+        path: '/sessions/complete',
+        builder: (_, state) {
+          final extra = state.extra as Map<String, dynamic>? ?? {};
+          return SessionCompleteScreen(
+            durationMin: extra['durationMin'] as int? ?? 0,
+            gemsEarned: extra['gemsEarned'] as int? ?? 0,
+          );
+        },
       ),
 
       // Universal user profile (accessible from anywhere)
@@ -128,13 +170,16 @@ GoRouter buildAppRouter(Ref ref) {
                 GoRoute(path: 'wrapped', builder: (_, __) => const ReportCardScreen()),
                 GoRoute(path: 'ganimetler', builder: (_, __) => const GanimetScreen()),
                 GoRoute(path: 'admin/ganimet', builder: (_, __) => const AdminGanimetScreen()),
+                GoRoute(path: 'app-block', builder: (_, __) => const AppBlockScreen()),
+                GoRoute(path: 'app-block/schedule', builder: (_, __) => const BlockScheduleScreen()),
+                GoRoute(path: 'app-block/intervention', builder: (_, __) => const InterventionScreen()),
                 GoRoute(path: 'groups', builder: (_, __) => const GroupsScreen()),
+                GoRoute(path: 'group/create', builder: (_, __) => const CreateGroupScreen()),
                 GoRoute(
                   path: 'group/:id',
                   builder: (_, state) =>
                       GroupDetailScreen(groupId: state.pathParameters['id']!),
                 ),
-                GoRoute(path: 'group/create', builder: (_, __) => const CreateGroupScreen()),
               ],
             ),
           ]),
@@ -184,8 +229,13 @@ GoRouter buildAppRouter(Ref ref) {
                 GoRoute(path: 'stats/analytics', builder: (_, __) => const AnalyticsScreen()),
                 GoRoute(path: 'stats/whatif', builder: (_, __) => const WhatIfScreen()),
                 GoRoute(path: 'stats/detailed', builder: (_, __) => const AnalyticsDetailedScreen()),
+                GoRoute(path: 'stats/monthly-top10', builder: (_, __) => const MonthlyTop10Screen()),
                 GoRoute(path: 'settings', builder: (_, __) => const SettingsScreen()),
                 GoRoute(path: 'settings/subscription', builder: (_, __) => const SubscriptionScreen()),
+                GoRoute(path: 'settings/privacy', builder: (_, __) => const LegalScreen(type: LegalType.privacy)),
+                GoRoute(path: 'settings/terms', builder: (_, __) => const LegalScreen(type: LegalType.terms)),
+                GoRoute(path: 'settings/kvkk', builder: (_, __) => const LegalScreen(type: LegalType.kvkk)),
+                GoRoute(path: 'settings/delete-account', builder: (_, __) => const DeleteAccountScreen()),
               ],
             ),
           ]),
@@ -217,15 +267,18 @@ class _ScaffoldWithNavBar extends StatelessWidget {
   const _ScaffoldWithNavBar({required this.navigationShell});
   final StatefulNavigationShell navigationShell;
 
-  static const _tabs = [
-    _TabItem(icon: Icons.home_rounded, label: 'Ana Sayfa'),
-    _TabItem(icon: Icons.people_rounded, label: 'Sosyal'),
-    _TabItem(icon: Icons.bolt_rounded, label: 'Düello'),
-    _TabItem(icon: Icons.person_rounded, label: 'Profil'),
+  static const _tabIcons = [
+    Icons.home_rounded,
+    Icons.people_rounded,
+    Icons.bolt_rounded,
+    Icons.person_rounded,
   ];
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    final tabLabels = [l.home, l.social, l.duel, l.profile];
+
     return Scaffold(
       body: navigationShell,
       bottomNavigationBar: Container(
@@ -249,7 +302,7 @@ class _ScaffoldWithNavBar extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: List.generate(_tabs.length, (i) {
+              children: List.generate(_tabIcons.length, (i) {
                 final selected = navigationShell.currentIndex == i;
                 return GestureDetector(
                   onTap: () => navigationShell.goBranch(i,
@@ -261,7 +314,7 @@ class _ScaffoldWithNavBar extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          _tabs[i].icon,
+                          _tabIcons[i],
                           size: 24,
                           color: selected ? AppColors.neonGreen : AppColors.textTertiary,
                           shadows: selected
@@ -270,7 +323,7 @@ class _ScaffoldWithNavBar extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          _tabs[i].label,
+                          tabLabels[i],
                           style: TextStyle(
                             fontSize: 10,
                             fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
@@ -293,8 +346,3 @@ class _ScaffoldWithNavBar extends StatelessWidget {
   }
 }
 
-class _TabItem {
-  const _TabItem({required this.icon, required this.label});
-  final IconData icon;
-  final String label;
-}

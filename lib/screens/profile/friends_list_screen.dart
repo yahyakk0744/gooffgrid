@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../l10n/app_localizations.dart';
 import '../../widgets/premium_background.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/level_badge.dart';
@@ -20,6 +21,7 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final friends = ref.watch(friendsProvider);
     final filtered = _search.isEmpty
         ? friends
@@ -43,7 +45,7 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
                 children: [
                   GestureDetector(onTap: () => context.pop(), child: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary)),
                   const SizedBox(width: 12),
-                  const Text('Arkadaşlar', style: AppTextStyles.h1),
+                  Text(l.friends, style: AppTextStyles.h1),
                 ],
               ),
               const SizedBox(height: 16),
@@ -51,7 +53,7 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
                 onChanged: (v) => setState(() => _search = v),
                 style: const TextStyle(color: AppColors.textPrimary),
                 decoration: InputDecoration(
-                  hintText: 'Ara...',
+                  hintText: l.searchHint,
                   hintStyle: const TextStyle(color: AppColors.textTertiary),
                   prefixIcon: const Icon(Icons.search_rounded, color: AppColors.textTertiary),
                   filled: true,
@@ -65,9 +67,9 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
                 Expanded(
                   child: EmptyState(
                     emoji: '🤝',
-                    title: 'Henüz arkadaş yok',
-                    subtitle: 'Arkadaş ekleyerek başla',
-                    buttonText: 'Arkadaş Ekle',
+                    title: l.noFriendsYet,
+                    subtitle: l.noFriendsHint,
+                    buttonText: l.addFriend,
                     onButtonTap: () => context.push('/friend/add'),
                   ),
                 ),

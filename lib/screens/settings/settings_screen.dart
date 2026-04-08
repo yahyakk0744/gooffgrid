@@ -7,6 +7,7 @@ import '../../widgets/app_card.dart';
 import '../../providers/user_provider.dart';
 import '../../widgets/premium_background.dart';
 import '../../services/haptic_service.dart';
+import '../../l10n/app_localizations.dart';
 
 bool _isAdmin() {
   final email = sb.Supabase.instance.client.auth.currentUser?.email;
@@ -18,6 +19,7 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final user = ref.watch(userProvider);
 
     return Scaffold(
@@ -29,11 +31,15 @@ class SettingsScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Ayarlar', style: AppTextStyles.h1),
+              Text(l.settings, style: AppTextStyles.h1),
               const SizedBox(height: 24),
 
-              // Profile summary
+              // Profile summary — tappable to edit
               AppCard(
+                onTap: () {
+                  HapticService.light();
+                  context.push('/profile/edit');
+                },
                 child: Row(
                   children: [
                     Container(
@@ -52,7 +58,9 @@ class SettingsScreen extends ConsumerWidget {
                         ],
                       ),
                     ),
-                    const Icon(Icons.chevron_right_rounded, color: AppColors.textTertiary),
+                    Text(l.edit, style: TextStyle(fontSize: 13, color: AppColors.neonGreen, fontWeight: FontWeight.w500)),
+                    const SizedBox(width: 4),
+                    const Icon(Icons.chevron_right_rounded, color: AppColors.neonGreen),
                   ],
                 ),
               ),
@@ -68,11 +76,11 @@ class SettingsScreen extends ConsumerWidget {
                   children: [
                     const Icon(Icons.star_rounded, color: AppColors.gold, size: 24),
                     const SizedBox(width: 12),
-                    const Expanded(child: Text('Abonelik', style: AppTextStyles.h3)),
+                    Expanded(child: Text(l.subscription, style: AppTextStyles.h3)),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(color: AppColors.cardBorder, borderRadius: BorderRadius.circular(8)),
-                      child: const Text('Ücretsiz', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                      child: Text(l.free, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
                     ),
                     const SizedBox(width: 8),
                     const Icon(Icons.chevron_right_rounded, color: AppColors.textTertiary),
@@ -94,7 +102,7 @@ class SettingsScreen extends ConsumerWidget {
                       children: [
                         const Icon(Icons.admin_panel_settings, color: AppColors.ringDanger, size: 24),
                         const SizedBox(width: 12),
-                        const Text('Admin: Ganimet Ekle', style: AppTextStyles.h3),
+                        Text(l.adminAddLoot, style: AppTextStyles.h3),
                         const Spacer(),
                         const Icon(Icons.chevron_right_rounded, color: AppColors.textTertiary),
                       ],
@@ -106,25 +114,52 @@ class SettingsScreen extends ConsumerWidget {
               AppCard(
                 child: Column(
                   children: [
-                    _ToggleRow(label: 'Bildirimler', value: true, onChanged: (_) {}),
+                    _ToggleRow(label: l.notifications, value: true, onChanged: (_) {}),
                     const Divider(color: AppColors.cardBorder, height: 1),
-                    _ToggleRow(label: 'Günlük Hatırlatıcı', value: true, onChanged: (_) {}),
+                    _ToggleRow(label: l.dailyReminder, value: true, onChanged: (_) {}),
                     const Divider(color: AppColors.cardBorder, height: 1),
-                    _ToggleRow(label: 'Düello Bildirimleri', value: false, onChanged: (_) {}),
+                    _ToggleRow(label: l.duelNotifications, value: false, onChanged: (_) {}),
                     const Divider(color: AppColors.cardBorder, height: 1),
-                    _ToggleRow(label: 'Konum Paylaşımı', value: true, onChanged: (_) {}),
+                    _ToggleRow(label: l.locationSharing, value: true, onChanged: (_) {}),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Legal
+              Text(l.legal, style: AppTextStyles.label),
+              const SizedBox(height: 8),
+              AppCard(
+                child: Column(
+                  children: [
+                    _LinkRow(label: l.privacyPolicy, icon: Icons.privacy_tip_outlined, onTap: () => context.push('/profile/settings/privacy')),
+                    const Divider(color: AppColors.cardBorder, height: 1),
+                    _LinkRow(label: l.termsOfService, icon: Icons.description_outlined, onTap: () => context.push('/profile/settings/terms')),
+                    const Divider(color: AppColors.cardBorder, height: 1),
+                    _LinkRow(label: l.kvkkText, icon: Icons.shield_outlined, onTap: () => context.push('/profile/settings/kvkk')),
                   ],
                 ),
               ),
               const SizedBox(height: 24),
 
+              // Danger zone
               Center(
                 child: GestureDetector(
                   onTap: () {
                     HapticService.warning();
                     context.go('/onboarding');
                   },
-                  child: const Text('Çıkış Yap', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.ringDanger)),
+                  child: Text(l.logout, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.ringDanger)),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Center(
+                child: GestureDetector(
+                  onTap: () {
+                    HapticService.light();
+                    context.push('/profile/settings/delete-account');
+                  },
+                  child: Text(l.deleteMyAccount, style: const TextStyle(fontSize: 13, color: AppColors.textTertiary)),
                 ),
               ),
               const SizedBox(height: 24),
@@ -136,6 +171,32 @@ class SettingsScreen extends ConsumerWidget {
           ),
         ),
       ),
+      ),
+    );
+  }
+}
+
+class _LinkRow extends StatelessWidget {
+  const _LinkRow({required this.label, required this.icon, required this.onTap});
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Row(
+          children: [
+            Icon(icon, size: 20, color: AppColors.textSecondary),
+            const SizedBox(width: 12),
+            Expanded(child: Text(label, style: AppTextStyles.body)),
+            const Icon(Icons.chevron_right_rounded, size: 20, color: AppColors.textTertiary),
+          ],
+        ),
       ),
     );
   }

@@ -5,7 +5,7 @@ import '../../config/theme.dart';
 class HeatmapWidget extends StatelessWidget {
   const HeatmapWidget({super.key});
 
-  static const _dayLabels = ['P', 'S', 'C', 'P', 'C', 'C', 'P'];
+  static const _dayLabels = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
 
   // Mock heatmap: 7 rows x 24 columns
   List<List<int>> get _data {

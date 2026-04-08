@@ -1,10 +1,18 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 /// Nudge/notification service — yerel bildirimlerle kullaniciyi uyarir.
-/// flutter_local_notifications eklendiginde TODO yorumlarini kaldirabiliriz.
 class NudgeService {
   NudgeService._();
   static final instance = NudgeService._();
+
+  final FlutterLocalNotificationsPlugin _plugin =
+      FlutterLocalNotificationsPlugin();
+
+  static const String _channelId = 'gooffgrid_channel';
+  static const String _channelName = 'GoOffGrid Bildirimler';
+  static const String _channelDesc =
+      'GoOffGrid uygulama bildirimleri — seri uyarilari, gunluk hatirlaticilar';
 
   // Esikler (dakika)
   static const int _warnThreshold = 30;
@@ -14,12 +22,53 @@ class NudgeService {
   // Son tetiklenen esik — ayni bildirimi tekrar gondermemek icin
   final Map<String, int> _lastNudge = {};
 
-  /// Servisi baslatir. flutter_local_notifications eklendiginde
-  /// buraya izin isteme ve kanal olusturma kodu gelecek.
+  bool _initialized = false;
+
+  /// Servisi baslatir: Android + iOS ayarlari, kanal olusturma, izin isteme.
   Future<void> initialize() async {
-    // TODO: flutter_local_notifications eklendikten sonra:
-    // final plugin = FlutterLocalNotificationsPlugin();
-    // await plugin.initialize(InitializationSettings(...));
+    if (_initialized) return;
+
+    const androidSettings =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    const iosSettings = DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
+
+    const initSettings = InitializationSettings(
+      android: androidSettings,
+      iOS: iosSettings,
+    );
+
+    await _plugin.initialize(
+      initSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        debugPrint('[NudgeService] Bildirime tiklandi: ${response.payload}');
+      },
+    );
+
+    // Android bildirim kanalini olustur
+    const androidChannel = AndroidNotificationChannel(
+      _channelId,
+      _channelName,
+      description: _channelDesc,
+      importance: Importance.high,
+    );
+
+    await _plugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(androidChannel);
+
+    // iOS izinleri iste
+    await _plugin
+        .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(alert: true, badge: true, sound: true);
+
+    _initialized = true;
     debugPrint('[NudgeService] initialized');
   }
 
@@ -57,7 +106,7 @@ class NudgeService {
 
   /// Sabah motivasyon bildirimi.
   Future<void> sendDailyReminder() async {
-    _send(
+    await _send(
       id: 9001,
       title: 'Gunun Basliyor!',
       body: 'Bugun telefona az bak, hayata cok bak. 🌅',
@@ -66,7 +115,7 @@ class NudgeService {
 
   /// Haftalik ozet bildirimi.
   Future<void> sendWeeklyReport() async {
-    _send(
+    await _send(
       id: 9002,
       title: 'Haftalik Rapor Hazir',
       body: 'Bu haftaki ekran suren seni bekliyor. Nasil gecti? 📊',
@@ -75,7 +124,8 @@ class NudgeService {
 
   // --- Eski metodlar (geriye donuk uyumluluk) ---
 
-  void sendShameNotification({required String userName, required int totalMinutes}) {
+  void sendShameNotification(
+      {required String userName, required int totalMinutes}) {
     _send(
       id: userName.hashCode,
       title: 'Utanc Duvari',
@@ -83,7 +133,10 @@ class NudgeService {
     );
   }
 
-  void sendDuelNotification({required String type, required String opponentName, String? result}) {
+  void sendDuelNotification(
+      {required String type,
+      required String opponentName,
+      String? result}) {
     _send(
       id: opponentName.hashCode,
       title: 'Duello',
@@ -99,7 +152,8 @@ class NudgeService {
     );
   }
 
-  void sendReactionNotification({required String fromName, required String emoji}) {
+  void sendReactionNotification(
+      {required String fromName, required String emoji}) {
     _send(
       id: fromName.hashCode,
       title: 'Yeni Reaksiyon',
@@ -107,7 +161,8 @@ class NudgeService {
     );
   }
 
-  void sendScreenTimeWarning({required int currentMinutes, required int threshold}) {
+  void sendScreenTimeWarning(
+      {required int currentMinutes, required int threshold}) {
     _send(
       id: 7000,
       title: 'Ekran Suresi Uyarisi',
@@ -115,7 +170,8 @@ class NudgeService {
     );
   }
 
-  void sendRankChangeNotification({required int oldRank, required int newRank, required String scope}) {
+  void sendRankChangeNotification(
+      {required int oldRank, required int newRank, required String scope}) {
     _send(
       id: 6000,
       title: 'Siralama Degisti',
@@ -125,9 +181,34 @@ class NudgeService {
 
   // --- Dahili gonderici ---
 
-  void _send({required int id, required String title, required String body}) {
-    // TODO: flutter_local_notifications eklendikten sonra:
-    // await _plugin.show(id, title, body, notificationDetails);
+  Future<void> _send(
+      {required int id, required String title, required String body}) async {
+    if (!_initialized) {
+      debugPrint('[NudgeService] Henuz baslatilmadi, initialize() cagir');
+      return;
+    }
+
+    const androidDetails = AndroidNotificationDetails(
+      _channelId,
+      _channelName,
+      channelDescription: _channelDesc,
+      importance: Importance.high,
+      priority: Priority.high,
+      showWhen: true,
+    );
+
+    const iosDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+
+    const details = NotificationDetails(
+      android: androidDetails,
+      iOS: iosDetails,
+    );
+
+    await _plugin.show(id, title, body, details);
     debugPrint('[NudgeService] #$id | $title | $body');
   }
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
+import '../../l10n/app_localizations.dart';
 import '../../widgets/ranking_row.dart';
 import '../../widgets/top_three_podium.dart';
 import '../../providers/ranking_provider.dart';
@@ -13,11 +15,13 @@ class RankingScreen extends ConsumerWidget {
 
   final bool embedded;
 
-  static const _tabLabels = ['Arkadaşlar', 'Şehir', 'Ülke', 'Global', 'Yaş', 'Sezon'];
-  static const _freeTabCount = 2;
+  static const _tabLabels = <String>[]; // populated in build via l10n
+  static const _visibleTabs = [RankingTab.friends, RankingTab.city, RankingTab.country, RankingTab.global];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
+    final tabLabels = [l.friends, l.city, l.country, l.global];
     final rankingState = ref.watch(rankingProvider);
     final entries = rankingState.entries;
 
@@ -26,9 +30,9 @@ class RankingScreen extends ConsumerWidget {
           children: [
             if (!embedded) ...[
               const SizedBox(height: 16),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text('Sıralama', style: AppTextStyles.h1),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(l.ranking, style: AppType.h1),
               ),
             ],
             const SizedBox(height: 16),
@@ -39,14 +43,13 @@ class RankingScreen extends ConsumerWidget {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: RankingTab.values.length,
+                itemCount: _visibleTabs.length,
                 separatorBuilder: (_, __) => const SizedBox(width: 8),
                 itemBuilder: (context, i) {
-                  final tab = RankingTab.values[i];
+                  final tab = _visibleTabs[i];
                   final active = tab == rankingState.scope;
-                  final locked = i >= _freeTabCount;
                   return GestureDetector(
-                    onTap: locked ? null : () {
+                    onTap: () {
                       HapticService.selection();
                       ref.read(rankingTabProvider.notifier).state = tab;
                       ref.read(rankingProvider.notifier).setScope(tab);
@@ -58,30 +61,13 @@ class RankingScreen extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(color: active ? AppColors.neonGreen : AppColors.cardBorder),
                       ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (locked) ...[
-                            const Icon(Icons.lock_rounded, size: 12, color: AppColors.textTertiary),
-                            const SizedBox(width: 4),
-                          ],
-                          Text(
-                            _tabLabels[i],
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                              color: active ? Colors.black : (locked ? AppColors.textTertiary : AppColors.textSecondary),
-                            ),
-                          ),
-                          if (locked) ...[
-                            const SizedBox(width: 4),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                              decoration: BoxDecoration(color: AppColors.neonOrange.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(4)),
-                              child: const Text('Pro', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w700, color: AppColors.neonOrange)),
-                            ),
-                          ],
-                        ],
+                      child: Text(
+                        tabLabels[i],
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: active ? Colors.black : AppColors.textSecondary,
+                        ),
                       ),
                     ),
                   );

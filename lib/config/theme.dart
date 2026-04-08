@@ -1,52 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppColors {
   AppColors._();
 
-  // Background (Revolut)
-  static const bg = Color(0xFF0A0A0A);
-  static const bgDeepCenter = Color(0xFF0D0D1A); // koyu lacivert merkez
-  static const bgDeepEdge = Color(0xFF0A0A0A);   // kenar
-  static const cardBg = Color(0xFF1A1A1A);
-  static const cardBorder = Color(0xFF2A2A2A);
-  static const surface = Color(0xFF141414);
+  // ── Backgrounds (blue-shifted dark for depth) ──
+  static const bg = Color(0xFF080810);
+  static const bgDeepCenter = Color(0xFF0A0A1A);
+  static const bgDeepEdge = Color(0xFF080810);
+  static const surface = Color(0xFF12121E);
+  static const cardBg = Color(0xFF1A1A2A);
+  static const cardBgElevated = Color(0xFF222236);
+  static const cardBorder = Color(0xFF2A2A3A);
+  static const divider = Color(0xFF1E1E2E);
 
   // Premium gradients
-  static const cardGradientStart = Color(0xFF1C1C2E); // koyu lacivert
-  static const cardGradientEnd = Color(0xFF1A1A1A);   // standart koyu
+  static const cardGradientStart = Color(0xFF1C1C2E);
+  static const cardGradientEnd = Color(0xFF1A1A2A);
 
-  // Text
-  static const textPrimary = Color(0xFFFFFFFF);
-  static const textSecondary = Color(0xFF8E8E93);
-  static const textTertiary = Color(0xFF636366);
+  // ── Text (warm-white with blue tint) ──
+  static const textPrimary = Color(0xFFF5F5FF);
+  static const textSecondary = Color(0xFF8B8BA0);
+  static const textTertiary = Color(0xFF5A5A70);
 
-  // Neon accents (Nike)
-  static const neonGreen = Color(0xFF39FF14);
-  static const neonOrange = Color(0xFFFF6B00);
+  // ── Primary accents (refined neon) ──
+  static const neonGreen = Color(0xFF32E810);
+  static const neonOrange = Color(0xFFFF7A1A);
+  static const primaryMuted = Color(0xFF1A3A14);
+  static const secondaryMuted = Color(0xFF2A1A0A);
 
-  // Screen time rings (Apple Fitness)
+  // ── New accent colors ──
+  static const accentBlue = Color(0xFF4F8AFF);
+  static const accentPurple = Color(0xFFA78BFA);
+
+  // ── Screen time rings (Apple Fitness) ──
   static const ringGood = Color(0xFF30D158);
   static const ringWarning = Color(0xFFFF9F0A);
   static const ringDanger = Color(0xFFFF453A);
-  static const ringTrack = Color(0xFF2C2C2E);
+  static const ringTrack = Color(0xFF1E1E2E);
 
-  // Social
+  // ── Social ──
   static const friendOnline = Color(0xFF30D158);
   static const friendActive = Color(0xFFFF453A);
 
-  // Ranking
+  // ── Ranking ──
   static const gold = Color(0xFFFFD700);
   static const silver = Color(0xFFC0C0C0);
   static const bronze = Color(0xFFCD7F32);
 
-  // Wrapped gradients (Spotify)
+  // ── Wrapped gradients (Spotify-inspired) ──
   static const wrappedGradient1 = [Color(0xFF667EEA), Color(0xFF764BA2)];
   static const wrappedGradient2 = [Color(0xFFF093FB), Color(0xFFF5576C)];
   static const wrappedGradient3 = [Color(0xFF4FACFE), Color(0xFF00F2FE)];
-  static const wrappedGradient4 = [Color(0xFFA8EB12), Color(0xFF39FF14)];
-  static const wrappedGradient5 = [Color(0xFFFF6B00), Color(0xFFFFD700)];
+  static const wrappedGradient4 = [Color(0xFFA8EB12), Color(0xFF32E810)];
+  static const wrappedGradient5 = [Color(0xFFFF7A1A), Color(0xFFFFD700)];
 
-  // App icon colors
+  // ── App icon colors ──
   static const instagram = Color(0xFFE1306C);
   static const youtube = Color(0xFFFF0000);
   static const tiktok = Color(0xFF69C9D0);
@@ -57,6 +66,8 @@ class AppColors {
   static const reddit = Color(0xFFFF4500);
 }
 
+/// Legacy text styles — use [AppType] from design_tokens.dart instead.
+@Deprecated('Use AppType from design_tokens.dart')
 class AppTextStyles {
   AppTextStyles._();
 
@@ -125,13 +136,23 @@ class AppTextStyles {
   );
 }
 
-ThemeData buildAppTheme() => ThemeData(
-      brightness: Brightness.dark,
-      scaffoldBackgroundColor: AppColors.bg,
-      colorScheme: const ColorScheme.dark(
-        primary: AppColors.neonGreen,
-        secondary: AppColors.neonOrange,
-        surface: AppColors.surface,
-      ),
-      useMaterial3: true,
-    );
+ThemeData buildAppTheme() {
+  final baseText = GoogleFonts.plusJakartaSansTextTheme(
+    ThemeData.dark().textTheme,
+  );
+
+  return ThemeData(
+    brightness: Brightness.dark,
+    scaffoldBackgroundColor: AppColors.bg,
+    colorScheme: const ColorScheme.dark(
+      primary: AppColors.neonGreen,
+      secondary: AppColors.neonOrange,
+      surface: AppColors.surface,
+    ),
+    textTheme: baseText.apply(
+      bodyColor: AppColors.textPrimary,
+      displayColor: AppColors.textPrimary,
+    ),
+    useMaterial3: true,
+  );
+}

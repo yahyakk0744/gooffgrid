@@ -16,9 +16,9 @@ class PremiumBackground extends StatelessWidget {
           center: Alignment(0.0, -0.3),
           radius: 1.2,
           colors: [
-            Color(0xFF0F0F24), // koyu lacivert/mor merkez
-            Color(0xFF0C0C18), // geçiş
-            Color(0xFF0A0A0A), // kenarlar
+            AppColors.bgDeepCenter, // koyu lacivert/mor merkez
+            AppColors.surface, // geçiş
+            AppColors.bg, // kenarlar
           ],
           stops: [0.0, 0.5, 1.0],
         ),

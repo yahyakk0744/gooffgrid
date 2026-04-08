@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:video_player/video_player.dart';
 import '../../config/theme.dart';
 import '../../models/story.dart';
 import '../../providers/stories_provider.dart';
@@ -86,8 +87,10 @@ class _StoryViewerScreenState extends ConsumerState<StoryViewerScreen>
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // Background
-            if (story.imageUrl != null)
+            // Background — video or image
+            if (story.imageUrl != null && story.storyType == 'video')
+              _VideoStoryPlayer(url: story.imageUrl!)
+            else if (story.imageUrl != null)
               Image.network(
                 story.imageUrl!,
                 fit: BoxFit.cover,
@@ -237,3 +240,54 @@ class _StoryViewerScreenState extends ConsumerState<StoryViewerScreen>
   }
 }
 
+class _VideoStoryPlayer extends StatefulWidget {
+  const _VideoStoryPlayer({required this.url});
+  final String url;
+
+  @override
+  State<_VideoStoryPlayer> createState() => _VideoStoryPlayerState();
+}
+
+class _VideoStoryPlayerState extends State<_VideoStoryPlayer> {
+  VideoPlayerController? _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.networkUrl(Uri.parse(widget.url))
+      ..initialize().then((_) {
+        if (!mounted) return;
+        _controller!
+          ..setLooping(true)
+          ..play();
+        setState(() {});
+      });
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = _controller;
+    if (c == null || !c.value.isInitialized) {
+      return Container(
+        color: AppColors.bg,
+        child: const Center(
+          child: CircularProgressIndicator(color: AppColors.neonGreen),
+        ),
+      );
+    }
+    return FittedBox(
+      fit: BoxFit.cover,
+      child: SizedBox(
+        width: c.value.size.width,
+        height: c.value.size.height,
+        child: VideoPlayer(c),
+      ),
+    );
+  }
+}

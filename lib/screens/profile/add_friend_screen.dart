@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../l10n/app_localizations.dart';
 import '../../widgets/premium_background.dart';
 import '../../widgets/app_card.dart';
 
@@ -9,6 +10,8 @@ class AddFriendScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: PremiumBackground(
@@ -22,7 +25,7 @@ class AddFriendScreen extends StatelessWidget {
                 children: [
                   GestureDetector(onTap: () => context.pop(), child: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary)),
                   const SizedBox(width: 12),
-                  const Text('Arkadaş Ekle', style: AppTextStyles.h1),
+                  Text(l.addFriend, style: AppTextStyles.h1),
                 ],
               ),
               const SizedBox(height: 32),
@@ -33,14 +36,14 @@ class AddFriendScreen extends StatelessWidget {
                   children: [
                     const Icon(Icons.qr_code_2_rounded, size: 120, color: AppColors.textPrimary),
                     const SizedBox(height: 12),
-                    const Text('QR kodunu göster', style: AppTextStyles.bodySecondary),
+                    Text(l.showQrCode, style: AppTextStyles.bodySecondary),
                   ],
                 ),
               ),
               const SizedBox(height: 16),
 
               // Code input
-              const Text('Kod Gir', style: AppTextStyles.label),
+              Text(l.enterCode, style: AppTextStyles.label),
               const SizedBox(height: 8),
               TextField(
                 style: const TextStyle(color: AppColors.textPrimary, letterSpacing: 4, fontSize: 20, fontWeight: FontWeight.w600),
@@ -64,7 +67,7 @@ class AddFriendScreen extends StatelessWidget {
                 child: OutlinedButton.icon(
                   onPressed: () {},
                   icon: const Icon(Icons.share_rounded),
-                  label: const Text('Davet Linki Paylaş'),
+                  label: Text(l.inviteLinkShare),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.neonGreen,
                     side: const BorderSide(color: AppColors.neonGreen),

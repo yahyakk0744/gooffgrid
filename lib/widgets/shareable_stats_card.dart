@@ -43,9 +43,9 @@ class ShareableStatsCard extends StatelessWidget {
             center: Alignment(0, -0.3),
             radius: 1.4,
             colors: [
-              Color(0xFF0F0F24),
-              Color(0xFF0C0C18),
-              Color(0xFF0A0A0A),
+              AppColors.surface,
+              AppColors.bg,
+              AppColors.bg,
             ],
           ),
           borderRadius: BorderRadius.circular(24),
@@ -131,9 +131,9 @@ class ShareableStatsCard extends StatelessWidget {
   }
 
   Color get _ringColor {
-    if (totalMinutes <= 90) return const Color(0xFF30D158);
-    if (totalMinutes <= 180) return const Color(0xFFFFD60A);
-    return const Color(0xFFFF453A);
+    if (totalMinutes <= 90) return AppColors.ringGood;
+    if (totalMinutes <= 180) return AppColors.ringWarning;
+    return AppColors.ringDanger;
   }
 }
 

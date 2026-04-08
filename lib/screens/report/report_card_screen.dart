@@ -12,12 +12,14 @@ import '../../providers/screen_time_provider.dart';
 import '../../providers/user_provider.dart';
 import '../../providers/ranking_provider.dart';
 import '../../providers/o2_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class ReportCardScreen extends ConsumerWidget {
   const ReportCardScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final st = ref.watch(todayScreenTimeProvider);
     final weekTotal = ref.watch(weekTotalProvider);
     final user = ref.watch(userProvider);
@@ -46,7 +48,7 @@ class ReportCardScreen extends ConsumerWidget {
                       child: const Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.textSecondary, size: 20),
                     ),
                     const Spacer(),
-                    const Text('Havam\u0131 At', style: AppTextStyles.h1),
+                    Text(l.shareReportCard, style: AppTextStyles.h1),
                     const Spacer(),
                     const SizedBox(width: 20),
                   ],
@@ -100,9 +102,9 @@ class ReportCardScreen extends ConsumerWidget {
                             shaderCallback: (bounds) => LinearGradient(
                               colors: [AppColors.neonGreen, AppColors.neonGreen.withValues(alpha: 0.6)],
                             ).createShader(bounds),
-                            child: const Text(
-                              'Haftal\u0131k Rapor',
-                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white, letterSpacing: 1),
+                            child: Text(
+                              l.weeklyReport,
+                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white, letterSpacing: 1),
                             ),
                           ),
                           const SizedBox(height: 28),
@@ -113,7 +115,7 @@ class ReportCardScreen extends ConsumerWidget {
                             shadows: [Shadow(color: AppColors.neonGreen.withValues(alpha: 0.3), blurRadius: 20)],
                           )),
                           const SizedBox(height: 4),
-                          const Text('ekran s\u00fcresi', style: TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+                          Text(l.screenTimeLower, style: const TextStyle(fontSize: 13, color: AppColors.textSecondary)),
                           const SizedBox(height: 6),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -122,9 +124,9 @@ class ReportCardScreen extends ConsumerWidget {
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(color: AppColors.ringGood.withValues(alpha: 0.25)),
                             ),
-                            child: const Text(
-                              'Ge\u00e7en haftadan %12 daha iyi',
-                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: AppColors.ringGood),
+                            child: Text(
+                              l.improvedFromLastWeek,
+                              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: AppColors.ringGood),
                             ),
                           ),
                           const SizedBox(height: 28),
@@ -133,15 +135,15 @@ class ReportCardScreen extends ConsumerWidget {
                           Row(
                             children: [
                               Expanded(child: _StatBox(
-                                label: 'O\u2082 Kazan\u0131lan',
+                                label: l.o2Earned,
                                 value: '${o2.todayEarned * 7}',
                                 icon: Icons.eco_rounded,
                                 color: AppColors.neonGreen,
                               )),
                               const SizedBox(width: 12),
                               Expanded(child: _StatBox(
-                                label: 'Streak',
-                                value: '${user.streak} g\u00fcn',
+                                label: l.streak,
+                                value: l.streakDays(user.streak),
                                 icon: Icons.local_fire_department_rounded,
                                 color: AppColors.neonOrange,
                               )),
@@ -151,14 +153,14 @@ class ReportCardScreen extends ConsumerWidget {
                           Row(
                             children: [
                               Expanded(child: _StatBox(
-                                label: 'Arkada\u015f S\u0131ra',
+                                label: l.friendRank,
                                 value: '#$friendRank',
                                 icon: Icons.people_rounded,
                                 color: AppColors.wrappedGradient3[0],
                               )),
                               const SizedBox(width: 12),
                               Expanded(child: _StatBox(
-                                label: '${user.city} S\u0131ra',
+                                label: l.cityRankLabel(user.city),
                                 value: '#$cityRank',
                                 icon: Icons.location_city_rounded,
                                 color: AppColors.wrappedGradient1[0],
@@ -189,7 +191,7 @@ class ReportCardScreen extends ConsumerWidget {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        const Text('En \u00e7ok kullan\u0131lan', style: TextStyle(fontSize: 10, color: AppColors.textTertiary)),
+                                        Text(l.mostUsed, style: const TextStyle(fontSize: 10, color: AppColors.textTertiary)),
                                         Text(st.appUsage.first.name, style: AppTextStyles.h3),
                                       ],
                                     ),
@@ -229,13 +231,13 @@ class ReportCardScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              // Havami At button
+              // Share button
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: GestureDetector(
                   onTap: () async {
                     await HapticService.success();
-                    await _captureAndShare(cardKey);
+                    await _captureAndShare(cardKey, context);
                   },
                   child: Container(
                     width: double.infinity,
@@ -247,14 +249,14 @@ class ReportCardScreen extends ConsumerWidget {
                         BoxShadow(color: AppColors.neonGreen.withValues(alpha: 0.3), blurRadius: 16, offset: const Offset(0, 4)),
                       ],
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.share_rounded, color: Colors.black, size: 20),
-                        SizedBox(width: 10),
+                        const Icon(Icons.share_rounded, color: Colors.black, size: 20),
+                        const SizedBox(width: 10),
                         Text(
-                          'Havam\u0131 At',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.black, letterSpacing: 0.5),
+                          l.shareReportCard,
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.black, letterSpacing: 0.5),
                         ),
                       ],
                     ),
@@ -269,7 +271,8 @@ class ReportCardScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _captureAndShare(GlobalKey key) async {
+  Future<void> _captureAndShare(GlobalKey key, BuildContext context) async {
+    final l = AppLocalizations.of(context)!;
     try {
       final boundary = key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
       if (boundary == null) return;

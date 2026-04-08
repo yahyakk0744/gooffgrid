@@ -41,7 +41,7 @@ class RankingRow extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: isCurrentUser
             ? const LinearGradient(
-                colors: [Color(0xFF142014), Color(0xFF0F0F1A)],
+                colors: [AppColors.primaryMuted, AppColors.surface],
               )
             : null,
         borderRadius: isCurrentUser ? BorderRadius.circular(12) : null,

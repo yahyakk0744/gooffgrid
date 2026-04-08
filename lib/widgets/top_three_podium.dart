@@ -30,7 +30,7 @@ class TopThreePodium extends StatelessWidget {
           Expanded(
             child: ParallaxGlassCard(
               intensity: 8,
-              glowColor: AppColors.neonGreen,
+              glowColor: AppColors.gold,
               borderRadius: 16,
               blurAmount: 12,
               child: _buildCard(entries[0], 1, 140),
@@ -45,15 +45,15 @@ class TopThreePodium extends StatelessWidget {
   }
 
   Widget _buildCard(PodiumEntry entry, int rank, double height) {
-    final glowColor = rank == 1 ? AppColors.neonGreen : rank == 2 ? AppColors.silver : AppColors.bronze;
+    final glowColor = rank == 1 ? AppColors.gold : rank == 2 ? AppColors.silver : AppColors.bronze;
     final avatarSize = rank == 1 ? 48.0 : 40.0;
     final initial = entry.name.isNotEmpty ? entry.name[0].toUpperCase() : '?';
 
     final gradientColors = rank == 1
-        ? [const Color(0xFF1A2A1A), const Color(0xFF142014)] // yeşil tinted
+        ? [AppColors.primaryMuted, const Color(0xFF142014)] // yeşil tinted
         : rank == 2
-            ? [const Color(0xFF1E1E28), const Color(0xFF18182A)] // gümüş tinted
-            : [const Color(0xFF221A14), const Color(0xFF1A1610)]; // bronz tinted
+            ? [AppColors.cardBgElevated, AppColors.cardBg] // gümüş tinted
+            : [AppColors.secondaryMuted, AppColors.cardBg]; // bronz tinted
 
     return Container(
       height: height,

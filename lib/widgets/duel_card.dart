@@ -83,7 +83,7 @@ class _DuelCardState extends State<DuelCard> with SingleTickerProviderStateMixin
                   gradient: const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Color(0xFF2A1A0A), Color(0xFF1A1410)],
+                    colors: [AppColors.secondaryMuted, AppColors.cardBg],
                   ),
                   shape: BoxShape.circle,
                   border: Border.all(color: AppColors.neonOrange.withValues(alpha: 0.4)),

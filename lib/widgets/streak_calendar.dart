@@ -9,7 +9,15 @@ class StreakCalendar extends StatelessWidget {
   final List<StreakDay> days;
   final int todayIndex;
 
-  static const _dayLabels = ['P', 'S', 'Ç', 'P', 'C', 'C', 'P'];
+  static const _dayLabels = [
+    'Pazartesi',
+    'Salı',
+    'Çarşamba',
+    'Perşembe',
+    'Cuma',
+    'Cumartesi',
+    'Pazar',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +26,9 @@ class StreakCalendar extends StatelessWidget {
       children: List.generate(7, (i) {
         final day = i < days.length ? days[i] : StreakDay.upcoming;
         final isToday = i == todayIndex;
-        return _buildDay(day, _dayLabels[i], isToday);
+        return Expanded(
+          child: _buildDay(day, _dayLabels[i], isToday),
+        );
       }),
     );
   }
@@ -27,44 +37,69 @@ class StreakCalendar extends StatelessWidget {
     Color bgColor;
     Color borderColor;
     bool filled;
+    IconData? icon;
 
     switch (day) {
       case StreakDay.success:
         bgColor = AppColors.neonGreen;
         borderColor = AppColors.neonGreen;
         filled = true;
+        icon = Icons.check_rounded;
       case StreakDay.partial:
-        bgColor = Colors.transparent;
+        bgColor = AppColors.ringWarning.withValues(alpha: 0.1);
         borderColor = AppColors.ringWarning;
         filled = false;
       case StreakDay.missed:
-        bgColor = Colors.transparent;
+        bgColor = AppColors.ringDanger.withValues(alpha: 0.1);
         borderColor = AppColors.ringDanger;
         filled = false;
+        icon = Icons.close_rounded;
       case StreakDay.upcoming:
         bgColor = Colors.transparent;
         borderColor = AppColors.cardBorder;
         filled = false;
     }
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(label, style: AppTextStyles.labelSmall),
-        const SizedBox(height: 4),
-        Container(
-          width: 36,
-          height: 36,
-          decoration: BoxDecoration(
-            color: filled ? bgColor : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: borderColor, width: filled ? 0 : 1.5),
-            boxShadow: isToday
-                ? [BoxShadow(color: AppColors.neonGreen.withValues(alpha: 0.3), blurRadius: 8, spreadRadius: 1)]
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 2),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 9,
+              fontWeight: isToday ? FontWeight.w700 : FontWeight.w400,
+              color: isToday ? AppColors.neonGreen : AppColors.textTertiary,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 4),
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: filled ? bgColor : bgColor,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: isToday ? AppColors.neonGreen : borderColor,
+                width: isToday ? 2 : 1.5,
+              ),
+              boxShadow: isToday
+                  ? [BoxShadow(color: AppColors.neonGreen.withValues(alpha: 0.3), blurRadius: 8, spreadRadius: 1)]
+                  : null,
+            ),
+            child: icon != null
+                ? Icon(
+                    icon,
+                    size: 16,
+                    color: filled ? Colors.black : (day == StreakDay.missed ? AppColors.ringDanger : AppColors.ringWarning),
+                  )
                 : null,
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

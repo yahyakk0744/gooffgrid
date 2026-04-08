@@ -67,14 +67,7 @@ class O2Service {
     // ── CLIENT-SIDE ANTI-CHEAT ÖN KONTROLLER ──
     // Sunucu tarafı da kontrol eder, bunlar erken çıkış için.
 
-    // KURAL 1: Zaman penceresi (08:00-00:00)
-    final now = DateTime.now();
-    if (now.hour < 8) {
-      return O2EarnResult.error('night_blocked',
-          message: 'O₂ sadece 08:00-00:00 arası kazanılır. Sabah 8\'de tekrar dene!');
-    }
-
-    // KURAL 2: Günlük tavan (500 O2) — ön kontrol
+    // KURAL: Günlük tavan (500 O2) — ön kontrol
     final todayEarned = await getTodayEarned();
     if (todayEarned >= 500) {
       return O2EarnResult.error('daily_cap',
@@ -115,11 +108,6 @@ class O2Service {
   /// Odak oturumu başlat.
   Future<String?> startFocusSession() async {
     if (_uid == null) return null;
-
-    // Anti-cheat: Saat kontrolü (08:00-00:00 arası, client-side ön kontrol)
-    final now = DateTime.now();
-    if (now.hour < 8) return null; // 08:00 öncesi yasak
-    // 00:00 (gece yarısı) = hour 0, zaten yukarıda yakalanıyor
 
     try {
       final res = await _db.from('focus_sessions').insert({

@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
+import '../../config/app_shadows.dart';
 import '../../widgets/premium_background.dart';
 import '../../providers/screen_time_provider.dart';
 import '../../services/platform_screen_time_service.dart';
+import '../../l10n/app_localizations.dart';
 
 class PermissionsScreen extends ConsumerStatefulWidget {
   const PermissionsScreen({super.key});
@@ -56,6 +59,7 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: PremiumBackground(
@@ -65,25 +69,24 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
           child: Column(
             children: [
               const Spacer(),
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.phone_android_rounded, size: 48, color: AppColors.textPrimary),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   Icon(Icons.access_time_rounded, size: 48, color: AppColors.textPrimary),
                 ],
               ),
               const SizedBox(height: 32),
-              const Text(
-                'Ekran süreni takip etmemiz gerekiyor',
-                style: AppTextStyles.h2,
+              Text(
+                l.screenTimePermissionTitle,
+                style: AppType.h2,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
               Text(
-                'Hangi uygulamalarda ne kadar vakit geçirdiğini görmek için '
-                'ekran süresi erişimi gerekiyor.',
-                style: AppTextStyles.bodySecondary,
+                l.screenTimePermissionDesc,
+                style: AppType.body.copyWith(color: AppColors.textSecondary),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
@@ -97,14 +100,14 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: AppColors.neonGreen.withAlpha(80)),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.check_circle_rounded, color: AppColors.neonGreen, size: 24),
-                      SizedBox(width: 8),
+                      const Icon(Icons.check_circle_rounded, color: AppColors.neonGreen, size: 24),
+                      const SizedBox(width: 8),
                       Text(
-                        'Ekran süresi izni verildi!',
-                        style: TextStyle(
+                        l.screenTimeGranted,
+                        style: AppType.body.copyWith(
                           color: AppColors.neonGreen,
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
@@ -117,9 +120,13 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
               const Spacer(),
 
               // Ana buton
-              SizedBox(
+              Container(
                 width: double.infinity,
                 height: 56,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: AppShadow.glow(AppColors.neonGreen),
+                ),
                 child: ElevatedButton(
                   onPressed: _screenTimeGranted
                       ? () => context.go('/onboarding/goal')
@@ -131,7 +138,7 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
                     textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                   child: Text(
-                    _screenTimeGranted ? 'Devam Et' : 'Izin Ver',
+                    _screenTimeGranted ? l.continueButton : l.grantPermission,
                   ),
                 ),
               ),
@@ -139,8 +146,8 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
               GestureDetector(
                 onTap: () => context.go('/onboarding/goal'),
                 child: Text(
-                  'Atla',
-                  style: AppTextStyles.bodySecondary.copyWith(color: AppColors.textTertiary),
+                  l.skip,
+                  style: AppType.bodySmall.copyWith(color: AppColors.textTertiary),
                 ),
               ),
               const SizedBox(height: 32),

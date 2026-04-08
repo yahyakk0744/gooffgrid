@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../l10n/app_localizations.dart';
 import '../../widgets/premium_background.dart';
 import '../../widgets/app_card.dart';
 
@@ -16,6 +17,7 @@ class WhatIfScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: PremiumBackground(
@@ -29,7 +31,7 @@ class WhatIfScreen extends StatelessWidget {
                 children: [
                   GestureDetector(onTap: () => context.pop(), child: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary)),
                   const SizedBox(width: 12),
-                  const Text('Ne Yapabilirdin?', style: AppTextStyles.h1),
+                  Text(l.whatCouldYouDo, style: AppTextStyles.h1),
                 ],
               ),
               const SizedBox(height: 24),

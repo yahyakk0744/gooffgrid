@@ -133,10 +133,6 @@ class FocusSessionNotifier extends StateNotifier<FocusSessionState> {
   Timer? _timer;
 
   Future<bool> start() async {
-    // Anti-cheat: Saat kontrolü
-    final hour = DateTime.now().hour;
-    if (hour < 8) return false;
-
     final sessionId = await _service.startFocusSession();
     if (sessionId == null) return false;
 

@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import '../config/app_shadows.dart';
 import '../config/theme.dart';
 
 /// Glassmorphism efektli kart.
@@ -51,17 +52,9 @@ class GlassmorphicCard extends StatelessWidget {
                 width: 1,
               ),
               boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.2),
-                  blurRadius: 16,
-                  offset: const Offset(0, 4),
-                ),
+                ...AppShadow.md,
                 if (glowColor != null)
-                  BoxShadow(
-                    color: glowColor!.withValues(alpha: 0.15),
-                    blurRadius: 24,
-                    spreadRadius: -4,
-                  ),
+                  ...AppShadow.glow(glowColor!, intensity: 0.15, blur: 24),
               ],
             ),
             child: child,

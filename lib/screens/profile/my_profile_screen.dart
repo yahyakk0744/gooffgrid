@@ -2,27 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../l10n/app_localizations.dart';
 import '../../services/haptic_service.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/app_usage_bar.dart';
 import '../../widgets/level_badge.dart';
 import '../../widgets/streak_calendar.dart';
-import '../../widgets/badge_grid.dart' show BadgeGrid, BadgeItem;
 import '../../providers/user_provider.dart';
 import '../../providers/screen_time_provider.dart';
 import '../../providers/ranking_provider.dart';
-import '../../providers/badges_provider.dart';
 import '../../widgets/premium_background.dart';
+import '../../config/app_shadows.dart';
+import '../../config/design_tokens.dart';
 
 class MyProfileScreen extends ConsumerWidget {
   const MyProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final user = ref.watch(userProvider);
     final st = ref.watch(todayScreenTimeProvider);
     final weekTotal = ref.watch(weekTotalProvider);
-    final badges = ref.watch(badgeProvider);
     final friendRank = ref.watch(userFriendRankProvider);
     final cityRank = ref.watch(userCityRankProvider);
     final countryRank = ref.watch(userCountryRankProvider);
@@ -45,7 +46,11 @@ class MyProfileScreen extends ConsumerWidget {
                     Container(
                       width: 80,
                       height: 80,
-                      decoration: BoxDecoration(color: user.avatarColor, shape: BoxShape.circle),
+                      decoration: BoxDecoration(
+                        color: user.avatarColor,
+                        shape: BoxShape.circle,
+                        boxShadow: AppShadow.glow(user.avatarColor, intensity: 0.4, blur: 20),
+                      ),
                       child: Center(
                         child: Text(user.name[0].toUpperCase(), style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w600, color: Colors.white)),
                       ),
@@ -54,7 +59,7 @@ class MyProfileScreen extends ConsumerWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(user.name, style: AppTextStyles.h1),
+                        Text(user.name, style: AppType.h2),
                         const SizedBox(width: 8),
                         LevelBadge(level: user.level),
                         const SizedBox(width: 8),
@@ -80,7 +85,7 @@ class MyProfileScreen extends ConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: 4),
-                    Text(user.title, style: AppTextStyles.bodySecondary),
+                    Text(user.title, style: AppType.caption),
                   ],
                 ),
               ),
@@ -91,9 +96,9 @@ class MyProfileScreen extends ConsumerWidget {
                 child: Center(
                   child: Column(
                     children: [
-                      const Text('Bu Hafta', style: AppTextStyles.label),
+                      Text(l.thisWeek.toUpperCase(), style: AppType.label),
                       const SizedBox(height: 4),
-                      Text(weekTotal, style: AppTextStyles.heroNumber),
+                      Text(weekTotal, style: AppType.monoDisplay.copyWith(fontSize: 36)),
                     ],
                   ),
                 ),
@@ -105,9 +110,9 @@ class MyProfileScreen extends ConsumerWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _RankItem(label: 'Arkadaşlar', value: '$friendRank/8'),
+                    _RankItem(label: l.seriFriends, value: '$friendRank/8'),
                     _RankItem(label: user.city, value: '#$cityRank'),
-                    _RankItem(label: 'Türkiye', value: '#$countryRank'),
+                    _RankItem(label: l.turkey, value: '#$countryRank'),
                   ],
                 ),
               ),
@@ -118,7 +123,7 @@ class MyProfileScreen extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Uygulama Kullanımı', style: AppTextStyles.h3),
+                    Text(l.appUsage.toUpperCase(), style: AppType.label),
                     const SizedBox(height: 12),
                     ...st.appUsage.map((app) => Padding(
                       padding: const EdgeInsets.only(bottom: 12),
@@ -129,13 +134,44 @@ class MyProfileScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              // Streak calendar
+              // Streak — premium design
               AppCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('${user.streak} gün streak', style: AppTextStyles.h3.copyWith(color: AppColors.neonGreen)),
-                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [AppColors.neonOrange, AppColors.neonOrange.withValues(alpha: 0.6)],
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(color: AppColors.neonOrange.withValues(alpha: 0.3), blurRadius: 12),
+                            ],
+                          ),
+                          child: const Center(child: Text('🔥', style: TextStyle(fontSize: 22))),
+                        ),
+                        const SizedBox(width: 12),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text('${user.streak}', style: AppType.mono.copyWith(fontSize: 28, fontWeight: FontWeight.w800, color: AppColors.neonOrange)),
+                                const SizedBox(width: 6),
+                                Text(l.consecutiveDays, style: AppType.body),
+                              ],
+                            ),
+                            Text(l.bestStreakLabel(user.bestStreak), style: AppType.caption.copyWith(color: AppColors.textTertiary)),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
                     const StreakCalendar(
                       days: [StreakDay.success, StreakDay.success, StreakDay.success, StreakDay.partial, StreakDay.success, StreakDay.success, StreakDay.upcoming],
                       todayIndex: 5,
@@ -145,12 +181,6 @@ class MyProfileScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              // Badges
-              const Text('Rozetler', style: AppTextStyles.h3),
-              const SizedBox(height: 12),
-              BadgeGrid(badges: badges.map((b) => BadgeItem(name: b.name, iconEmoji: b.iconEmoji, isEarned: b.isEarned)).toList()),
-              const SizedBox(height: 24),
-
               // Quick actions
               AppCard(
                 child: Column(
@@ -158,27 +188,37 @@ class MyProfileScreen extends ConsumerWidget {
                     _QuickAction(
                       icon: Icons.insights_rounded,
                       color: AppColors.neonGreen,
-                      label: 'Detaylı Ekran Süresi',
+                      label: l.detailedScreenTime,
                       onTap: () {
                         HapticService.light();
                         context.push('/profile/stats/detailed');
                       },
                     ),
-                    const Divider(color: AppColors.cardBorder, height: 1),
+                    Divider(color: AppColors.divider, height: 1),
                     _QuickAction(
                       icon: Icons.bar_chart_rounded,
                       color: const Color(0xFF4FACFE),
-                      label: 'İstatistikler',
+                      label: l.stats,
                       onTap: () {
                         HapticService.light();
                         context.push('/profile/stats');
                       },
                     ),
-                    const Divider(color: AppColors.cardBorder, height: 1),
+                    Divider(color: AppColors.divider, height: 1),
+                    _QuickAction(
+                      icon: Icons.emoji_events_rounded,
+                      color: AppColors.gold,
+                      label: l.monthlyTop10,
+                      onTap: () {
+                        HapticService.light();
+                        context.push('/profile/stats/monthly-top10');
+                      },
+                    ),
+                    Divider(color: AppColors.divider, height: 1),
                     _QuickAction(
                       icon: Icons.settings_rounded,
                       color: AppColors.textSecondary,
-                      label: 'Ayarlar',
+                      label: l.settings,
                       onTap: () {
                         HapticService.light();
                         context.push('/profile/settings');
@@ -196,7 +236,7 @@ class MyProfileScreen extends ConsumerWidget {
                 child: ElevatedButton.icon(
                   onPressed: () {},
                   icon: const Icon(Icons.share_rounded),
-                  label: const Text('Profilimi Paylaş'),
+                  label: Text(l.shareProfile),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.neonGreen,
                     foregroundColor: Colors.black,
@@ -233,7 +273,7 @@ class _QuickAction extends StatelessWidget {
           children: [
             Icon(icon, color: color, size: 22),
             const SizedBox(width: 12),
-            Expanded(child: Text(label, style: AppTextStyles.body)),
+            Expanded(child: Text(label, style: AppType.body)),
             const Icon(Icons.chevron_right_rounded, color: AppColors.textTertiary, size: 20),
           ],
         ),
@@ -251,9 +291,9 @@ class _RankItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(value, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+        Text(value, style: AppType.mono.copyWith(fontSize: 18, fontWeight: FontWeight.w700)),
         const SizedBox(height: 2),
-        Text(label, style: AppTextStyles.labelSmall),
+        Text(label, style: AppType.caption.copyWith(fontSize: 10, color: AppColors.textTertiary)),
       ],
     );
   }

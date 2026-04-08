@@ -2,7 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
+import '../../config/app_shadows.dart';
 import '../../widgets/premium_background.dart';
+import '../../l10n/app_localizations.dart';
 
 class GoalSetupScreen extends StatefulWidget {
   const GoalSetupScreen({super.key});
@@ -20,12 +23,12 @@ class _GoalSetupScreenState extends State<GoalSetupScreen>
 
   static const _hours = [1, 2, 3, 4, 5, 6];
 
-  String get _motivationalText {
+  String _motivationalText(AppLocalizations l) {
     final hour = _hours[_selectedIndex];
-    if (hour <= 2) return 'Harika! Gerçek bir dijital detox hedefi 💪';
-    if (hour == 3) return 'Dengeli bir hedef, başarabilirsin! 🎯';
-    if (hour <= 5) return 'İyi bir başlangıç, zamanla azaltabilirsin 📉';
-    return 'Adım adım ilerle, her dakika önemli ⭐';
+    if (hour <= 2) return l.goalMotivational1;
+    if (hour == 3) return l.goalMotivational2;
+    if (hour <= 5) return l.goalMotivational3;
+    return l.goalMotivational4;
   }
 
   @override
@@ -50,6 +53,7 @@ class _GoalSetupScreenState extends State<GoalSetupScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: PremiumBackground(
@@ -64,25 +68,26 @@ class _GoalSetupScreenState extends State<GoalSetupScreen>
                   const Spacer(flex: 2),
 
                   // Title
-                  const Text(
-                    'Günlük Hedefin',
-                    style: AppTextStyles.h1,
+                  Text(
+                    l.dailyGoalTitle,
+                    style: AppType.h1,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 12),
 
                   // Subtitle
                   Text(
-                    'Günde kaç saat ekran süresi hedefliyorsun?',
-                    style: AppTextStyles.bodySecondary,
+                    l.goalQuestion,
+                    style: AppType.body.copyWith(color: AppColors.textSecondary),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 48),
 
                   // Large hour display
                   Text(
-                    '${_hours[_selectedIndex]}sa',
-                    style: AppTextStyles.wrappedHero.copyWith(
+                    l.hourShort(_hours[_selectedIndex]),
+                    style: AppType.monoDisplay.copyWith(
+                      fontSize: 48,
                       color: AppColors.neonGreen,
                       shadows: [
                         Shadow(
@@ -119,8 +124,8 @@ class _GoalSetupScreenState extends State<GoalSetupScreen>
                       children: _hours.map((h) {
                         return Center(
                           child: Text(
-                            '${h}sa',
-                            style: AppTextStyles.h2.copyWith(
+                            l.hourShort(h),
+                            style: AppType.h2.copyWith(
                               fontSize: 22,
                               color: AppColors.textPrimary,
                             ),
@@ -135,7 +140,7 @@ class _GoalSetupScreenState extends State<GoalSetupScreen>
                   AnimatedSwitcher(
                     duration: const Duration(milliseconds: 300),
                     child: Container(
-                      key: ValueKey(_motivationalText),
+                      key: ValueKey(_motivationalText(l)),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20,
                         vertical: 14,
@@ -148,8 +153,8 @@ class _GoalSetupScreenState extends State<GoalSetupScreen>
                         ),
                       ),
                       child: Text(
-                        _motivationalText,
-                        style: AppTextStyles.body.copyWith(
+                        _motivationalText(l),
+                        style: AppType.body.copyWith(
                           color: AppColors.textSecondary,
                         ),
                         textAlign: TextAlign.center,
@@ -159,10 +164,14 @@ class _GoalSetupScreenState extends State<GoalSetupScreen>
 
                   const Spacer(flex: 3),
 
-                  // İleri button
-                  SizedBox(
+                  // Ileri button
+                  Container(
                     width: double.infinity,
                     height: 56,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(14),
+                      boxShadow: AppShadow.glow(AppColors.neonGreen),
+                    ),
                     child: ElevatedButton(
                       onPressed: () => context.go('/onboarding/profile'),
                       style: ElevatedButton.styleFrom(
@@ -176,7 +185,7 @@ class _GoalSetupScreenState extends State<GoalSetupScreen>
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      child: const Text('İleri'),
+                      child: Text(l.next),
                     ),
                   ),
                   const SizedBox(height: 48),

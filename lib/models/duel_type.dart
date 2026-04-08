@@ -1,3 +1,14 @@
+enum DuelConfigType {
+  none,
+  app,
+  category,
+  penalty,
+  dice,
+  team,
+  nightMode,
+  mystery,
+}
+
 class DuelType {
   final String id;
   final String name;
@@ -5,6 +16,7 @@ class DuelType {
   final String emoji;
   final bool isPro;
   final List<Duration> availableDurations;
+  final DuelConfigType configType;
 
   const DuelType({
     required this.id,
@@ -13,6 +25,7 @@ class DuelType {
     required this.emoji,
     this.isPro = false,
     required this.availableDurations,
+    this.configType = DuelConfigType.none,
   });
 
   static const _standard = [
@@ -37,6 +50,7 @@ class DuelType {
     description: '24 saat seçili uygulamayı açma',
     emoji: '🚫',
     availableDurations: [Duration(hours: 24)],
+    configType: DuelConfigType.app,
   );
 
   static const nightDuel = DuelType(
@@ -45,6 +59,7 @@ class DuelType {
     description: '23:00-07:00 telefona bakmadan uyu',
     emoji: '🌙',
     availableDurations: [Duration(hours: 8)],
+    configType: DuelConfigType.nightMode,
   );
 
   static const instant = DuelType(
@@ -69,6 +84,7 @@ class DuelType {
     description: 'Sadece bir kategori sayılır',
     emoji: '📂',
     availableDurations: _standard,
+    configType: DuelConfigType.category,
   );
 
   static const dice = DuelType(
@@ -78,6 +94,7 @@ class DuelType {
     emoji: '🎲',
     isPro: true,
     availableDurations: _standard,
+    configType: DuelConfigType.dice,
   );
 
   static const reverse = DuelType(
@@ -95,6 +112,7 @@ class DuelType {
     description: 'Kaybeden ne yapacak?',
     emoji: '😈',
     availableDurations: _standard,
+    configType: DuelConfigType.penalty,
   );
 
   static const team = DuelType(
@@ -108,6 +126,7 @@ class DuelType {
       Duration(hours: 24),
       Duration(days: 7),
     ],
+    configType: DuelConfigType.team,
   );
 
   static const elimination = DuelType(
@@ -135,7 +154,24 @@ class DuelType {
     emoji: '❓',
     isPro: true,
     availableDurations: _standard,
+    configType: DuelConfigType.mystery,
   );
+
+  static const mysteryMissions = [
+    '2 saat telefonsuz dışarı çık',
+    'Fotoğraf çek ve paylaş',
+    '1 saat kitap oku',
+    '30 dakika yürüyüş yap',
+    '15 dakika meditasyon yap',
+  ];
+
+  static const categories = [
+    ('social', 'Sosyal Medya', '📱'),
+    ('games', 'Oyunlar', '🎮'),
+    ('video', 'Video', '📺'),
+    ('shopping', 'Alışveriş', '🛒'),
+    ('browser', 'Tarayıcı', '🌐'),
+  ];
 
   static const revenge = DuelType(
     id: 'revenge',

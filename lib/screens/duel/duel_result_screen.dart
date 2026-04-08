@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
 import '../../widgets/premium_background.dart';
 import '../../services/haptic_service.dart';
+import '../../services/share_service.dart';
+import '../../l10n/app_localizations.dart';
 
 class DuelResultScreen extends ConsumerStatefulWidget {
   const DuelResultScreen({super.key});
@@ -44,6 +46,7 @@ class _DuelResultScreenState extends ConsumerState<DuelResultScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: PremiumBackground(
@@ -58,7 +61,7 @@ class _DuelResultScreenState extends ConsumerState<DuelResultScreen> {
 
                     // Result title
                     Text(
-                      _won ? 'Kazandın! 🎉' : 'Kaybettin 😔',
+                      _won ? l.duelWon : l.duelLost,
                       style: AppTextStyles.heroNumber.copyWith(
                         fontSize: 36,
                         color:
@@ -67,9 +70,7 @@ class _DuelResultScreenState extends ConsumerState<DuelResultScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      _won
-                          ? 'Harika performans gösterdin!'
-                          : 'Bir dahaki sefere daha iyi olacak!',
+                      _won ? l.greatPerformance : l.betterNextTime,
                       style: const TextStyle(
                         fontSize: 14,
                         color: AppColors.textSecondary,
@@ -125,8 +126,6 @@ class _DuelResultScreenState extends ConsumerState<DuelResultScreen> {
                       child: const Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('🫁', style: TextStyle(fontSize: 24)),
-                          SizedBox(width: 10),
                           Text(
                             '+$_o2Earned O₂',
                             style: TextStyle(
@@ -161,9 +160,9 @@ class _DuelResultScreenState extends ConsumerState<DuelResultScreen> {
                                 borderRadius: BorderRadius.circular(14),
                               ),
                             ),
-                            child: const Text(
-                              'İntikam Al 🔥',
-                              style: TextStyle(
+                            child: Text(
+                              l.revenge,
+                              style: const TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.w600),
                             ),
                           ),
@@ -175,6 +174,28 @@ class _DuelResultScreenState extends ConsumerState<DuelResultScreen> {
                       child: ElevatedButton(
                         onPressed: () {
                           HapticService.light();
+                          final diff = (_opponentMinutes - _playerMinutes).abs();
+                          final diffH = diff ~/ 60;
+                          final diffM = diff % 60;
+                          final diffStr = diffH > 0
+                              ? '$diffH sa $diffM dk'
+                              : '$diffM dakika';
+                          final detail = _won
+                              ? '$_opponentName $diffStr daha fazla ekran açtı. '
+                                  'Sen daha disiplinliydin.'
+                              : '$_opponentName\'den $diffStr geride kaldın. '
+                                  'Telefonu fazla açtın.';
+                          ShareService.showDuelSharePreview(
+                            context,
+                            won: _won,
+                            playerName: _playerName,
+                            playerMinutes: _playerMinutes,
+                            opponentName: _opponentName,
+                            opponentMinutes: _opponentMinutes,
+                            duelTypeLabel: 'Klasik Düello',
+                            durationLabel: '24 Saat',
+                            detailLine: detail,
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.neonGreen,
@@ -185,15 +206,15 @@ class _DuelResultScreenState extends ConsumerState<DuelResultScreen> {
                           textStyle: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.w600),
                         ),
-                        child: const Text('Paylaş'),
+                        child: Text(l.share),
                       ),
                     ),
                     const SizedBox(height: 8),
                     TextButton(
                       onPressed: () => context.go('/duel'),
-                      child: const Text(
-                        'Tamam',
-                        style: TextStyle(
+                      child: Text(
+                        l.ok,
+                        style: const TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 15,
                         ),

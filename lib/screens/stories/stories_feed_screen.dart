@@ -7,6 +7,7 @@ import '../../models/story.dart';
 import '../../providers/stories_provider.dart';
 import '../../services/haptic_service.dart';
 import '../../widgets/story_comments_sheet.dart';
+import '../../l10n/app_localizations.dart';
 
 /// TikTok/Reels tarzinda dikey swipe hikaye akisi.
 class StoriesFeedScreen extends ConsumerStatefulWidget {
@@ -30,6 +31,7 @@ class _StoriesFeedScreenState extends ConsumerState<StoriesFeedScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final storiesAsync = ref.watch(storiesFeedProvider(_activeFilter));
 
     return Scaffold(
@@ -39,7 +41,7 @@ class _StoriesFeedScreenState extends ConsumerState<StoriesFeedScreen> {
           // Story pages
           storiesAsync.when(
             data: (stories) => stories.isEmpty
-                ? _buildEmptyState()
+                ? _buildEmptyState(l)
                 : PageView.builder(
                     controller: _pageController,
                     scrollDirection: Axis.vertical,
@@ -52,7 +54,7 @@ class _StoriesFeedScreenState extends ConsumerState<StoriesFeedScreen> {
             loading: () => const Center(
               child: CircularProgressIndicator(color: AppColors.neonGreen),
             ),
-            error: (_, __) => _buildEmptyState(),
+            error: (_, __) => _buildEmptyState(l),
           ),
 
           // Top filter tabs
@@ -75,13 +77,13 @@ class _StoriesFeedScreenState extends ConsumerState<StoriesFeedScreen> {
                       ),
                     const Spacer(),
                     _FilterTab(
-                      label: 'Arkadaslarim',
+                      label: l.myFriends,
                       isSelected: _activeFilter == 'friends',
                       onTap: () => _switchFilter('friends'),
                     ),
                     const SizedBox(width: 8),
                     _FilterTab(
-                      label: 'Sehrimdekiler',
+                      label: l.inMyCity,
                       isSelected: _activeFilter == 'city',
                       onTap: () => _switchFilter('city'),
                     ),
@@ -95,8 +97,8 @@ class _StoriesFeedScreenState extends ConsumerState<StoriesFeedScreen> {
 
           // FAB
           Positioned(
-            bottom: MediaQuery.of(context).padding.bottom + 16,
-            right: 16,
+            bottom: MediaQuery.of(context).padding.bottom + 80,
+            left: 16,
             child: GestureDetector(
               onTap: () {
                 HapticService.medium();
@@ -126,7 +128,7 @@ class _StoriesFeedScreenState extends ConsumerState<StoriesFeedScreen> {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(AppLocalizations l) {
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -135,10 +137,10 @@ class _StoriesFeedScreenState extends ConsumerState<StoriesFeedScreen> {
               size: 64,
               color: AppColors.textTertiary.withValues(alpha: 0.4)),
           const SizedBox(height: 12),
-          const Text('Henüz hikaye yok', style: AppTextStyles.bodySecondary),
+          Text(l.noStories, style: AppTextStyles.bodySecondary),
           const SizedBox(height: 4),
           Text(
-            'İlk hikayeni paylaşarak başlat!',
+            l.shareFirstStory,
             style: TextStyle(fontSize: 12, color: AppColors.textTertiary),
           ),
         ],
@@ -268,6 +270,7 @@ class _StoryPageState extends ConsumerState<_StoryPage>
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final likesAsync = ref.watch(storyLikesProvider(widget.story.id));
 
     // Sync local state with server
@@ -304,35 +307,6 @@ class _StoryPageState extends ConsumerState<_StoryPage>
               ),
             ),
           ),
-
-          // Activity chip (top)
-          if (widget.story.activityType != null)
-            Positioned(
-              top: MediaQuery.of(context).padding.top + 60,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: AppColors.neonGreen.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: AppColors.neonGreen.withValues(alpha: 0.4),
-                    ),
-                  ),
-                  child: Text(
-                    widget.story.activityType!,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.neonGreen,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            ),
 
           // Bottom-left: user info
           Positioned(
@@ -372,7 +346,7 @@ class _StoryPageState extends ConsumerState<_StoryPage>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          widget.story.userName ?? 'Kullanıcı',
+                          widget.story.userName ?? l.loading,
                           style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
@@ -427,6 +401,18 @@ class _StoryPageState extends ConsumerState<_StoryPage>
                   label: '',
                   onTap: () => HapticService.light(),
                 ),
+                const SizedBox(height: 20),
+
+                // Views
+                _ActionButton(
+                  icon: Icons.visibility_outlined,
+                  color: Colors.white,
+                  label: '${widget.story.viewCount}',
+                  onTap: () {
+                    HapticService.light();
+                    _showViewers(context, l);
+                  },
+                ),
               ],
             ),
           ),
@@ -434,6 +420,53 @@ class _StoryPageState extends ConsumerState<_StoryPage>
       ),
     );
   }
+
+  void _showViewers(BuildContext context, AppLocalizations l) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.cardBg,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.visibility_rounded, color: AppColors.textSecondary, size: 20),
+                const SizedBox(width: 8),
+                Text(l.viewsCount(widget.story.viewCount), style: AppTextStyles.h3),
+              ],
+            ),
+            const SizedBox(height: 16),
+            // Mock viewers list
+            ..._mockViewers.map((v) => Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Row(
+                children: [
+                  CircleAvatar(radius: 18, backgroundColor: v.$2, child: Text(v.$1[0], style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600))),
+                  const SizedBox(width: 12),
+                  Expanded(child: Text(v.$1, style: AppTextStyles.body)),
+                  Text(v.$3, style: AppTextStyles.labelSmall),
+                ],
+              ),
+            )),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static const _mockViewers = [
+    ('Zeynep', Color(0xFFF093FB), '2s önce'),
+    ('Burak', Color(0xFF4FACFE), '3s önce'),
+    ('Can', Color(0xFFFF6B00), '5s önce'),
+    ('Selin', Color(0xFF667EEA), '6s önce'),
+  ];
 
   Future<void> _toggleLike() async {
     HapticService.medium();

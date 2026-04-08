@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../config/design_tokens.dart';
+import '../../l10n/app_localizations.dart';
 import '../../services/haptic_service.dart';
 import '../../models/app_usage_entry.dart';
 import '../../models/screen_time_data.dart';
@@ -28,6 +30,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final week = ref.watch(screenTimeProvider);
     final todayIcons = ref.watch(todayWithIconsProvider);
     final categories = ref.watch(categoryBreakdownProvider);
@@ -51,7 +54,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                       child: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
                     ),
                     const SizedBox(width: 12),
-                    const Text('Analitik', style: AppTextStyles.h1),
+                    Text(l.analytics, style: AppType.h1),
                     const Spacer(),
                     // Neon badge
                     Container(
@@ -62,9 +65,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                         ),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Text(
+                      child: Text(
                         'PRO',
-                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.black, letterSpacing: 1),
+                        style: AppType.label.copyWith(fontSize: 10, color: Colors.black),
                       ),
                     ),
                   ],
@@ -94,15 +97,15 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                       children: [
                         Icon(Icons.insights_rounded, color: AppColors.neonGreen, size: 20),
                         const SizedBox(width: 10),
-                        const Expanded(
+                        Expanded(
                           child: Text(
-                            'Detaylı Ekran Süresi',
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.neonGreen),
+                            l.detailedScreenTime,
+                            style: AppType.body.copyWith(fontWeight: FontWeight.w600, color: AppColors.neonGreen),
                           ),
                         ),
-                        const Text(
+                        Text(
                           'Apple tarzı',
-                          style: TextStyle(fontSize: 11, color: AppColors.textTertiary),
+                          style: AppType.caption.copyWith(fontSize: 11, color: AppColors.textTertiary),
                         ),
                         const SizedBox(width: 4),
                         Icon(Icons.chevron_right_rounded, color: AppColors.neonGreen.withValues(alpha: 0.6), size: 20),
@@ -125,7 +128,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 // ═══════════════════════════════════════
                 // CATEGORY BREAKDOWN — Radial gradient kartlar
                 // ═══════════════════════════════════════
-                const Text('Kategoriler', style: AppTextStyles.h3),
+                Text(l.categories.toUpperCase(), style: AppType.label),
                 const SizedBox(height: 12),
                 _CategoryGrid(categories: categories, totalMinutes: selectedDay.totalMinutes),
                 const SizedBox(height: 24),
@@ -142,7 +145,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 // ═══════════════════════════════════════
                 // APP USAGE LIST — Native ikonlarla
                 // ═══════════════════════════════════════
-                const Text('Uygulama Detayları', style: AppTextStyles.h3),
+                Text(l.appDetails.toUpperCase(), style: AppType.label),
                 const SizedBox(height: 12),
 
                 // iOS: Platform View | Android: Native icon list
@@ -226,7 +229,7 @@ class _WeeklyBarChart extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Text('Haftalık Kullanım', style: AppTextStyles.h3),
+                  Text(AppLocalizations.of(context)!.weeklyUsage.toUpperCase(), style: AppType.label),
                   const Spacer(),
                   Text(
                     _selectedLabel(),
@@ -428,7 +431,7 @@ class _CategoryGrid extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 8),
-              Text(timeStr, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+              Text(timeStr, style: AppType.mono.copyWith(fontSize: 20, fontWeight: FontWeight.w700)),
               const SizedBox(height: 4),
               // Mini progress bar
               Container(
@@ -529,21 +532,18 @@ class _PickupsHeroCard extends StatelessWidget {
               // Big number with glow
               Text(
                 '$totalPickups',
-                style: TextStyle(
-                  fontSize: 48,
-                  fontWeight: FontWeight.w800,
+                style: AppType.monoDisplay.copyWith(
                   color: AppColors.neonOrange,
-                  letterSpacing: -2,
                   shadows: [
                     Shadow(color: AppColors.neonOrange.withValues(alpha: 0.5), blurRadius: 20),
                     Shadow(color: AppColors.neonOrange.withValues(alpha: 0.2), blurRadius: 40),
                   ],
                 ),
               ),
-              const Text(
-                'Kez Ele Alındı',
-                style: TextStyle(fontSize: 14, color: AppColors.textSecondary, fontWeight: FontWeight.w500),
-              ),
+              Builder(builder: (ctx) => Text(
+                AppLocalizations.of(ctx)!.timesPickedUp,
+                style: const TextStyle(fontSize: 14, color: AppColors.textSecondary, fontWeight: FontWeight.w500),
+              )),
               if (topPickupApps.isNotEmpty) ...[
                 const SizedBox(height: 20),
                 Container(
@@ -551,10 +551,10 @@ class _PickupsHeroCard extends StatelessWidget {
                   color: Colors.white.withValues(alpha: 0.06),
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  'En Çok Tetikleyenler',
-                  style: TextStyle(fontSize: 11, color: AppColors.textTertiary, fontWeight: FontWeight.w500, letterSpacing: 1),
-                ),
+                Builder(builder: (ctx) => Text(
+                  AppLocalizations.of(ctx)!.topTriggers,
+                  style: const TextStyle(fontSize: 11, color: AppColors.textTertiary, fontWeight: FontWeight.w500, letterSpacing: 1),
+                )),
                 const SizedBox(height: 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -613,10 +613,10 @@ class _AppListWithIcons extends StatelessWidget {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(32),
-          child: Text(
-            'Henüz veri yok',
-            style: TextStyle(fontSize: 14, color: AppColors.textTertiary),
-          ),
+          child: Builder(builder: (ctx) => Text(
+            AppLocalizations.of(ctx)!.noDataYet,
+            style: const TextStyle(fontSize: 14, color: AppColors.textTertiary),
+          )),
         ),
       );
     }
@@ -721,10 +721,10 @@ class _AppListWithIcons extends StatelessWidget {
                               Text(' • ', style: TextStyle(fontSize: 10, color: AppColors.textTertiary)),
                             Icon(Icons.touch_app_rounded, size: 10, color: AppColors.textTertiary),
                             const SizedBox(width: 2),
-                            Text(
-                              '${app.pickups}x açma',
+                            Builder(builder: (ctx) => Text(
+                              '${app.pickups}x ${AppLocalizations.of(ctx)!.openingCount}',
                               style: const TextStyle(fontSize: 10, color: AppColors.textTertiary),
-                            ),
+                            )),
                           ],
                         ],
                       ),

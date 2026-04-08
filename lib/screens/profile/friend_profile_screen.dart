@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../l10n/app_localizations.dart';
 import '../../widgets/premium_background.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/level_badge.dart';
@@ -14,6 +15,7 @@ class FriendProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final friends = ref.watch(friendsProvider);
     final friend = friends.firstWhere(
       (f) => f.profile.id == friendId,
@@ -70,7 +72,7 @@ class FriendProfileScreen extends ConsumerWidget {
                 child: Center(
                   child: Column(
                     children: [
-                      const Text('Bugün', style: AppTextStyles.label),
+                      Text(l.today, style: AppTextStyles.label),
                       const SizedBox(height: 4),
                       Text(
                         '${friend.todayMinutes}dk',
@@ -89,9 +91,9 @@ class FriendProfileScreen extends ConsumerWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _Stat(label: 'Streak', value: '${p.streak}'),
-                    _Stat(label: 'Level', value: '${p.level}'),
-                    _Stat(label: 'Puan', value: '${p.totalPoints}'),
+                    _Stat(label: l.streak, value: '${p.streak}'),
+                    _Stat(label: l.level, value: '${p.level}'),
+                    _Stat(label: l.pointsLabel, value: '${p.totalPoints}'),
                   ],
                 ),
               ),
@@ -101,7 +103,7 @@ class FriendProfileScreen extends ConsumerWidget {
               AppCard(
                 child: Row(
                   children: [
-                    const Text('En cok:', style: AppTextStyles.label),
+                    Text(l.mostUsedLabel, style: AppTextStyles.label),
                     const SizedBox(width: 8),
                     Text(friend.topApp, style: AppTextStyles.h3),
                     const Spacer(),
@@ -118,7 +120,7 @@ class FriendProfileScreen extends ConsumerWidget {
                 child: ElevatedButton.icon(
                   onPressed: () {},
                   icon: const Icon(Icons.bolt_rounded),
-                  label: const Text('Duel Baslat'),
+                  label: Text(l.startDuelAction),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.neonOrange,
                     foregroundColor: Colors.white,

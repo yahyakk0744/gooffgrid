@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../config/theme.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/user_provider.dart';
 import '../../services/haptic_service.dart';
 import '../../services/location_service.dart';
@@ -90,9 +91,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       setState(() => _city = result.city!);
       HapticService.light();
     } else {
+      final l = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(result.errorMessage ?? 'Konum alınamadı'),
+          content: Text(result.errorMessage ?? l.locationError),
           backgroundColor: AppColors.ringDanger,
         ),
       );
@@ -109,11 +111,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       imageQuality: 80,
     );
     if (image == null) return;
-    // Demo: sadece secildi bildirimi
     if (!mounted) return;
+    final l = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Fotoğraf seçildi (demo modda yüklenmez)'),
+      SnackBar(
+        content: Text(l.photoSelectedDemo),
         backgroundColor: AppColors.neonGreen,
       ),
     );
@@ -134,9 +136,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 ),
           );
       if (!mounted) return;
+      final l = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Profil güncellendi'),
+        SnackBar(
+          content: Text(l.profileUpdated),
           backgroundColor: AppColors.neonGreen,
         ),
       );
@@ -144,9 +147,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     } catch (_) {
       if (!mounted) return;
       setState(() => _saving = false);
+      final l = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Bir hata oluştu'),
+        SnackBar(
+          content: Text(l.errorOccurred),
           backgroundColor: AppColors.ringDanger,
         ),
       );
@@ -155,6 +159,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final user = ref.watch(userProvider);
 
     return Scaffold(
@@ -174,7 +179,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                           color: AppColors.textPrimary),
                     ),
                     const SizedBox(width: 12),
-                    const Text('Profili Düzenle', style: AppTextStyles.h1),
+                    Text(l.editProfile, style: AppTextStyles.h1),
                   ],
                 ),
               ),
@@ -211,7 +216,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                             GestureDetector(
                               onTap: _pickPhoto,
                               child: Text(
-                                'Fotoğraf Değiştir',
+                                l.changePhoto,
                                 style: AppTextStyles.body.copyWith(
                                   color: AppColors.neonGreen,
                                 ),
@@ -223,19 +228,19 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       const SizedBox(height: 32),
 
                       // Ad
-                      const Text('Ad', style: AppTextStyles.label),
+                      Text(l.firstName, style: AppTextStyles.label),
                       const SizedBox(height: 8),
-                      _buildTextField(_firstNameCtrl, 'Adınız'),
+                      _buildTextField(_firstNameCtrl, l.firstNameHint),
                       const SizedBox(height: 20),
 
                       // Soyad
-                      const Text('Soyad', style: AppTextStyles.label),
+                      Text(l.lastName, style: AppTextStyles.label),
                       const SizedBox(height: 8),
-                      _buildTextField(_lastNameCtrl, 'Soyadınız'),
+                      _buildTextField(_lastNameCtrl, l.lastNameHint),
                       const SizedBox(height: 20),
 
                       // Username
-                      const Text('Kullanıcı Adı', style: AppTextStyles.label),
+                      Text(l.usernameLabel, style: AppTextStyles.label),
                       const SizedBox(height: 8),
                       TextField(
                         controller: _usernameCtrl,
@@ -271,11 +276,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         ),
                       ),
                       const SizedBox(height: 4),
-                      _buildUsernameHint(),
+                      _buildUsernameHint(l),
                       const SizedBox(height: 20),
 
                       // City
-                      const Text('Şehir', style: AppTextStyles.label),
+                      Text(l.city, style: AppTextStyles.label),
                       const SizedBox(height: 8),
                       Container(
                         padding: const EdgeInsets.all(14),
@@ -292,7 +297,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                             const SizedBox(width: 10),
                             Expanded(
                               child: Text(
-                                _city.isEmpty ? 'Bilinmeyen' : _city,
+                                _city.isEmpty ? l.locationUnknown : _city,
                                 style: AppTextStyles.body,
                               ),
                             ),
@@ -309,7 +314,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                                       ),
                                     )
                                   : Text(
-                                      'Konumunu Güncelle',
+                                      l.updateLocation,
                                       style: AppTextStyles.label.copyWith(
                                         color: AppColors.neonGreen,
                                       ),
@@ -347,7 +352,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                                     color: Colors.black,
                                   ),
                                 )
-                              : const Text('Kaydet'),
+                              : Text(l.save),
                         ),
                       ),
                       const SizedBox(height: 100),
@@ -417,18 +422,18 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     };
   }
 
-  Widget _buildUsernameHint() {
+  Widget _buildUsernameHint(AppLocalizations l) {
     return switch (_usernameStatus) {
       _UsernameStatus.available => Text(
-          'Kullanılabilir',
+          l.usernameAvailable,
           style: AppTextStyles.labelSmall.copyWith(color: AppColors.ringGood),
         ),
       _UsernameStatus.taken => Text(
-          'Bu kullanıcı adı alınmış',
+          l.usernameTaken,
           style: AppTextStyles.labelSmall.copyWith(color: AppColors.ringDanger),
         ),
       _UsernameStatus.formatError => Text(
-          'En az 3 karakter, sadece harf, rakam ve _',
+          l.usernameFormatError,
           style:
               AppTextStyles.labelSmall.copyWith(color: AppColors.ringWarning),
         ),

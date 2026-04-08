@@ -6,6 +6,7 @@ import '../../services/google_places_service.dart';
 import '../../services/haptic_service.dart';
 import '../../widgets/glassmorphic_card.dart';
 import '../../widgets/premium_background.dart';
+import '../../l10n/app_localizations.dart';
 
 class AdminGanimetScreen extends StatefulWidget {
   const AdminGanimetScreen({super.key});
@@ -81,7 +82,7 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
     final odul = _odulCtrl.text.trim();
     final o2 = int.tryParse(_o2Ctrl.text.trim());
     if (odul.isEmpty || o2 == null || o2 <= 0) {
-      _showSnack('Ödül ve O\u2082 maliyeti doldurun', isError: true);
+      _showSnack(AppLocalizations.of(context)!.adminFillFields, isError: true);
       return;
     }
 
@@ -99,11 +100,11 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
         'aktif': true,
       });
       HapticService.success();
-      _showSnack('Kaydedildi!');
+      _showSnack(AppLocalizations.of(context)!.adminSaved);
       _clearForm();
       _loadExisting();
     } catch (e) {
-      _showSnack('Hata: $e', isError: true);
+      _showSnack(AppLocalizations.of(context)!.adminDeleteError(e.toString()), isError: true);
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -124,17 +125,17 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.cardBg,
-        title: const Text('Sil', style: AppTextStyles.h2),
-        content: const Text('Bu noktayı silmek istediğine emin misin?',
+        title: Text(AppLocalizations.of(ctx)!.adminDeleteTitle, style: AppTextStyles.h2),
+        content: Text(AppLocalizations.of(ctx)!.adminDeleteMsg,
             style: AppTextStyles.body),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('İptal')),
+              child: Text(AppLocalizations.of(ctx)!.cancel)),
           TextButton(
               onPressed: () => Navigator.pop(ctx, true),
-              child: Text('Sil',
-                  style: TextStyle(color: AppColors.ringDanger))),
+              child: Text(AppLocalizations.of(ctx)!.adminDeleteTitle,
+                  style: const TextStyle(color: AppColors.ringDanger))),
         ],
       ),
     );
@@ -148,7 +149,7 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
       HapticService.medium();
       _loadExisting();
     } catch (e) {
-      _showSnack('Silme hatası: $e', isError: true);
+      _showSnack(AppLocalizations.of(context)!.adminDeleteError(e.toString()), isError: true);
     }
   }
 
@@ -163,11 +164,12 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: const Text('Ganimet Noktası Ekle', style: AppTextStyles.h1),
+        title: Text(l.adminAddLoot, style: AppTextStyles.h1),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded,
               color: AppColors.textSecondary, size: 20),
@@ -192,7 +194,7 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
                 _buildSaveButton(),
               ],
               const SizedBox(height: 32),
-              const Text('Mevcut Noktalar', style: AppTextStyles.h2),
+              Text(l.adminExistingPoints, style: AppTextStyles.h2),
               const SizedBox(height: 12),
               ..._existingItems.map(_buildExistingItem),
               const SizedBox(height: 100),
@@ -209,7 +211,7 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
       onChanged: _onSearchChanged,
       style: AppTextStyles.body,
       decoration: InputDecoration(
-        hintText: 'Mekan ara...',
+        hintText: AppLocalizations.of(context)!.adminSearchPlace,
         hintStyle: AppTextStyles.bodySecondary,
         prefixIcon:
             const Icon(Icons.search_rounded, color: AppColors.textTertiary),
@@ -302,14 +304,14 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
         TextField(
           controller: _odulCtrl,
           style: AppTextStyles.body,
-          decoration: _inputDeco('Ödül Başlığı (ör: Bedava Kahve)'),
+          decoration: _inputDeco(AppLocalizations.of(context)!.adminRewardTitle),
         ),
         const SizedBox(height: 12),
         TextField(
           controller: _o2Ctrl,
           style: AppTextStyles.body,
           keyboardType: TextInputType.number,
-          decoration: _inputDeco('O\u2082 Maliyeti'),
+          decoration: _inputDeco(AppLocalizations.of(context)!.adminO2Cost),
         ),
       ],
     );
@@ -357,8 +359,8 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
                   height: 22,
                   child: CircularProgressIndicator(
                       color: Colors.white, strokeWidth: 2))
-              : const Text('Kaydet',
-                  style: TextStyle(
+              : Text(AppLocalizations.of(context)!.adminSave,
+                  style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                       color: Colors.black)),

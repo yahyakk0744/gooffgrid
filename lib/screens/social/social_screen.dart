@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../config/theme.dart';
 import '../../widgets/premium_background.dart';
+import '../../l10n/app_localizations.dart';
 import '../ranking/ranking_screen.dart';
 import '../stories/stories_feed_screen.dart';
 
@@ -10,6 +11,7 @@ class SocialScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return DefaultTabController(
       length: 2,
       child: PremiumBackground(
@@ -18,9 +20,9 @@ class SocialScreen extends StatelessWidget {
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
-            title: const Text(
-              'Sosyal',
-              style: TextStyle(
+            title: Text(
+              l.social,
+              style: const TextStyle(
                 color: AppColors.textPrimary,
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -41,9 +43,9 @@ class SocialScreen extends StatelessWidget {
                 fontWeight: FontWeight.w400,
               ),
               dividerColor: AppColors.cardBorder.withValues(alpha: 0.3),
-              tabs: const [
-                Tab(text: 'S\u0131ralama'),
-                Tab(text: 'Hikayeler'),
+              tabs: [
+                Tab(text: l.ranking),
+                Tab(text: l.stories),
               ],
             ),
           ),

@@ -5,9 +5,21 @@ import '../../config/theme.dart';
 import '../../widgets/premium_background.dart';
 import '../../widgets/app_card.dart';
 import '../../providers/friends_provider.dart';
+import '../../l10n/app_localizations.dart';
+import '../../models/duel_type.dart';
+import 'widgets/duel_config_steps.dart';
 
 class DuelInviteScreen extends ConsumerStatefulWidget {
-  const DuelInviteScreen({super.key});
+  const DuelInviteScreen({
+    super.key,
+    this.incomingConfigType,
+    this.incomingAppOrCategory,
+  });
+
+  /// When the screen is opened for an incoming invite, this describes what
+  /// the opponent proposed so the user can accept or counter-propose.
+  final DuelConfigType? incomingConfigType;
+  final String? incomingAppOrCategory;
 
   @override
   ConsumerState<DuelInviteScreen> createState() => _DuelInviteScreenState();
@@ -21,6 +33,7 @@ class _DuelInviteScreenState extends ConsumerState<DuelInviteScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final friends = ref.watch(friendsProvider);
 
     return Scaffold(
@@ -39,12 +52,22 @@ class _DuelInviteScreenState extends ConsumerState<DuelInviteScreen> {
                     child: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
                   ),
                   const SizedBox(width: 12),
-                  const Text('Yeni Duel', style: AppTextStyles.h1),
+                  Text(l.newDuel, style: AppTextStyles.h1),
                 ],
               ),
               const SizedBox(height: 24),
+              if (widget.incomingConfigType == DuelConfigType.app &&
+                  widget.incomingAppOrCategory != null) ...[
+                _buildCounterProposal(isApp: true),
+                const SizedBox(height: 24),
+              ] else if (widget.incomingConfigType ==
+                      DuelConfigType.category &&
+                  widget.incomingAppOrCategory != null) ...[
+                _buildCounterProposal(isApp: false),
+                const SizedBox(height: 24),
+              ],
 
-              const Text('Sure', style: AppTextStyles.label),
+              Text(l.duration, style: AppTextStyles.label),
               const SizedBox(height: 12),
               Row(
                 children: List.generate(5, (i) {
@@ -77,7 +100,7 @@ class _DuelInviteScreenState extends ConsumerState<DuelInviteScreen> {
               ),
               const SizedBox(height: 24),
 
-              const Text('Arkadaş Seç', style: AppTextStyles.label),
+              Text(l.selectFriend, style: AppTextStyles.label),
               const SizedBox(height: 12),
               ...friends.map((f) {
                 final selected = _selectedFriend == f.profile.id;
@@ -111,7 +134,7 @@ class _DuelInviteScreenState extends ConsumerState<DuelInviteScreen> {
                   children: [
                     const Icon(Icons.link_rounded, color: AppColors.textSecondary, size: 32),
                     const SizedBox(height: 8),
-                    Text('veya Link Gönder', style: AppTextStyles.bodySecondary),
+                    Text(l.orSendLink, style: AppTextStyles.bodySecondary),
                   ],
                 ),
               ),
@@ -129,7 +152,7 @@ class _DuelInviteScreenState extends ConsumerState<DuelInviteScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
-                  child: const Text('Baslat'),
+                  child: Text(l.startDuel),
                 ),
               ),
               const SizedBox(height: 100),
@@ -138,6 +161,126 @@ class _DuelInviteScreenState extends ConsumerState<DuelInviteScreen> {
         ),
       ),
       ),
+    );
+  }
+
+  Widget _buildCounterProposal({required bool isApp}) {
+    final name = widget.incomingAppOrCategory!;
+    final label = isApp
+        ? 'Rakibin $name uygulamasını yasaklamanı istiyor'
+        : 'Rakibin $name kategorisinde yarışmanı istiyor';
+    final counterLabel = isApp
+        ? 'O uygulamam yok, başka öner'
+        : 'O kategoriyi kullanmıyorum, başka öner';
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.cardBg,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.neonOrange),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.campaign_rounded,
+                  color: AppColors.neonOrange, size: 22),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(label, style: AppTextStyles.h3),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Davet kabul edildi'),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.neonGreen,
+                    foregroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  child: const Text('Kabul Et',
+                      style: TextStyle(fontWeight: FontWeight.w700)),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () => _openCounterPicker(isApp: isApp),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.neonOrange,
+                    side: const BorderSide(color: AppColors.neonOrange),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  child: Text(counterLabel,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w600, fontSize: 12)),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _openCounterPicker({required bool isApp}) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: AppColors.bg,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (_) {
+        return SizedBox(
+          height: MediaQuery.of(context).size.height * 0.75,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 16),
+            child: isApp
+                ? AppPickerStep(
+                    selectedApp: null,
+                    onSelected: (a) {
+                      Navigator.of(context).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Öneri gönderildi: $a'),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    },
+                  )
+                : CategoryPickerStep(
+                    selectedCategory: null,
+                    onSelected: (c) {
+                      Navigator.of(context).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Öneri gönderildi: $c'),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        );
+      },
     );
   }
 }

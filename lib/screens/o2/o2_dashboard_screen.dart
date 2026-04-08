@@ -7,12 +7,14 @@ import '../../widgets/app_card.dart';
 import '../../widgets/glassmorphic_card.dart';
 import '../../widgets/premium_background.dart';
 import '../../services/haptic_service.dart';
+import '../../l10n/app_localizations.dart';
 
 class O2DashboardScreen extends ConsumerWidget {
   const O2DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final o2 = ref.watch(o2Provider);
     final txAsync = ref.watch(o2TransactionsProvider);
 
@@ -35,7 +37,7 @@ class O2DashboardScreen extends ConsumerWidget {
                       child: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
                     ),
                     const SizedBox(width: 12),
-                    const Text('Oksijen (O₂)', style: AppTextStyles.h1),
+                    Text(l.oxygenTitle, style: AppTextStyles.h1),
                   ],
                 ),
                 const SizedBox(height: 24),
@@ -45,7 +47,7 @@ class O2DashboardScreen extends ConsumerWidget {
                   glowColor: AppColors.neonGreen,
                   child: Column(
                     children: [
-                      const Text('O₂ Puanı', style: AppTextStyles.label),
+                      Text(l.o2Balance, style: AppTextStyles.label),
                       const SizedBox(height: 8),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -79,7 +81,7 @@ class O2DashboardScreen extends ConsumerWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Bugün: ${o2.todayEarned}/500 O₂',
+                                  l.o2Today(o2.todayEarned, 500),
                                   style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
                                 ),
                                 const SizedBox(height: 4),
@@ -120,7 +122,7 @@ class O2DashboardScreen extends ConsumerWidget {
                         child: Column(
                           children: [
                             Text('${o2.dailyRemaining}', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
-                            const Text('Kalan', style: AppTextStyles.labelSmall),
+                            Text(l.remainingShort, style: AppTextStyles.labelSmall),
                           ],
                         ),
                       ),
@@ -131,7 +133,7 @@ class O2DashboardScreen extends ConsumerWidget {
                         child: Column(
                           children: [
                             Text('${o2.lifetimeO2}', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: AppColors.gold)),
-                            const Text('Toplam', style: AppTextStyles.labelSmall),
+                            Text(l.totalO2, style: AppTextStyles.labelSmall),
                           ],
                         ),
                       ),
@@ -167,12 +169,12 @@ class O2DashboardScreen extends ConsumerWidget {
                           child: const Center(child: Text('🛒', style: TextStyle(fontSize: 24))),
                         ),
                         const SizedBox(width: 12),
-                        const Expanded(
+                        Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Ganimetler', style: AppTextStyles.h3),
-                              Text('O₂ puanlarını gerçek dünya ganimetlerine dönüştür', style: AppTextStyles.bodySecondary),
+                              Text(l.offGridMarket, style: AppTextStyles.h3),
+                              Text(l.offGridMarketHint, style: AppTextStyles.bodySecondary),
                             ],
                           ),
                         ),
@@ -188,33 +190,33 @@ class O2DashboardScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('O₂ Kuralları', style: AppTextStyles.h3),
+                      Text(l.o2Rules, style: AppTextStyles.h3),
                       const SizedBox(height: 12),
-                      _RuleRow(emoji: '🕗', text: 'Sadece 08:00–00:00 arası kazanılır'),
-                      _RuleRow(emoji: '📊', text: 'Günde max 500 O₂'),
-                      _RuleRow(emoji: '⏱️', text: 'Odak modu max 120 dk'),
-                      _RuleRow(emoji: '🚫', text: 'Transfer ve bahis yasak'),
+                      _RuleRow(emoji: '🕗', text: l.o2RuleTime),
+                      _RuleRow(emoji: '📊', text: l.o2RuleDaily),
+                      _RuleRow(emoji: '⏱️', text: l.o2RuleFocus),
+                      _RuleRow(emoji: '🚫', text: l.o2RuleTransfer),
                     ],
                   ),
                 ),
                 const SizedBox(height: 24),
 
                 // Transaction history
-                const Text('Son İşlemler', style: AppTextStyles.h3),
+                Text(l.recentTransactions, style: AppTextStyles.h3),
                 const SizedBox(height: 12),
                 txAsync.when(
                   data: (txs) => txs.isEmpty
-                      ? const Center(
+                      ? Center(
                           child: Padding(
-                            padding: EdgeInsets.all(24),
-                            child: Text('Henüz işlem yok', style: AppTextStyles.bodySecondary),
+                            padding: const EdgeInsets.all(24),
+                            child: Text(l.noTransactions, style: AppTextStyles.bodySecondary),
                           ),
                         )
                       : Column(
                           children: txs.take(20).map((tx) => _TransactionRow(tx: tx)).toList(),
                         ),
                   loading: () => const Center(child: CircularProgressIndicator(color: AppColors.neonGreen)),
-                  error: (_, __) => const Text('Yüklenemedi', style: AppTextStyles.bodySecondary),
+                  error: (_, __) => Text(l.loadFailed, style: AppTextStyles.bodySecondary),
                 ),
                 const SizedBox(height: 100),
               ],

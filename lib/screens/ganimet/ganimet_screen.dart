@@ -7,6 +7,7 @@ import '../../config/theme.dart';
 import '../../services/haptic_service.dart';
 import '../../providers/o2_provider.dart';
 import '../../widgets/glassmorphic_card.dart';
+import '../../l10n/app_localizations.dart';
 
 // ──────────────────────────────────────────────
 // GANIMET DATA PROVIDER
@@ -57,6 +58,7 @@ class _GanimetScreenState extends ConsumerState<GanimetScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final o2 = ref.watch(o2Provider);
     final ganimetAsync = ref.watch(_ganimetProvider);
 
@@ -83,7 +85,7 @@ class _GanimetScreenState extends ConsumerState<GanimetScreen> {
                 child:
                     CircularProgressIndicator(color: AppColors.neonGreen)),
             error: (_, __) => Center(
-                child: Text('Harita yüklenemedi',
+                child: Text(l.mapLoadFailed,
                     style: AppTextStyles.bodySecondary)),
           ),
 
@@ -101,7 +103,7 @@ class _GanimetScreenState extends ConsumerState<GanimetScreen> {
                     },
                   ),
                   const SizedBox(width: 12),
-                  const Text('Ganimetler', style: AppTextStyles.h1),
+                  Text(l.offGridMarket, style: AppTextStyles.h1),
                   const Spacer(),
                   _o2Chip(o2.balance),
                 ],
@@ -160,6 +162,7 @@ class _GanimetScreenState extends ConsumerState<GanimetScreen> {
   }
 
   Widget _buildBottomSheet(Map<String, dynamic> item, int balance) {
+    final l = AppLocalizations.of(context)!;
     final name = item['mekan_adi'] as String? ?? '';
     final address = item['adres'] as String? ?? '';
     final photoUrl = item['photo_url'] as String?;
@@ -297,7 +300,7 @@ class _GanimetScreenState extends ConsumerState<GanimetScreen> {
                         ),
                         child: Center(
                           child: Text(
-                            canAfford ? 'Al' : 'Yetersiz O\u2082',
+                            canAfford ? l.redeem : l.insufficientO2,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
@@ -320,6 +323,7 @@ class _GanimetScreenState extends ConsumerState<GanimetScreen> {
   }
 
   void _onRedeem(Map<String, dynamic> item, bool canAfford) {
+    final l = AppLocalizations.of(context)!;
     if (!canAfford) {
       HapticService.warning();
       return;
@@ -330,26 +334,25 @@ class _GanimetScreenState extends ConsumerState<GanimetScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.cardBg,
-        title: const Text('Onayla', style: AppTextStyles.h2),
-        content: Text('$odul ödülünü almak istiyor musun?',
-            style: AppTextStyles.body),
+        title: Text(l.confirm, style: AppTextStyles.h2),
+        content: Text(l.confirmRedeemMsg(odul), style: AppTextStyles.body),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('İptal')),
+              child: Text(l.cancel)),
           TextButton(
             onPressed: () {
               Navigator.pop(ctx);
               HapticService.success();
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text('$odul alındı!'),
+                content: Text(l.itemReceived(odul)),
                 backgroundColor: AppColors.neonGreen,
                 behavior: SnackBarBehavior.floating,
               ));
               setState(() => _selected = null);
             },
-            child: const Text('Al',
-                style: TextStyle(color: AppColors.neonGreen)),
+            child: Text(l.redeem,
+                style: const TextStyle(color: AppColors.neonGreen)),
           ),
         ],
       ),

@@ -273,7 +273,7 @@ class _StoryCommentsSheetState extends ConsumerState<StoryCommentsSheet> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Uygunsuz icerik tespit edildi'),
+            content: const Text('Uygunsuz içerik tespit edildi'),
             backgroundColor: AppColors.ringDanger,
           ),
         );

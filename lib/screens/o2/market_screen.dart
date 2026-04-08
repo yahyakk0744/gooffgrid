@@ -7,12 +7,14 @@ import '../../providers/o2_provider.dart';
 import '../../services/o2_service.dart';
 import '../../widgets/premium_background.dart';
 import '../../services/haptic_service.dart';
+import '../../l10n/app_localizations.dart';
 
 class MarketScreen extends ConsumerWidget {
   const MarketScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final o2 = ref.watch(o2Provider);
     final offersAsync = ref.watch(marketOffersProvider);
 
@@ -32,7 +34,7 @@ class MarketScreen extends ConsumerWidget {
                       child: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
                     ),
                     const SizedBox(width: 12),
-                    const Text('Ganimetler', style: AppTextStyles.h1),
+                    Text(l.offGridMarket, style: AppTextStyles.h1),
                     const Spacer(),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -57,7 +59,7 @@ class MarketScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'O₂ puanlarını gerçek dünya ganimetlerine dönüştür',
+                  l.offGridMarketHint,
                   style: TextStyle(fontSize: 13, color: AppColors.textTertiary),
                 ),
                 const SizedBox(height: 24),
@@ -65,10 +67,10 @@ class MarketScreen extends ConsumerWidget {
                 // Offers
                 offersAsync.when(
                   data: (offers) => offers.isEmpty
-                      ? const Center(
+                      ? Center(
                           child: Padding(
-                            padding: EdgeInsets.all(32),
-                            child: Text('Henüz teklif yok', style: AppTextStyles.bodySecondary),
+                            padding: const EdgeInsets.all(32),
+                            child: Text(l.noOffersYet, style: AppTextStyles.bodySecondary),
                           ),
                         )
                       : Column(
@@ -80,7 +82,7 @@ class MarketScreen extends ConsumerWidget {
                       child: CircularProgressIndicator(color: AppColors.neonGreen),
                     ),
                   ),
-                  error: (_, __) => const Text('Yüklenemedi', style: AppTextStyles.bodySecondary),
+                  error: (_, __) => Text(l.loadFailed, style: AppTextStyles.bodySecondary),
                 ),
                 const SizedBox(height: 100),
               ],
@@ -99,6 +101,7 @@ class _OfferCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final canAfford = balance >= offer.o2Cost;
 
     return Container(
@@ -177,7 +180,7 @@ class _OfferCard extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      canAfford ? 'Al' : 'Yetersiz',
+                      canAfford ? l.redeem : l.insufficient,
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
@@ -195,6 +198,7 @@ class _OfferCard extends ConsumerWidget {
   }
 
   Future<void> _redeem(BuildContext context, WidgetRef ref) async {
+    final l = AppLocalizations.of(context)!;
     final result = await O2Service.instance.redeemOffer(offer.id);
     if (!context.mounted) return;
 
@@ -206,11 +210,11 @@ class _OfferCard extends ConsumerWidget {
         builder: (_) => AlertDialog(
           backgroundColor: AppColors.cardGradientStart,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Text('Tebrikler!', style: TextStyle(color: AppColors.neonGreen)),
+          title: Text(l.redeemSuccess, style: const TextStyle(color: AppColors.neonGreen)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Kupon kodun:', style: AppTextStyles.bodySecondary),
+              Text(l.couponCode, style: AppTextStyles.bodySecondary),
               const SizedBox(height: 12),
               Container(
                 padding: const EdgeInsets.all(16),
@@ -230,20 +234,20 @@ class _OfferCard extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              Text('${result.o2Spent} O₂ harcandı', style: AppTextStyles.bodySecondary),
+              Text(l.o2SpentMsg(result.o2Spent), style: AppTextStyles.bodySecondary),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Tamam', style: TextStyle(color: AppColors.neonGreen)),
+              child: Text(l.ok, style: const TextStyle(color: AppColors.neonGreen)),
             ),
           ],
         ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result.error ?? 'Hata oluştu')),
+        SnackBar(content: Text(result.error ?? l.error)),
       );
     }
   }

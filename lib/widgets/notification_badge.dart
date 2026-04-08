@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import '../config/theme.dart';
 
 class NotificationBadge extends StatelessWidget {
   const NotificationBadge({
     super.key,
     required this.count,
-    this.color = const Color(0xFFFF453A),
+    this.color = AppColors.ringDanger,
     this.child,
   });
 

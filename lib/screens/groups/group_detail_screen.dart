@@ -7,6 +7,7 @@ import '../../widgets/app_card.dart';
 import '../../widgets/ranking_row.dart';
 import '../../widgets/shame_wall_card.dart';
 import '../../providers/groups_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class GroupDetailScreen extends ConsumerWidget {
   const GroupDetailScreen({super.key, required this.groupId});
@@ -14,6 +15,7 @@ class GroupDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final groups = ref.watch(groupProvider);
     final group = groups.firstWhere((g) => g.id == groupId, orElse: () => groups.first);
     final sorted = [...group.members]..sort((a, b) => a.weekMinutes.compareTo(b.weekMinutes));
@@ -35,7 +37,7 @@ class GroupDetailScreen extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 8),
-              Text('${group.memberCount} uye', style: AppTextStyles.bodySecondary),
+              Text(l.memberCount(group.memberCount), style: AppTextStyles.bodySecondary),
               const SizedBox(height: 24),
 
               // Challenge
@@ -44,7 +46,7 @@ class GroupDetailScreen extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Haftalık Hedef', style: AppTextStyles.label),
+                    Text(l.weeklyGoal, style: AppTextStyles.label),
                     const SizedBox(height: 4),
                     Text(group.challengeDescription, style: AppTextStyles.h3),
                     const SizedBox(height: 12),
@@ -58,14 +60,14 @@ class GroupDetailScreen extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Text('%${(group.challengeProgress * 100).round()} tamamlandi', style: AppTextStyles.labelSmall),
+                    Text(l.challengeProgress((group.challengeProgress * 100).round()), style: AppTextStyles.labelSmall),
                   ],
                 ),
               ),
               const SizedBox(height: 16),
 
               // Member ranking
-              const Text('Uyeler', style: AppTextStyles.h3),
+              Text(l.membersLabel, style: AppTextStyles.h3),
               const SizedBox(height: 12),
               ...List.generate(sorted.length, (i) {
                 final m = sorted[i];
@@ -97,7 +99,7 @@ class GroupDetailScreen extends ConsumerWidget {
                 child: OutlinedButton.icon(
                   onPressed: () {},
                   icon: const Icon(Icons.person_add_rounded),
-                  label: const Text('Davet Et'),
+                  label: Text(l.invite),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.neonGreen,
                     side: const BorderSide(color: AppColors.neonGreen),

@@ -3,10 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../config/theme.dart';
+import '../../l10n/app_localizations.dart';
 import '../../widgets/premium_background.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/stat_tile.dart';
 import '../../providers/screen_time_provider.dart';
+import '../../config/design_tokens.dart';
 import 'heatmap_widget.dart';
 
 class StatsScreen extends ConsumerWidget {
@@ -14,6 +16,7 @@ class StatsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final st = ref.watch(todayScreenTimeProvider);
     final weeklyMinutes = ref.watch(weeklyMinutesProvider);
 
@@ -28,7 +31,7 @@ class StatsScreen extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  const Text('Istatistikler', style: AppTextStyles.h1),
+                  Text(l.stats, style: AppType.h1),
                   const Spacer(),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -36,14 +39,14 @@ class StatsScreen extends ConsumerWidget {
                       color: AppColors.neonOrange.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Text('Pro', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.neonOrange)),
+                    child: Text(l.pro, style: AppType.label.copyWith(fontSize: 11, color: AppColors.neonOrange)),
                   ),
                 ],
               ),
               const SizedBox(height: 24),
 
               // Heatmap
-              const Text('Odak Takvimi', style: AppTextStyles.h3),
+              Text(l.focusCalendar.toUpperCase(), style: AppType.label),
               const SizedBox(height: 12),
               const AppCard(child: HeatmapWidget()),
               const SizedBox(height: 16),
@@ -51,22 +54,29 @@ class StatsScreen extends ConsumerWidget {
               // Quick stats
               Row(
                 children: [
-                  Expanded(child: StatTile(value: '${st.phoneOpens}', label: 'Telefon Açma', icon: Icons.phone_android_rounded)),
+                  Expanded(child: StatTile(value: '${st.phoneOpens}', label: l.phonePickups, icon: Icons.phone_android_rounded)),
                   const SizedBox(width: 8),
-                  Expanded(child: StatTile(value: '${st.longestOffScreenMinutes}dk', label: 'En Uzun Mola', icon: Icons.timer_off_rounded)),
+                  Expanded(child: StatTile(value: '${st.longestOffScreenMinutes}dk', label: l.longestOffScreen, icon: Icons.timer_off_rounded)),
                 ],
               ),
               const SizedBox(height: 16),
 
               // Weekly trend
-              const Text('7 Günlük Trend', style: AppTextStyles.h3),
+              Text(l.weeklyTrend.toUpperCase(), style: AppType.label),
               const SizedBox(height: 12),
               AppCard(
                 child: SizedBox(
                   height: 180,
                   child: LineChart(
                     LineChartData(
-                      gridData: const FlGridData(show: false),
+                      gridData: FlGridData(
+                        show: true,
+                        drawVerticalLine: false,
+                        getDrawingHorizontalLine: (v) => FlLine(
+                          color: AppColors.divider,
+                          strokeWidth: 0.5,
+                        ),
+                      ),
                       borderData: FlBorderData(show: false),
                       titlesData: FlTitlesData(
                         topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -76,10 +86,10 @@ class StatsScreen extends ConsumerWidget {
                           sideTitles: SideTitles(
                             showTitles: true,
                             getTitlesWidget: (v, _) {
-                              const days = ['P', 'S', 'C', 'P', 'C', 'C', 'P'];
+                              const days = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
                               final i = v.toInt();
                               if (i < 0 || i >= days.length) return const SizedBox.shrink();
-                              return Text(days[i], style: AppTextStyles.labelSmall);
+                              return Text(days[i], style: AppType.caption.copyWith(fontSize: 10, color: AppColors.textTertiary));
                             },
                           ),
                         ),
@@ -126,16 +136,16 @@ class StatsScreen extends ConsumerWidget {
                     children: [
                       Icon(Icons.analytics_rounded, color: AppColors.neonGreen, size: 22),
                       const SizedBox(width: 10),
-                      const Expanded(
+                      Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Detayli Analitik', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.neonGreen)),
-                            Text('Kategoriler, pickups, native ikonlar', style: TextStyle(fontSize: 11, color: AppColors.textTertiary)),
+                            Text(l.detailedAnalytics, style: AppType.body.copyWith(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.neonGreen)),
+                            Text('Kategoriler, pickups, native ikonlar', style: AppType.caption.copyWith(fontSize: 11, color: AppColors.textTertiary)),
                           ],
                         ),
                       ),
-                      Icon(Icons.chevron_right_rounded, color: AppColors.neonGreen, size: 20),
+                      const Icon(Icons.chevron_right_rounded, color: AppColors.neonGreen, size: 20),
                     ],
                   ),
                 ),
@@ -147,7 +157,7 @@ class StatsScreen extends ConsumerWidget {
                 onTap: () => context.push('/profile/stats/whatif'),
                 child: Row(
                   children: [
-                    const Text('Ne yapabilirdin?', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.neonGreen)),
+                    Text(l.whatCouldYouDo, style: AppType.body.copyWith(fontSize: 14, color: AppColors.neonGreen)),
                     const SizedBox(width: 4),
                     const Icon(Icons.arrow_forward_rounded, size: 16, color: AppColors.neonGreen),
                   ],

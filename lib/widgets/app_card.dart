@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../config/app_shadows.dart';
+import '../config/design_tokens.dart';
 import '../config/theme.dart';
 
 class AppCard extends StatelessWidget {
@@ -34,33 +36,16 @@ class AppCard extends StatelessWidget {
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              AppColors.cardGradientStart,
-              AppColors.cardGradientEnd,
-            ],
-          ),
+          gradient: AppGradients.card,
           borderRadius: BorderRadius.circular(borderRadius),
           border: Border.all(
             color: borderColor ?? AppColors.cardBorder.withValues(alpha: 0.6),
             width: borderColor != null ? 1.5 : 1,
           ),
           boxShadow: [
-            // Subtle elevation
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.3),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-            // Glow effect
+            ...AppShadow.sm,
             if (hasGlow)
-              BoxShadow(
-                color: effectiveGlowColor.withValues(alpha: effectiveGlowIntensity),
-                blurRadius: 20,
-                spreadRadius: -2,
-              ),
+              ...AppShadow.glow(effectiveGlowColor, intensity: effectiveGlowIntensity),
           ],
         ),
         child: Column(

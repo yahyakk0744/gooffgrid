@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../config/theme.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/interactive_gooffgrid_logo.dart';
+import '../../l10n/app_localizations.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -55,6 +56,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       }
     });
 
+    final l = AppLocalizations.of(context)!;
     return GoOffGridEyeTracker(
       child: Scaffold(
       backgroundColor: AppColors.bg,
@@ -72,7 +74,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                'Ekranını bırak. Arkadaşlarını yen.',
+                l.welcomeSubtitle,
                 style: AppTextStyles.bodySecondary,
                 textAlign: TextAlign.center,
               ),
@@ -83,7 +85,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               _SocialButton(
                 onPressed: auth.isLoading ? null : () => ref.read(authProvider.notifier).signInWithGoogle(),
                 icon: Icons.g_mobiledata_rounded,
-                label: 'Google ile devam et',
+                label: l.continueWithGoogleShort,
                 bgColor: Colors.white,
                 textColor: Colors.black87,
               ),
@@ -91,7 +93,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               _SocialButton(
                 onPressed: auth.isLoading ? null : () => ref.read(authProvider.notifier).signInWithApple(),
                 icon: Icons.apple_rounded,
-                label: 'Apple ile devam et',
+                label: l.continueWithAppleShort,
                 bgColor: Colors.white,
                 textColor: Colors.black87,
               ),
@@ -104,7 +106,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   const Expanded(child: Divider(color: AppColors.cardBorder)),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text('veya', style: AppTextStyles.bodySecondary),
+                    child: Text(l.orDivider, style: AppTextStyles.bodySecondary),
                   ),
                   const Expanded(child: Divider(color: AppColors.cardBorder)),
                 ],
@@ -112,17 +114,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
               const SizedBox(height: 24),
 
-              // ─── EMAIL / ŞİFRE ───
+              // ─── EMAIL / PASSWORD ───
               _InputField(
                 controller: _emailController,
-                hint: 'E-posta',
+                hint: l.emailHint,
                 keyboardType: TextInputType.emailAddress,
                 icon: Icons.email_outlined,
               ),
               const SizedBox(height: 12),
               _InputField(
                 controller: _passwordController,
-                hint: 'Şifre',
+                hint: l.passwordHint,
                 obscure: _obscurePassword,
                 icon: Icons.lock_outline_rounded,
                 suffixIcon: IconButton(
@@ -145,12 +147,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       if (email.isNotEmpty) {
                         ref.read(authProvider.notifier).resetPassword(email);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Şifre sıfırlama maili gönderildi.')),
+                          SnackBar(content: Text(l.passwordResetSent)),
                         );
                       }
                     },
                     child: Text(
-                      'Şifremi unuttum',
+                      l.forgotPassword,
                       style: AppTextStyles.label.copyWith(color: AppColors.neonGreen),
                     ),
                   ),
@@ -178,7 +180,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           height: 24,
                           child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black),
                         )
-                      : Text(_isSignUp ? 'Kayıt Ol' : 'Giriş Yap'),
+                      : Text(_isSignUp ? l.signUp : l.signIn),
                 ),
               ),
 
@@ -191,9 +193,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   text: TextSpan(
                     style: AppTextStyles.bodySecondary,
                     children: [
-                      TextSpan(text: _isSignUp ? 'Zaten hesabın var mı? ' : 'Hesabın yok mu? '),
+                      TextSpan(text: _isSignUp ? l.alreadyHaveAccount : l.noAccountYet),
                       TextSpan(
-                        text: _isSignUp ? 'Giriş Yap' : 'Kayıt Ol',
+                        text: _isSignUp ? l.signIn : l.signUp,
                         style: const TextStyle(color: AppColors.neonGreen, fontWeight: FontWeight.w600),
                       ),
                     ],

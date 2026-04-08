@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../l10n/app_localizations.dart';
 import '../../services/haptic_service.dart';
 import '../../widgets/glassmorphic_card.dart';
 import '../../widgets/premium_background.dart';
 
 // ═══════════════════════════════════════════════
-// APPLE SCREEN TIME STYLE — DETAILED ANALYTICS
+// DETAILED ANALYTICS
 // ═══════════════════════════════════════════════
 // Layout: Week/Day toggle → Chart → Total → Apps → Pickups → Notifications
-// Exactly mirrors iOS Settings > Screen Time > See All App & Website Activity
 
 class AnalyticsDetailedScreen extends ConsumerStatefulWidget {
   const AnalyticsDetailedScreen({super.key});
@@ -57,25 +57,25 @@ class _AnalyticsDetailedScreenState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 16),
-                      _buildSegmentedControl(),
+                      _buildSegmentedControl(AppLocalizations.of(context)!),
                       const SizedBox(height: 20),
                       _buildMainChart(),
                       const SizedBox(height: 6),
                       if (_viewMode == 0) _buildWeekDaySelector(),
                       const SizedBox(height: 20),
-                      _buildTotalSection(),
+                      _buildTotalSection(AppLocalizations.of(context)!),
                       const SizedBox(height: 24),
-                      _buildSectionHeader('En Çok Kullanılanlar'),
+                      _buildSectionHeader(AppLocalizations.of(context)!.mostUsedApps),
                       const SizedBox(height: 8),
                       _buildMostUsedApps(),
                       const SizedBox(height: 28),
-                      _buildSectionHeader('Kilit Açma'),
+                      _buildSectionHeader(AppLocalizations.of(context)!.unlockSection),
                       const SizedBox(height: 8),
-                      _buildPickupsSection(),
+                      _buildPickupsSection(AppLocalizations.of(context)!),
                       const SizedBox(height: 28),
-                      _buildSectionHeader('Bildirimler'),
+                      _buildSectionHeader(AppLocalizations.of(context)!.notifications),
                       const SizedBox(height: 8),
-                      _buildNotificationsSection(),
+                      _buildNotificationsSection(AppLocalizations.of(context)!),
                       const SizedBox(height: 100),
                     ],
                   ),
@@ -104,8 +104,8 @@ class _AnalyticsDetailedScreenState
                 const Icon(Icons.arrow_back_ios_rounded,
                     color: AppColors.neonGreen, size: 18),
                 const SizedBox(width: 2),
-                const Text('Geri',
-                    style: TextStyle(
+                Text(AppLocalizations.of(context)!.back,
+                    style: const TextStyle(
                         fontSize: 16,
                         color: AppColors.neonGreen,
                         fontWeight: FontWeight.w400)),
@@ -113,7 +113,7 @@ class _AnalyticsDetailedScreenState
             ),
           ),
           const Spacer(),
-          const Text('Ekran Süresi',
+          Text(AppLocalizations.of(context)!.screenTime,
               style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w600,
@@ -126,7 +126,7 @@ class _AnalyticsDetailedScreenState
   }
 
   // ── SEGMENTED CONTROL (Haftalık / Günlük) ──
-  Widget _buildSegmentedControl() {
+  Widget _buildSegmentedControl(AppLocalizations l) {
     return Container(
       height: 32,
       decoration: BoxDecoration(
@@ -135,8 +135,8 @@ class _AnalyticsDetailedScreenState
       ),
       child: Row(
         children: [
-          _segmentButton('Haftalık', 0),
-          _segmentButton('Günlük', 1),
+          _segmentButton(l.weekly, 0),
+          _segmentButton(l.daily, 1),
         ],
       ),
     );
@@ -229,7 +229,7 @@ class _AnalyticsDetailedScreenState
               sideTitles: SideTitles(
                 showTitles: true,
                 getTitlesWidget: (v, _) {
-                  const days = ['P', 'S', 'Ç', 'P', 'C', 'C', 'P'];
+                  const days = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
                   final i = v.toInt();
                   if (i < 0 || i > 6) return const SizedBox.shrink();
                   final selected = i == _selectedDay;
@@ -418,7 +418,7 @@ class _AnalyticsDetailedScreenState
   }
 
   // ── TOTAL SECTION ──
-  Widget _buildTotalSection() {
+  Widget _buildTotalSection(AppLocalizations l) {
     final d = _currentDay;
     final h = d.totalMinutes ~/ 60;
     final m = d.totalMinutes % 60;
@@ -432,7 +432,7 @@ class _AnalyticsDetailedScreenState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Total time — big Apple style
+        // Total time
         RichText(
           text: TextSpan(children: [
             TextSpan(
@@ -471,19 +471,19 @@ class _AnalyticsDetailedScreenState
         Row(
           children: [
             Text(
-              _viewMode == 0 ? 'Seçili Gün' : 'Bugün',
+              _viewMode == 0 ? l.selectedDayLabel : l.todayLabel,
               style: const TextStyle(
                   fontSize: 12, color: AppColors.textTertiary),
             ),
             const SizedBox(width: 12),
             // Change indicator
-            _changeChip(d.changePercent),
+            _changeChip(d.changePercent, l),
           ],
         ),
         if (_viewMode == 0) ...[
           const SizedBox(height: 8),
           Text(
-            'Günlük ort: ${avgH}sa ${avgM}dk',
+            l.weeklyAvgLabel(avgH, avgM),
             style: const TextStyle(
                 fontSize: 13,
                 color: AppColors.textSecondary,
@@ -519,17 +519,18 @@ class _AnalyticsDetailedScreenState
     );
   }
 
-  Widget _changeChip(int percent) {
+  Widget _changeChip(int percent, [AppLocalizations? l]) {
     final isUp = percent > 0;
     final color = isUp ? AppColors.ringDanger : AppColors.ringGood;
+    final suffix = l?.comparedToLastWeek ?? 'geçen haftaya göre';
     return Text(
-      '${isUp ? '▲' : '▼'} %${percent.abs()} geçen haftaya göre',
+      '${isUp ? '▲' : '▼'} %${percent.abs()} $suffix',
       style: TextStyle(
           fontSize: 11, fontWeight: FontWeight.w500, color: color),
     );
   }
 
-  // ── SECTION HEADER (Apple style) ──
+  // ── SECTION HEADER ──
   Widget _buildSectionHeader(String title) {
     return Text(
       title,
@@ -541,7 +542,7 @@ class _AnalyticsDetailedScreenState
     );
   }
 
-  // ── MOST USED APPS (Apple style list) ──
+  // ── MOST USED APPS ──
   Widget _buildMostUsedApps() {
     final apps = _currentDay.apps;
     final maxMin = apps.isEmpty ? 1 : apps.first.minutes;
@@ -594,7 +595,7 @@ class _AnalyticsDetailedScreenState
                                   fontSize: 11,
                                   color: AppColors.textTertiary)),
                           const SizedBox(height: 6),
-                          // Usage bar (Apple style — thin blue/colored bar)
+                          // Usage bar
                           ClipRRect(
                             borderRadius: BorderRadius.circular(2),
                             child: SizedBox(
@@ -630,8 +631,8 @@ class _AnalyticsDetailedScreenState
     );
   }
 
-  // ── PICKUPS SECTION (Apple style) ──
-  Widget _buildPickupsSection() {
+  // ── PICKUPS SECTION ──
+  Widget _buildPickupsSection(AppLocalizations l) {
     final d = _currentDay;
     return GlassmorphicCard(
       padding: const EdgeInsets.all(16),
@@ -648,14 +649,14 @@ class _AnalyticsDetailedScreenState
                       fontWeight: FontWeight.w700,
                       color: AppColors.textPrimary)),
               const SizedBox(width: 6),
-              const Padding(
-                padding: EdgeInsets.only(bottom: 6),
-                child: Text('kez',
-                    style: TextStyle(
+              Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Text(l.timesUnit,
+                    style: const TextStyle(
                         fontSize: 15, color: AppColors.textSecondary)),
               ),
               const Spacer(),
-              _changeChip(d.pickupChange),
+              _changeChip(d.pickupChange, l),
             ],
           ),
           const SizedBox(height: 12),
@@ -713,9 +714,9 @@ class _AnalyticsDetailedScreenState
           // First pickup + most opened app
           Row(
             children: [
-              const Expanded(
-                child: Text('İlk Açılış',
-                    style: TextStyle(
+              Expanded(
+                child: Text(l.firstUnlock,
+                    style: const TextStyle(
                         fontSize: 13, color: AppColors.textSecondary)),
               ),
               Text(d.firstPickup,
@@ -728,9 +729,9 @@ class _AnalyticsDetailedScreenState
           const SizedBox(height: 8),
           Row(
             children: [
-              const Expanded(
-                child: Text('En Çok Açılan',
-                    style: TextStyle(
+              Expanded(
+                child: Text(l.mostOpened,
+                    style: const TextStyle(
                         fontSize: 13, color: AppColors.textSecondary)),
               ),
               Text(d.mostPickedApp,
@@ -745,8 +746,8 @@ class _AnalyticsDetailedScreenState
     );
   }
 
-  // ── NOTIFICATIONS SECTION (Apple style) ──
-  Widget _buildNotificationsSection() {
+  // ── NOTIFICATIONS SECTION ──
+  Widget _buildNotificationsSection(AppLocalizations l) {
     final d = _currentDay;
     return GlassmorphicCard(
       padding: const EdgeInsets.all(16),
@@ -763,14 +764,14 @@ class _AnalyticsDetailedScreenState
                       fontWeight: FontWeight.w700,
                       color: AppColors.textPrimary)),
               const SizedBox(width: 6),
-              const Padding(
-                padding: EdgeInsets.only(bottom: 6),
-                child: Text('bildirim',
-                    style: TextStyle(
+              Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Text(l.notificationUnit,
+                    style: const TextStyle(
                         fontSize: 15, color: AppColors.textSecondary)),
               ),
               const Spacer(),
-              _changeChip(d.notifChange),
+              _changeChip(d.notifChange, l),
             ],
           ),
           const SizedBox(height: 12),
@@ -847,7 +848,7 @@ class _AnalyticsDetailedScreenState
                           style: const TextStyle(
                               fontSize: 14, color: AppColors.textPrimary)),
                     ),
-                    Text('${app.count} bildirim',
+                    Text('${app.count} ${l.notificationUnit}',
                         style: const TextStyle(
                             fontSize: 13, color: AppColors.textSecondary)),
                   ],

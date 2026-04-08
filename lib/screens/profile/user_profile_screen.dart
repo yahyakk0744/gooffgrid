@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/user_profile.dart';
 import '../../providers/user_provider.dart';
 import '../../providers/friends_provider.dart';
@@ -83,6 +84,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final profile = _resolveProfile();
     final isMe = profile.id == ref.read(userProvider).id;
 
@@ -219,7 +221,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                     children: [
                       _StatItem(
                           value: '${profile.streak}',
-                          label: 'Seri',
+                          label: l.streak,
                           icon: Icons.local_fire_department_rounded,
                           color: AppColors.neonOrange),
                       _StatItem(
@@ -229,7 +231,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                           color: AppColors.neonGreen),
                       _StatItem(
                           value: '8',
-                          label: 'Arkadaş',
+                          label: l.seriFriends,
                           icon: Icons.people_rounded,
                           color: const Color(0xFF4FACFE)),
                     ],
@@ -238,11 +240,11 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                 const SizedBox(height: 16),
 
                 // Friendship button
-                if (!isMe) _buildFriendshipButton(),
+                if (!isMe) _buildFriendshipButton(l),
                 if (!isMe) const SizedBox(height: 16),
 
                 // Recent badges
-                _buildRecentBadges(),
+                _buildRecentBadges(l),
                 const SizedBox(height: 100),
               ],
             ),
@@ -252,16 +254,16 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
     );
   }
 
-  Widget _buildFriendshipButton() {
+  Widget _buildFriendshipButton(AppLocalizations l) {
     switch (_friendshipStatus) {
       case 'friends':
         return SizedBox(
           width: double.infinity,
           height: 48,
           child: OutlinedButton.icon(
-            onPressed: () => _confirmRemoveFriend(),
+            onPressed: () => _confirmRemoveFriend(l),
             icon: const Icon(Icons.person_remove_rounded, size: 18),
-            label: const Text('Arkadaşlıktan Çıkar'),
+            label: Text(l.removeFriend),
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.ringDanger,
               side: const BorderSide(color: AppColors.ringDanger),
@@ -277,7 +279,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
           child: ElevatedButton.icon(
             onPressed: null,
             icon: const Icon(Icons.hourglass_top_rounded, size: 18),
-            label: const Text('İstek Gönderildi'),
+            label: Text(l.requestSent),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.cardBg,
               foregroundColor: AppColors.textTertiary,
@@ -303,8 +305,8 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14)),
                   ),
-                  child: const Text('Kabul Et',
-                      style: TextStyle(fontWeight: FontWeight.w600)),
+                  child: Text(l.accept,
+                      style: const TextStyle(fontWeight: FontWeight.w600)),
                 ),
               ),
             ),
@@ -323,8 +325,8 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14)),
                   ),
-                  child: const Text('Reddet',
-                      style: TextStyle(fontWeight: FontWeight.w600)),
+                  child: Text(l.decline,
+                      style: const TextStyle(fontWeight: FontWeight.w600)),
                 ),
               ),
             ),
@@ -340,7 +342,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
               setState(() => _friendshipStatus = 'sent');
             },
             icon: const Icon(Icons.person_add_rounded, size: 18),
-            label: const Text('Arkadaş Ekle'),
+            label: Text(l.addFriend),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.neonGreen,
               foregroundColor: Colors.black,
@@ -354,37 +356,37 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
     }
   }
 
-  void _confirmRemoveFriend() {
+  void _confirmRemoveFriend(AppLocalizations l) {
     HapticService.warning();
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.cardBg,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Arkadaşlıktan Çıkar',
-            style: TextStyle(color: AppColors.textPrimary)),
-        content: const Text('Bu kişiyi arkadaş listenden çıkarmak istediğine emin misin?',
-            style: TextStyle(color: AppColors.textSecondary)),
+        title: Text(l.removeFriend,
+            style: const TextStyle(color: AppColors.textPrimary)),
+        content: Text(l.removeFriendConfirm,
+            style: const TextStyle(color: AppColors.textSecondary)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('İptal',
-                style: TextStyle(color: AppColors.textSecondary)),
+            child: Text(l.cancel,
+                style: const TextStyle(color: AppColors.textSecondary)),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               setState(() => _friendshipStatus = 'none');
             },
-            child: const Text('Çıkar',
-                style: TextStyle(color: AppColors.ringDanger)),
+            child: Text(l.remove,
+                style: const TextStyle(color: AppColors.ringDanger)),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildRecentBadges() {
+  Widget _buildRecentBadges(AppLocalizations l) {
     final badges = [
       ('🔥', 'Ateş Serisi'),
       ('📵', '24 Saat'),
@@ -399,12 +401,12 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
       children: [
         Row(
           children: [
-            const Text('Son Rozetler', style: AppTextStyles.h3),
+            Text(l.recentBadges, style: AppTextStyles.h3),
             const Spacer(),
             GestureDetector(
               onTap: () => HapticService.light(),
               child: Text(
-                'Tüm Rozetler',
+                l.allBadgesLabel,
                 style: TextStyle(
                     fontSize: 13,
                     color: AppColors.neonGreen.withValues(alpha: 0.8),

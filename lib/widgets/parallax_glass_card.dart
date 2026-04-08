@@ -113,7 +113,7 @@ class _ParallaxGlassCardState extends State<ParallaxGlassCard> {
                       ),
                       // Derinlik gölgesi
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.4),
+                        color: AppColors.bg.withValues(alpha: 0.6),
                         blurRadius: 20,
                         offset: Offset(-_offsetX * 0.2, -_offsetY * 0.2 + 6),
                       ),

@@ -37,7 +37,7 @@ class BadgeGrid extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: badge.isEarned
-              ? [const Color(0xFF1A2A1A), const Color(0xFF1A1A2A)]
+              ? [AppColors.primaryMuted, AppColors.cardBg]
               : [AppColors.cardBg, AppColors.cardBg],
         ),
         borderRadius: BorderRadius.circular(12),

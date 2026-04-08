@@ -6,12 +6,14 @@ import '../../widgets/premium_background.dart';
 import '../../widgets/app_card.dart';
 import '../../providers/groups_provider.dart';
 import '../../widgets/empty_state.dart';
+import '../../l10n/app_localizations.dart';
 
 class GroupsScreen extends ConsumerWidget {
   const GroupsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final groups = ref.watch(groupProvider);
 
     return Scaffold(
@@ -23,14 +25,14 @@ class GroupsScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Gruplar', style: AppTextStyles.h1),
+              Text(l.groups, style: AppTextStyles.h1),
               const SizedBox(height: 24),
               if (groups.isEmpty)
                 EmptyState(
                   emoji: '👥',
-                  title: 'Henüz grup yok',
-                  subtitle: 'Arkadaşlarınla grup oluştur',
-                  buttonText: 'Grup Oluştur',
+                  title: l.noGroupsYet,
+                  subtitle: l.noGroupsSubtitle,
+                  buttonText: l.createGroup,
                   onButtonTap: () => context.push('/group/create'),
                 ),
 
@@ -53,9 +55,9 @@ class GroupsScreen extends ConsumerWidget {
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () => context.push('/group/create'),
                   icon: const Icon(Icons.group_add_rounded),
-                  label: const Text('Yeni Grup'),
+                  label: Text(l.newGroup),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.neonGreen,
                     foregroundColor: Colors.black,
