@@ -54,7 +54,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   /// Demo modu — Supabase bağlantısı olmadan UI test etmek için.
   /// Production'da false yapılmalı.
-  static const _demoMode = true;
+  static const _demoMode = false;
 
   void _init() {
     if (_demoMode) {

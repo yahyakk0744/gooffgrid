@@ -12,9 +12,19 @@ class RevenueCatService {
 
   bool _initialized = false;
 
+  /// Henüz gerçek API key'ler eklenmedi mi?
+  static bool get _hasRealKeys =>
+      _androidApiKey != 'YOUR_REVENUECAT_ANDROID_KEY' &&
+      _iosApiKey != 'YOUR_REVENUECAT_IOS_KEY';
+
   /// Uygulama başlangıcında çağır.
   Future<void> init() async {
     if (_initialized) return;
+    // Placeholder key varsa RevenueCat'i başlatma (crash olur)
+    if (!_hasRealKeys) {
+      debugPrint('RevenueCat: API key henüz eklenmedi, atlanıyor.');
+      return;
+    }
     try {
       final config = PurchasesConfiguration(
         defaultTargetPlatform == TargetPlatform.iOS ? _iosApiKey : _androidApiKey,

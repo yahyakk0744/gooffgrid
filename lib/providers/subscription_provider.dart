@@ -48,7 +48,9 @@ class SubscriptionState {
 }
 
 class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
-  SubscriptionNotifier() : super(const SubscriptionState());
+  /// RevenueCat entegre edilene kadar tüm özellikler açık.
+  /// RevenueCat eklendiğinde `SubscriptionTier.free` olarak değiştirilecek.
+  SubscriptionNotifier() : super(const SubscriptionState(tier: SubscriptionTier.pro));
 
   void upgrade(SubscriptionTier tier) {
     state = state.copyWith(tier: tier);
