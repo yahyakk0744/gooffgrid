@@ -1,0 +1,230 @@
+workflows:
+  ios-release:
+    name: iOS Release
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: GoOffGrid
+    environment:
+      vars:
+        BUNDLE_ID: "com.gooffgrid.gooffgrid"
+        EXTENSION_BUNDLE_ID: "com.gooffgrid.gooffgrid.ScreenTimeReport"
+        APP_STORE_APPLE_ID: "6761863053"
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Set up keychain
+        script: |
+          keychain initialize
+      - name: Fetch signing files (main app + extension)
+        script: |
+          set -e
+          if [ -z "$CERTIFICATE_PRIVATE_KEY" ]; then
+            echo "[signing] No persistent CERTIFICATE_PRIVATE_KEY — generating fresh key."
+            openssl genrsa -out /tmp/cert_key.pem 2048 2>/dev/null
+            export CERTIFICATE_PRIVATE_KEY="$(cat /tmp/cert_key.pem)"
+          else
+            echo "[signing] Using persistent CERTIFICATE_PRIVATE_KEY from env."
+          fi
+
+          revoke_all_distribution_certs() {
+            echo '[]' > /tmp/certs.json
+            for cert_type in IOS_DISTRIBUTION DISTRIBUTION; do
+              app-store-connect certificates list --type=$cert_type --json \
+                > /tmp/certs_$cert_type.json 2>/dev/null || echo '[]' > /tmp/certs_$cert_type.json
+            done
+            python3 - <<'PY' 2>/dev/null || true
+          import json
+          merged = []
+          for f in ('/tmp/certs_IOS_DISTRIBUTION.json', '/tmp/certs_DISTRIBUTION.json'):
+              try:
+                  with open(f) as fh:
+                      data = json.load(fh)
+                  if isinstance(data, list): merged.extend(data)
+              except Exception: pass
+          with open('/tmp/certs.json', 'w') as fh:
+              json.dump(merged, fh)
+          PY
+            CERT_IDS=$(python3 - <<'PY' 2>/dev/null || true
+          import json
+          try:
+              with open('/tmp/certs.json') as fh:
+                  data = json.load(fh)
+              if isinstance(data, list):
+                  for c in data:
+                      cid = c.get('id') or c.get('Id')
+                      if cid: print(cid)
+          except Exception:
+              pass
+          PY
+            )
+            for cert_id in $CERT_IDS; do
+              echo "[signing] Revoking cert $cert_id"
+              app-store-connect certificates delete --ignore-not-found "$cert_id" || true
+            done
+          }
+
+          delete_profiles_for_bundle() {
+            local bid="$1"
+            echo "[signing] Deleting existing IOS_APP_STORE profiles for $bid"
+            app-store-connect profiles list \
+              --bundle-id-identifier "$bid" \
+              --profile-type IOS_APP_STORE \
+              --json > /tmp/profiles.json 2>/dev/null || echo '[]' > /tmp/profiles.json
+            PROFILE_IDS=$(python3 - <<'PY' 2>/dev/null || true
+          import json
+          try:
+              with open('/tmp/profiles.json') as fh:
+                  data = json.load(fh)
+              if isinstance(data, list):
+                  for p in data:
+                      pid = p.get('id') or p.get('Id')
+                      if pid: print(pid)
+          except Exception:
+              pass
+          PY
+            )
+            for pid in $PROFILE_IDS; do
+              echo "[signing] Deleting profile $pid"
+              app-store-connect profiles delete --ignore-not-found "$pid" || true
+            done
+          }
+
+          delete_profiles_for_bundle "$BUNDLE_ID"
+          delete_profiles_for_bundle "$EXTENSION_BUNDLE_ID"
+
+          fetch_for_bundle() {
+            local bid="$1"
+            if app-store-connect fetch-signing-files "$bid" --type IOS_APP_STORE --create; then
+              echo "[signing] fetch-signing-files succeeded for $bid"
+            else
+              echo "[signing] fetch-signing-files failed for $bid — revoking certs and retrying"
+              revoke_all_distribution_certs || true
+              echo "[signing] Waiting 90s for Apple API propagation…"
+              sleep 90
+              app-store-connect fetch-signing-files "$bid" --type IOS_APP_STORE --create
+            fi
+          }
+
+          fetch_for_bundle "$BUNDLE_ID"
+          fetch_for_bundle "$EXTENSION_BUNDLE_ID"
+      - name: Add certificates to keychain
+        script: |
+          keychain add-certificates
+      - name: Write .env from env vars
+        script: |
+          cat > .env <<EOF
+          SUPABASE_URL=$SUPABASE_URL
+          SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY
+          GOOGLE_WEB_CLIENT_ID=$GOOGLE_WEB_CLIENT_ID
+          REVENUECAT_ANDROID_KEY=$REVENUECAT_ANDROID_KEY
+          REVENUECAT_IOS_KEY=$REVENUECAT_IOS_KEY
+          EOF
+          echo "--- .env (key names only) ---"
+          cut -d= -f1 .env
+      - name: Flutter pub get
+        script: |
+          flutter pub get
+      - name: CocoaPods install
+        script: |
+          cd ios
+          pod install --repo-update
+          cd ..
+      - name: Increment build number
+        script: |
+          LATEST=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" 2>/dev/null || echo 0)
+          NEW_BUILD=$(($LATEST + 1))
+          echo "[build] Latest TestFlight build: $LATEST, new: $NEW_BUILD"
+          cd ios
+          agvtool new-version -all "$NEW_BUILD"
+          cd ..
+      - name: Set up code signing
+        script: |
+          xcode-project use-profiles --project ios/Runner.xcodeproj
+      - name: Build IPA
+        script: |
+          set -ex
+          flutter build ipa --release \
+            --export-options-plist=/Users/builder/export_options.plist \
+            --dart-define-from-file=.env || true
+
+          # Fallback: if flutter build ipa fails due to signing, drop into xcodebuild archive
+          if [ ! -f build/ios/ipa/*.ipa ]; then
+            echo "[build] flutter build ipa did not produce IPA — falling back to xcodebuild"
+            flutter build ios --release --no-codesign
+            ARCHIVE_PATH="/tmp/GoOffGrid-$(date +%s).xcarchive"
+            xcodebuild \
+              -workspace ios/Runner.xcworkspace \
+              -scheme Runner \
+              -configuration Release \
+              -destination 'generic/platform=iOS' \
+              -archivePath "$ARCHIVE_PATH" \
+              archive \
+              COMPILER_INDEX_STORE_ENABLE=NO \
+              CODE_SIGN_STYLE=Manual 2>&1 | tee /tmp/archive.log
+            xcode-project build-ipa \
+              --workspace ios/Runner.xcworkspace \
+              --scheme Runner \
+              --archive-flags="-destination 'generic/platform=iOS'"
+          fi
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - /tmp/archive.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        submit_to_app_store: false
+      email:
+        recipients:
+          - yahyakk0744@gmail.com
+        notify:
+          success: true
+          failure: true
+
+  android-release:
+    name: Android Release
+    max_build_duration: 60
+    instance_type: linux_x2
+    environment:
+      android_signing:
+        - gooffgrid_keystore
+      groups:
+        - google_play
+      vars:
+        PACKAGE_NAME: "com.gooffgrid.gooffgrid"
+      flutter: stable
+      java: 17
+    scripts:
+      - name: Write .env from env vars
+        script: |
+          cat > .env <<EOF
+          SUPABASE_URL=$SUPABASE_URL
+          SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY
+          GOOGLE_WEB_CLIENT_ID=$GOOGLE_WEB_CLIENT_ID
+          REVENUECAT_ANDROID_KEY=$REVENUECAT_ANDROID_KEY
+          REVENUECAT_IOS_KEY=$REVENUECAT_IOS_KEY
+          EOF
+      - name: Flutter pub get
+        script: |
+          flutter pub get
+      - name: Build AAB
+        script: |
+          flutter build appbundle --release --dart-define-from-file=.env
+    artifacts:
+      - build/**/outputs/bundle/**/*.aab
+      - build/**/outputs/apk/**/*.apk
+      - build/**/outputs/**/mapping.txt
+    publishing:
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: internal
+        submit_as_draft: false
+      email:
+        recipients:
+          - yahyakk0744@gmail.com
+        notify:
+          success: true
+          failure: true
