@@ -6,6 +6,8 @@ workflows:
     integrations:
       app_store_connect: GoOffGrid
     environment:
+      groups:
+        - gooffgrid_env
       vars:
         BUNDLE_ID: "com.gooffgrid.gooffgrid"
         EXTENSION_BUNDLE_ID: "com.gooffgrid.gooffgrid.ScreenTimeReport"
@@ -193,6 +195,7 @@ workflows:
         - gooffgrid_keystore
       groups:
         - google_play
+        - gooffgrid_env
       vars:
         PACKAGE_NAME: "com.gooffgrid.gooffgrid"
       flutter: stable
