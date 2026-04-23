@@ -194,7 +194,6 @@ workflows:
       android_signing:
         - gooffgrid_keystore
       groups:
-        - google_play
         - gooffgrid_env
       vars:
         PACKAGE_NAME: "com.gooffgrid.gooffgrid"
@@ -221,10 +220,6 @@ workflows:
       - build/**/outputs/apk/**/*.apk
       - build/**/outputs/**/mapping.txt
     publishing:
-      google_play:
-        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
-        track: internal
-        submit_as_draft: false
       email:
         recipients:
           - yahyakk0744@gmail.com
