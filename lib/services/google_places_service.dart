@@ -1,16 +1,19 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class GooglePlacesService {
   GooglePlacesService._();
 
-  // TODO: Replace with real key from env/config
-  static const _apiKey = 'GOOGLE_PLACES_API_KEY';
+  static String get _apiKey => dotenv.env['GOOGLE_PLACES_API_KEY'] ?? '';
   static const _baseUrl = 'https://maps.googleapis.com/maps/api/place';
+
+  static bool get isConfigured => _apiKey.isNotEmpty;
 
   /// Autocomplete search — returns list of predictions.
   static Future<List<PlacePrediction>> autocomplete(String query) async {
     if (query.length < 3) return [];
+    if (!isConfigured) return [];
 
     final url =
         '$_baseUrl/autocomplete/json'
@@ -38,6 +41,7 @@ class GooglePlacesService {
 
   /// Get place details (lat, lng, address, photo) by place_id.
   static Future<PlaceDetails?> getDetails(String placeId) async {
+    if (!isConfigured) return null;
     final url =
         '$_baseUrl/details/json'
         '?place_id=$placeId'
