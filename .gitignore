@@ -69,3 +69,11 @@ android/key.properties
 /debug_screen.png
 /preopen_live_test.png
 /release_smoke_test.png
+
+# External repos cloned into working dir (not part of gooffgrid)
+/IceCubesApp/
+/ReadYou/
+/dadb/
+/fvm/
+/localsend/
+/spotube/
