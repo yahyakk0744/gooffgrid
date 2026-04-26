@@ -24,9 +24,50 @@ import java.util.Calendar
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.gooffgrid/screen_time"
+    private val BRIDGE_CHANNEL = "com.gooffgrid/app_block_bridge"
+
+    // Flutter'a route göndermek için bridge channel.
+    private var bridgeChannel: MethodChannel? = null
+
+    // Flutter motor hazır olmadan gelen intent bekletilir.
+    private var pendingRoute: String? = null
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIntentRoute(intent)
+    }
+
+    private fun handleIntentRoute(intent: Intent?) {
+        val route = intent?.getStringExtra("route") ?: return
+        // Channel hazırsa doğrudan gönder, değilse bekletme listesine al.
+        val channel = bridgeChannel
+        if (channel != null) {
+            channel.invokeMethod("onBlockedAppIntent", mapOf("route" to route))
+        } else {
+            pendingRoute = route
+        }
+    }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+
+        // Bridge kanalı: Native → Flutter route push (pending intent dahil).
+        bridgeChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, BRIDGE_CHANNEL).also { ch ->
+            ch.setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "consumePendingRoute" -> {
+                        val r = pendingRoute
+                        pendingRoute = null
+                        result.success(r)
+                    }
+                    else -> result.notImplemented()
+                }
+            }
+        }
+
+        // İlk açılışta intent'te route varsa bekletme listesine al.
+        handleIntentRoute(intent)
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {

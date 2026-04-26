@@ -345,7 +345,7 @@ class DuelShareCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'gooffgrid.com',
+                        'gooffgrid',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.w500,

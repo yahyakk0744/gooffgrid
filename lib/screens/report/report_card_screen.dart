@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../config/theme.dart';
 import '../../config/design_tokens.dart';
@@ -28,13 +30,33 @@ class ReportCardScreen extends ConsumerWidget {
     final cityRank = ref.watch(userCityRankProvider);
     final o2 = ref.watch(o2Provider);
     final cardKey = GlobalKey();
+    final storyKey = GlobalKey();
 
     return Scaffold(
       backgroundColor: AppColors.bg,
-      body: PremiumBackground(
-        child: SafeArea(
-          child: Column(
-            children: [
+      body: Stack(
+        children: [
+          // Offscreen 9:16 story frame — rendered but never visible.
+          // Offstage still lays out + paints so RepaintBoundary can capture.
+          Positioned(
+            left: -10000,
+            top: 0,
+            child: RepaintBoundary(
+              key: storyKey,
+              child: _StoryFrame(
+                weekTotal: weekTotal,
+                streak: user.streak,
+                o2Earned: o2.todayEarned * 7,
+                friendRank: friendRank,
+                city: user.city,
+                cityRank: cityRank,
+              ),
+            ),
+          ),
+          PremiumBackground(
+            child: SafeArea(
+              child: Column(
+                children: [
               const SizedBox(height: 16),
               // Header
               Padding(
@@ -232,48 +254,136 @@ class ReportCardScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              // Share button
+              // Share buttons — primary (IG story) + secondary (generic)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: GestureDetector(
-                  onTap: () async {
-                    await HapticService.success();
-                    await _captureAndShare(cardKey, context);
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    decoration: BoxDecoration(
-                      color: AppColors.neonGreen,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(color: AppColors.neonGreen.withValues(alpha: 0.3), blurRadius: 16, offset: const Offset(0, 4)),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.share_rounded, color: Colors.black, size: 20),
-                        const SizedBox(width: 10),
-                        Text(
-                          l.shareReportCard,
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.black, letterSpacing: 0.5),
+                child: Column(
+                  children: [
+                    // Primary: Instagram-story-optimized export
+                    GestureDetector(
+                      onTap: () async {
+                        await HapticService.success();
+                        if (!context.mounted) return;
+                        await _captureAndShareStory(storyKey, context, weekTotal);
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [Color(0xFFF58529), Color(0xFFDD2A7B), Color(0xFF8134AF)],
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFFDD2A7B).withValues(alpha: 0.35),
+                              blurRadius: 16,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
-                      ],
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.camera_alt_rounded, color: Colors.white, size: 20),
+                            SizedBox(width: 10),
+                            Text(
+                              'Hikayene paylaş',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 10),
+                    // Secondary: generic share
+                    GestureDetector(
+                      onTap: () async {
+                        await HapticService.success();
+                        if (!context.mounted) return;
+                        await _captureAndShare(cardKey, context);
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.share_rounded, color: AppColors.textSecondary, size: 18),
+                            const SizedBox(width: 10),
+                            Text(
+                              l.shareReportCard,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textSecondary,
+                                letterSpacing: 0.3,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 40),
-            ],
+                  const SizedBox(height: 28),
+                ],
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
 
+  Future<void> _captureAndShareStory(
+    GlobalKey key,
+    BuildContext context,
+    String weekTotal,
+  ) async {
+    try {
+      // Offstage render waits a frame
+      await WidgetsBinding.instance.endOfFrame;
+
+      final boundary = key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+      if (boundary == null) return;
+
+      final image = await boundary.toImage(pixelRatio: 2.5);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      if (byteData == null) return;
+
+      final pngBytes = byteData.buffer.asUint8List();
+
+      final dir = await getTemporaryDirectory();
+      final file = File('${dir.path}/gooffgrid-story-${DateTime.now().millisecondsSinceEpoch}.png');
+      await file.writeAsBytes(pngBytes);
+
+      // Cross-platform share sheet — user picks "Add to Story" from Instagram.
+      // Instagram's share extension natively accepts 9:16 PNG as story background.
+      await Share.shareXFiles(
+        [XFile(file.path, mimeType: 'image/png', name: 'gooffgrid-story.png')],
+        text: 'Bu hafta $weekTotal ekran süreyim. #gooffgrid',
+        subject: 'Haftalık rapor · gooffgrid',
+      );
+    } catch (e) {
+      debugPrint('Story share error: $e');
+    }
+  }
+
   Future<void> _captureAndShare(GlobalKey key, BuildContext context) async {
-    final l = AppLocalizations.of(context)!;
     try {
       final boundary = key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
       if (boundary == null) return;
@@ -328,6 +438,200 @@ class _StatBox extends StatelessWidget {
           Text(label, style: const TextStyle(fontSize: 10, color: AppColors.textTertiary)),
         ],
       ),
+    );
+  }
+}
+
+/// Full-bleed 9:16 story frame — rendered offscreen, captured as PNG.
+/// Dimensions 540×960 (logical) × 2.5 pixelRatio ≈ 1350×2400 → IG Story safe.
+class _StoryFrame extends StatelessWidget {
+  const _StoryFrame({
+    required this.weekTotal,
+    required this.streak,
+    required this.o2Earned,
+    required this.friendRank,
+    required this.city,
+    required this.cityRank,
+  });
+
+  final String weekTotal;
+  final int streak;
+  final int o2Earned;
+  final int friendRank;
+  final String city;
+  final int cityRank;
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQuery(
+      data: const MediaQueryData(),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Container(
+          width: 540,
+          height: 960,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFF0A0A14),
+                Color(0xFF1A0A2E),
+                Color(0xFF0F0F2A),
+              ],
+            ),
+          ),
+          child: Stack(
+            children: [
+              // Glow bloom
+              Positioned(
+                top: -120,
+                right: -80,
+                child: Container(
+                  width: 420,
+                  height: 420,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(
+                      colors: [
+                        AppColors.neonGreen.withValues(alpha: 0.25),
+                        AppColors.neonGreen.withValues(alpha: 0.0),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              // Content
+              Padding(
+                padding: const EdgeInsets.fromLTRB(40, 72, 40, 64),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'gooffgrid',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textTertiary,
+                        letterSpacing: 6,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'HAFTALIK RAPOR',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.neonGreen.withValues(alpha: 0.85),
+                        letterSpacing: 4,
+                      ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      weekTotal,
+                      style: TextStyle(
+                        fontSize: 96,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        height: 1,
+                        shadows: [
+                          Shadow(
+                            color: AppColors.neonGreen.withValues(alpha: 0.35),
+                            blurRadius: 32,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'ekran süresi',
+                      style: TextStyle(
+                        fontSize: 22,
+                        color: AppColors.textSecondary,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                    const SizedBox(height: 36),
+                    Container(
+                      height: 1,
+                      color: Colors.white.withValues(alpha: 0.08),
+                    ),
+                    const SizedBox(height: 28),
+                    _StoryRow(label: 'Seri', value: '🔥 $streak gün'),
+                    const SizedBox(height: 16),
+                    _StoryRow(label: 'Kazanılan O₂', value: '🌱 $o2Earned'),
+                    const SizedBox(height: 16),
+                    _StoryRow(label: 'Arkadaşlar arası', value: '#$friendRank'),
+                    const SizedBox(height: 16),
+                    _StoryRow(
+                      label: city.isEmpty ? 'Şehir sıralaması' : '$city sıralaması',
+                      value: '#$cityRank',
+                    ),
+                    const Spacer(),
+                    Row(
+                      children: [
+                        Container(
+                          width: 10,
+                          height: 10,
+                          decoration: BoxDecoration(
+                            color: AppColors.neonGreen,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.neonGreen.withValues(alpha: 0.6),
+                                blurRadius: 10,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        const Text(
+                          'gooffgrid.app',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: AppColors.textTertiary,
+                            letterSpacing: 2,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _StoryRow extends StatelessWidget {
+  const _StoryRow({required this.label, required this.value});
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 18,
+            color: AppColors.textSecondary,
+          ),
+        ),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
+          ),
+        ),
+      ],
     );
   }
 }

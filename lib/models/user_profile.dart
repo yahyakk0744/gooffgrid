@@ -14,6 +14,11 @@ class UserProfile {
   final int totalPoints;
   final DateTime createdAt;
 
+  /// Streak freeze tokens — auto-consumed when user misses a day.
+  /// Earned: 1 free per 7 active days; max cap 3.
+  final int freezeTokens;
+  final DateTime? lastFreezeAwardedAt;
+
   const UserProfile({
     required this.id,
     required this.name,
@@ -27,7 +32,11 @@ class UserProfile {
     required this.bestStreak,
     required this.totalPoints,
     required this.createdAt,
+    this.freezeTokens = 0,
+    this.lastFreezeAwardedAt,
   });
+
+  static const int maxFreezeTokens = 3;
 
   static const levelTitles = {
     1: 'Dijital Bebek',
@@ -67,12 +76,16 @@ class UserProfile {
         bestStreak: json['bestStreak'] as int,
         totalPoints: json['totalPoints'] as int,
         createdAt: DateTime.parse(json['createdAt'] as String),
+        freezeTokens: json['freezeTokens'] as int? ?? 0,
+        lastFreezeAwardedAt: json['lastFreezeAwardedAt'] != null
+            ? DateTime.parse(json['lastFreezeAwardedAt'] as String)
+            : null,
       );
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'name': name,
-        'avatarColor': avatarColor.value,
+        'avatarColor': avatarColor.toARGB32(),
         'city': city,
         'country': country,
         'ageGroup': ageGroup,
@@ -82,6 +95,8 @@ class UserProfile {
         'bestStreak': bestStreak,
         'totalPoints': totalPoints,
         'createdAt': createdAt.toIso8601String(),
+        'freezeTokens': freezeTokens,
+        'lastFreezeAwardedAt': lastFreezeAwardedAt?.toIso8601String(),
       };
 
   UserProfile copyWith({
@@ -97,6 +112,8 @@ class UserProfile {
     int? bestStreak,
     int? totalPoints,
     DateTime? createdAt,
+    int? freezeTokens,
+    DateTime? lastFreezeAwardedAt,
   }) =>
       UserProfile(
         id: id ?? this.id,
@@ -111,5 +128,7 @@ class UserProfile {
         bestStreak: bestStreak ?? this.bestStreak,
         totalPoints: totalPoints ?? this.totalPoints,
         createdAt: createdAt ?? this.createdAt,
+        freezeTokens: freezeTokens ?? this.freezeTokens,
+        lastFreezeAwardedAt: lastFreezeAwardedAt ?? this.lastFreezeAwardedAt,
       );
 }

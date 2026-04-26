@@ -68,8 +68,7 @@ class ShareService {
     await Share.shareXFiles(
       [XFile(file.path)],
       text: text ??
-          'gooffgrid ile dijital detoks düellosu! Sen de meydan oku. '
-              'https://gooffgrid.com',
+          'gooffgrid ile dijital detoks düellosu! Sen de meydan oku.',
     );
   }
 

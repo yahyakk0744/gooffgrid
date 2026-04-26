@@ -25,7 +25,7 @@ class DuelPlayer {
   Map<String, dynamic> toJson() => {
         'userId': userId,
         'name': name,
-        'avatarColor': avatarColor.value,
+        'avatarColor': avatarColor.toARGB32(),
         'totalMinutes': totalMinutes,
       };
 

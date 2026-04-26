@@ -12,7 +12,7 @@ import '../../l10n/app_localizations.dart';
 
 bool _isAdmin() {
   final email = sb.Supabase.instance.client.auth.currentUser?.email;
-  return email == 'admin@gooffgrid.com';
+  return email == 'yahyakk0744@gmail.com';
 }
 
 class SettingsScreen extends ConsumerWidget {
@@ -90,7 +90,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              // Admin entry — only for admin@gooffgrid.com
+              // Admin entry — only for owner email
               if (_isAdmin())
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16),
@@ -219,7 +219,7 @@ class _ToggleRow extends StatelessWidget {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: AppColors.neonGreen,
+            activeThumbColor: AppColors.neonGreen,
             activeTrackColor: AppColors.neonGreen.withValues(alpha: 0.3),
             inactiveThumbColor: AppColors.textTertiary,
             inactiveTrackColor: AppColors.cardBorder,

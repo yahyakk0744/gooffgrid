@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -70,6 +69,6 @@ final installedAppsSearchProvider = Provider.family<List<InstalledApp>, String>(
       return list.where((a) => a.name.toLowerCase().contains(q)).toList();
     },
     loading: () => [],
-    error: (_, __) => [],
+    error: (_, _) => [],
   );
 });

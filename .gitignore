@@ -50,3 +50,22 @@ app.*.map.json
 # Android signing
 android/key.properties
 *.jks
+
+# Ad-hoc upload/automation scripts (not part of app)
+/bot_*.py
+/upload_*.py
+/upload_*.ps1
+/just_upload.py
+/final_upload.py
+/selenium_upload.py
+/click_and_catch.py
+/close_dialog.ps1
+/cors_server.py
+/fill_dialog.py
+/handle_dialog.py
+/nav_and_upload.py
+/watch_dialog.py
+/current_screen.png
+/debug_screen.png
+/preopen_live_test.png
+/release_smoke_test.png

@@ -1,21 +1,27 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 /// RevenueCat abonelik yönetimi.
 /// Ürünler: gooffgrid_pro (149 TL/ay), gooffgrid_pro_plus (299 TL/ay)
+///
+/// API key'ler `.env` dosyasından okunur:
+///   REVENUECAT_ANDROID_KEY=goog_xxx
+///   REVENUECAT_IOS_KEY=appl_xxx
 class RevenueCatService {
   RevenueCatService._();
   static final instance = RevenueCatService._();
 
-  static const _androidApiKey = 'YOUR_REVENUECAT_ANDROID_KEY';
-  static const _iosApiKey = 'YOUR_REVENUECAT_IOS_KEY';
+  static String get _androidApiKey =>
+      dotenv.env['REVENUECAT_ANDROID_KEY']?.trim() ?? '';
+  static String get _iosApiKey =>
+      dotenv.env['REVENUECAT_IOS_KEY']?.trim() ?? '';
 
   bool _initialized = false;
 
-  /// Henüz gerçek API key'ler eklenmedi mi?
+  /// Gerçek API key `.env` içinde tanımlı mı?
   static bool get _hasRealKeys =>
-      _androidApiKey != 'YOUR_REVENUECAT_ANDROID_KEY' &&
-      _iosApiKey != 'YOUR_REVENUECAT_IOS_KEY';
+      _androidApiKey.isNotEmpty && _iosApiKey.isNotEmpty;
 
   /// Uygulama başlangıcında çağır.
   Future<void> init() async {

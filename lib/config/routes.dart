@@ -52,6 +52,7 @@ import '../screens/settings/delete_account_screen.dart';
 import '../screens/appblock/app_block_screen.dart';
 import '../screens/appblock/block_schedule_screen.dart';
 import '../screens/appblock/intervention_screen.dart';
+import '../screens/appblock/pre_open_intervention_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -91,37 +92,37 @@ GoRouter buildAppRouter(Ref ref) {
       // Login
       GoRoute(
         path: '/login',
-        builder: (_, __) => const LoginScreen(),
+        builder: (_, _) => const LoginScreen(),
       ),
 
       // Onboarding
       GoRoute(
         path: '/onboarding',
-        builder: (_, __) => const WelcomeScreen(),
+        builder: (_, _) => const WelcomeScreen(),
         routes: [
-          GoRoute(path: 'shock', builder: (_, __) => const ShockScreen()),
-          GoRoute(path: 'permissions', builder: (_, __) => const PermissionsScreen()),
-          GoRoute(path: 'goal', builder: (_, __) => const GoalSetupScreen()),
-          GoRoute(path: 'profile', builder: (_, __) => const ProfileSetupScreen()),
+          GoRoute(path: 'shock', builder: (_, _) => const ShockScreen()),
+          GoRoute(path: 'permissions', builder: (_, _) => const PermissionsScreen()),
+          GoRoute(path: 'goal', builder: (_, _) => const GoalSetupScreen()),
+          GoRoute(path: 'profile', builder: (_, _) => const ProfileSetupScreen()),
         ],
       ),
 
       // Deep Focus sessions (full-screen, outside tab shell)
       GoRoute(
         path: '/sessions/setup',
-        builder: (_, __) => const DeepFocusSetupScreen(),
+        builder: (_, _) => const DeepFocusSetupScreen(),
       ),
       GoRoute(
         path: '/sessions/blocklists',
-        builder: (_, __) => const BlocklistsScreen(),
+        builder: (_, _) => const BlocklistsScreen(),
       ),
       GoRoute(
         path: '/limits',
-        builder: (_, __) => const AppLimitsScreen(),
+        builder: (_, _) => const AppLimitsScreen(),
       ),
       GoRoute(
         path: '/sessions/active',
-        builder: (_, __) => const ActiveSessionScreen(),
+        builder: (_, _) => const ActiveSessionScreen(),
       ),
       GoRoute(
         path: '/sessions/complete',
@@ -130,6 +131,24 @@ GoRouter buildAppRouter(Ref ref) {
           return SessionCompleteScreen(
             durationMin: extra['durationMin'] as int? ?? 0,
             gemsEarned: extra['gemsEarned'] as int? ?? 0,
+          );
+        },
+      ),
+
+      // Pre-open intervention — native bridge (Android AccessibilityService /
+      // iOS Shortcuts Automation) pushes this before launching a blocked app.
+      // `app` = package name or user-friendly label
+      GoRoute(
+        path: '/pre-open',
+        builder: (_, state) {
+          final app = state.uri.queryParameters['app'] ?? 'Bu uygulama';
+          final secs = int.tryParse(
+                state.uri.queryParameters['secs'] ?? '',
+              ) ??
+              5;
+          return PreOpenInterventionScreen(
+            appPackageOrLabel: app,
+            countdownSeconds: secs,
           );
         },
       ),
@@ -150,31 +169,31 @@ GoRouter buildAppRouter(Ref ref) {
           StatefulShellBranch(routes: [
             GoRoute(
               path: '/',
-              builder: (_, __) => const HomeScreen(),
+              builder: (_, _) => const HomeScreen(),
               routes: [
-                GoRoute(path: 'breathing', builder: (_, __) => const FocusModeScreen()),
+                GoRoute(path: 'breathing', builder: (_, _) => const FocusModeScreen()),
                 GoRoute(
                   path: 'o2',
-                  builder: (_, __) => const O2DashboardScreen(),
+                  builder: (_, _) => const O2DashboardScreen(),
                   routes: [
-                    GoRoute(path: 'market', builder: (_, __) => const MarketScreen()),
+                    GoRoute(path: 'market', builder: (_, _) => const MarketScreen()),
                   ],
                 ),
-                GoRoute(path: 'friends', builder: (_, __) => const FriendsListScreen()),
-                GoRoute(path: 'friend/add', builder: (_, __) => const AddFriendScreen()),
+                GoRoute(path: 'friends', builder: (_, _) => const FriendsListScreen()),
+                GoRoute(path: 'friend/add', builder: (_, _) => const AddFriendScreen()),
                 GoRoute(
                   path: 'friend/:id',
                   builder: (_, state) =>
                       FriendProfileScreen(friendId: state.pathParameters['id']!),
                 ),
-                GoRoute(path: 'wrapped', builder: (_, __) => const ReportCardScreen()),
-                GoRoute(path: 'ganimetler', builder: (_, __) => const GanimetScreen()),
-                GoRoute(path: 'admin/ganimet', builder: (_, __) => const AdminGanimetScreen()),
-                GoRoute(path: 'app-block', builder: (_, __) => const AppBlockScreen()),
-                GoRoute(path: 'app-block/schedule', builder: (_, __) => const BlockScheduleScreen()),
-                GoRoute(path: 'app-block/intervention', builder: (_, __) => const InterventionScreen()),
-                GoRoute(path: 'groups', builder: (_, __) => const GroupsScreen()),
-                GoRoute(path: 'group/create', builder: (_, __) => const CreateGroupScreen()),
+                GoRoute(path: 'wrapped', builder: (_, _) => const ReportCardScreen()),
+                GoRoute(path: 'ganimetler', builder: (_, _) => const GanimetScreen()),
+                GoRoute(path: 'admin/ganimet', builder: (_, _) => const AdminGanimetScreen()),
+                GoRoute(path: 'app-block', builder: (_, _) => const AppBlockScreen()),
+                GoRoute(path: 'app-block/schedule', builder: (_, _) => const BlockScheduleScreen()),
+                GoRoute(path: 'app-block/intervention', builder: (_, _) => const InterventionScreen()),
+                GoRoute(path: 'groups', builder: (_, _) => const GroupsScreen()),
+                GoRoute(path: 'group/create', builder: (_, _) => const CreateGroupScreen()),
                 GoRoute(
                   path: 'group/:id',
                   builder: (_, state) =>
@@ -188,10 +207,10 @@ GoRouter buildAppRouter(Ref ref) {
           StatefulShellBranch(routes: [
             GoRoute(
               path: '/social',
-              builder: (_, __) => const SocialScreen(),
+              builder: (_, _) => const SocialScreen(),
               routes: [
-                GoRoute(path: 'seasons', builder: (_, __) => const SeasonScreen()),
-                GoRoute(path: 'create-story', builder: (_, __) => const CreateStoryScreen()),
+                GoRoute(path: 'seasons', builder: (_, _) => const SeasonScreen()),
+                GoRoute(path: 'create-story', builder: (_, _) => const CreateStoryScreen()),
               ],
             ),
           ]),
@@ -200,15 +219,15 @@ GoRouter buildAppRouter(Ref ref) {
           StatefulShellBranch(routes: [
             GoRoute(
               path: '/duel',
-              builder: (_, __) => const DuelListScreen(),
+              builder: (_, _) => const DuelListScreen(),
               routes: [
-                GoRoute(path: 'create', builder: (_, __) => const CreateDuelScreen()),
-                GoRoute(path: 'invite', builder: (_, __) => const DuelInviteScreen()),
+                GoRoute(path: 'create', builder: (_, _) => const CreateDuelScreen()),
+                GoRoute(path: 'invite', builder: (_, _) => const DuelInviteScreen()),
                 GoRoute(
                   path: 'active',
-                  builder: (_, __) => const DuelActiveScreen(),
+                  builder: (_, _) => const DuelActiveScreen(),
                 ),
-                GoRoute(path: 'result', builder: (_, __) => const DuelResultScreen()),
+                GoRoute(path: 'result', builder: (_, _) => const DuelResultScreen()),
                 GoRoute(
                   path: ':id',
                   builder: (_, state) =>
@@ -222,20 +241,20 @@ GoRouter buildAppRouter(Ref ref) {
           StatefulShellBranch(routes: [
             GoRoute(
               path: '/profile',
-              builder: (_, __) => const MyProfileScreen(),
+              builder: (_, _) => const MyProfileScreen(),
               routes: [
-                GoRoute(path: 'edit', builder: (_, __) => const EditProfileScreen()),
-                GoRoute(path: 'stats', builder: (_, __) => const StatsScreen()),
-                GoRoute(path: 'stats/analytics', builder: (_, __) => const AnalyticsScreen()),
-                GoRoute(path: 'stats/whatif', builder: (_, __) => const WhatIfScreen()),
-                GoRoute(path: 'stats/detailed', builder: (_, __) => const AnalyticsDetailedScreen()),
-                GoRoute(path: 'stats/monthly-top10', builder: (_, __) => const MonthlyTop10Screen()),
-                GoRoute(path: 'settings', builder: (_, __) => const SettingsScreen()),
-                GoRoute(path: 'settings/subscription', builder: (_, __) => const SubscriptionScreen()),
-                GoRoute(path: 'settings/privacy', builder: (_, __) => const LegalScreen(type: LegalType.privacy)),
-                GoRoute(path: 'settings/terms', builder: (_, __) => const LegalScreen(type: LegalType.terms)),
-                GoRoute(path: 'settings/kvkk', builder: (_, __) => const LegalScreen(type: LegalType.kvkk)),
-                GoRoute(path: 'settings/delete-account', builder: (_, __) => const DeleteAccountScreen()),
+                GoRoute(path: 'edit', builder: (_, _) => const EditProfileScreen()),
+                GoRoute(path: 'stats', builder: (_, _) => const StatsScreen()),
+                GoRoute(path: 'stats/analytics', builder: (_, _) => const AnalyticsScreen()),
+                GoRoute(path: 'stats/whatif', builder: (_, _) => const WhatIfScreen()),
+                GoRoute(path: 'stats/detailed', builder: (_, _) => const AnalyticsDetailedScreen()),
+                GoRoute(path: 'stats/monthly-top10', builder: (_, _) => const MonthlyTop10Screen()),
+                GoRoute(path: 'settings', builder: (_, _) => const SettingsScreen()),
+                GoRoute(path: 'settings/subscription', builder: (_, _) => const SubscriptionScreen()),
+                GoRoute(path: 'settings/privacy', builder: (_, _) => const LegalScreen(type: LegalType.privacy)),
+                GoRoute(path: 'settings/terms', builder: (_, _) => const LegalScreen(type: LegalType.terms)),
+                GoRoute(path: 'settings/kvkk', builder: (_, _) => const LegalScreen(type: LegalType.kvkk)),
+                GoRoute(path: 'settings/delete-account', builder: (_, _) => const DeleteAccountScreen()),
               ],
             ),
           ]),

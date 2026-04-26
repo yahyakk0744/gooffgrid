@@ -186,6 +186,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
 
 /// Extension to create an opacity-adjusted RadialGradient.
 extension _RadialGradientOpacity on RadialGradient {
+  // ignore: unused_element
   RadialGradient withOpacity(double opacity) {
     return RadialGradient(
       center: center,

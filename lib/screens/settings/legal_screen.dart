@@ -113,7 +113,7 @@ Uygulamamız 13 yaşın altındaki çocuklara yönelik değildir ve bilerek bu y
 
 8. İletişim
 
-Gizlilik ile ilgili sorularınız için: privacy@gooffgrid.com
+Gizlilik ile ilgili sorularınız için: yahyakk0744+gooffgrid_privacy@gmail.com
 
 9. Değişiklikler
 
@@ -173,7 +173,7 @@ Bu şartlar güncellenebilir. Devam eden kullanım, güncellenen şartların kab
 
 9. İletişim
 
-support@gooffgrid.com
+yahyakk0744+gooffgrid_support@gmail.com
 ''';
 
 const _kvkkText = '''
@@ -225,5 +225,5 @@ Kişisel verileriniz yurt dışında bulunan hizmet sağlayıcılara (Supabase, 
 
 7. Başvuru
 
-Haklarınızı kullanmak için: kvkk@gooffgrid.com
+Haklarınızı kullanmak için: yahyakk0744+gooffgrid_kvkk@gmail.com
 ''';

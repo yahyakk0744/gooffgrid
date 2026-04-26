@@ -86,7 +86,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                       duration: const Duration(milliseconds: 200),
                       width: 56,
                       height: 56,
-                      transform: Matrix4.identity()..scale(selected ? 1.1 : 1.0),
+                      transform: Matrix4.identity()..scaleByDouble(selected ? 1.1 : 1.0, selected ? 1.1 : 1.0, 1.0, 1.0),
                       transformAlignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: color,

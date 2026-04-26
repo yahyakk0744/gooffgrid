@@ -242,7 +242,6 @@ class _PlanCard extends StatelessWidget {
     required this.bgGradient,
     required this.buttonText,
     this.buttonEnabled = true,
-    this.buttonColor,
   });
 
   final String name;
@@ -256,7 +255,6 @@ class _PlanCard extends StatelessWidget {
   final List<Color> bgGradient;
   final String buttonText;
   final bool buttonEnabled;
-  final Color? buttonColor;
 
   @override
   Widget build(BuildContext context) {
@@ -287,7 +285,7 @@ class _PlanCard extends StatelessWidget {
               ...features.map((f) => _featureRow(f, featureColor)),
               const SizedBox(height: 16),
               if (buttonEnabled)
-                _ShimmerButton(text: buttonText, color: buttonColor ?? priceColor)
+                _ShimmerButton(text: buttonText, color: priceColor)
               else
                 Container(
                   width: double.infinity,
@@ -586,7 +584,7 @@ class _AnimatedMistBackgroundState extends State<_AnimatedMistBackground>
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: _ctrl,
-      builder: (_, __) {
+      builder: (_, _) {
         final t = _ctrl.value;
         return Container(
           width: double.infinity,
@@ -706,7 +704,7 @@ class _ShimmerButtonState extends State<_ShimmerButton>
       },
       child: AnimatedBuilder(
         animation: _shimmerCtrl,
-        builder: (_, __) {
+        builder: (_, _) {
           final shimmerPos = -1.0 + 3.0 * _shimmerCtrl.value;
           return Container(
             width: double.infinity,

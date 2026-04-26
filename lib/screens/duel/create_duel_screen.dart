@@ -293,7 +293,7 @@ class _CreateDuelScreenState extends ConsumerState<CreateDuelScreen> {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             transform: isSelected
-                ? (Matrix4.identity()..scale(1.03, 1.03))
+                ? (Matrix4.identity()..scaleByDouble(1.03, 1.03, 1.0, 1.0))
                 : Matrix4.identity(),
             transformAlignment: Alignment.center,
             padding: const EdgeInsets.all(14),
@@ -722,7 +722,7 @@ class _CreateDuelScreenState extends ConsumerState<CreateDuelScreen> {
           Expanded(
             child: ListView.separated(
               itemCount: friends.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              separatorBuilder: (_, _) => const SizedBox(height: 8),
               itemBuilder: (_, i) {
                 final f = friends[i];
                 final selected = _selectedFriends.contains(f.profile.id);

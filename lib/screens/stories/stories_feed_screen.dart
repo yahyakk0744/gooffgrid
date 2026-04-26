@@ -56,7 +56,7 @@ class _StoriesFeedScreenState extends ConsumerState<StoriesFeedScreen> {
             loading: () => const Center(
               child: CircularProgressIndicator(color: AppColors.neonGreen),
             ),
-            error: (_, __) => _buildEmptyState(l),
+            error: (_, _) => _buildEmptyState(l),
           ),
 
           // Top filter tabs

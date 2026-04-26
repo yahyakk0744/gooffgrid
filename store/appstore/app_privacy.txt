@@ -99,11 +99,11 @@ Sınırlı paylaşım:
 
 Kullanıcılar verilerini şu yollarla silebilir:
 - Uygulama içi: Profil > Ayarlar > Hesabı Sil
-- E-posta: privacy@gooffgrid.com
+- E-posta: yahyakk0744+gooffgrid_privacy@gmail.com
 
 Hesap silindiğinde tüm kullanıcıya bağlı veriler 30 gün içinde kalıcı olarak kaldırılır.
 
 ---
 
-Privacy Policy: https://gooffgrid.com/privacy
-İletişim: privacy@gooffgrid.com
+Privacy Policy: https://gooffgrid.netlify.app/privacy-policy.html
+İletişim: yahyakk0744+gooffgrid_privacy@gmail.com

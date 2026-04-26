@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -7,7 +6,6 @@ import '../../config/theme.dart';
 import '../../config/design_tokens.dart';
 import '../../services/haptic_service.dart';
 import '../../providers/o2_provider.dart';
-import '../../widgets/glassmorphic_card.dart';
 import '../../l10n/app_localizations.dart';
 
 // ──────────────────────────────────────────────
@@ -36,6 +34,7 @@ class GanimetScreen extends ConsumerStatefulWidget {
 }
 
 class _GanimetScreenState extends ConsumerState<GanimetScreen> {
+  // ignore: unused_field
   GoogleMapController? _mapCtrl;
   Map<String, dynamic>? _selected;
 
@@ -85,7 +84,7 @@ class _GanimetScreenState extends ConsumerState<GanimetScreen> {
             loading: () => const Center(
                 child:
                     CircularProgressIndicator(color: AppColors.neonGreen)),
-            error: (_, __) => Center(
+            error: (_, _) => Center(
                 child: Text(l.mapLoadFailed,
                     style: AppType.body.copyWith(color: AppColors.textSecondary))),
           ),
@@ -228,7 +227,7 @@ class _GanimetScreenState extends ConsumerState<GanimetScreen> {
                                   color: AppColors.neonGreen, strokeWidth: 2)),
                         );
                       },
-                      errorBuilder: (_, __, ___) => Container(
+                      errorBuilder: (_, _, _) => Container(
                         height: 200,
                         color: AppColors.surface,
                         child: const Center(

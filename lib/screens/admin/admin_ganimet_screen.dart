@@ -82,8 +82,9 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
     if (place == null) return;
     final odul = _odulCtrl.text.trim();
     final o2 = int.tryParse(_o2Ctrl.text.trim());
+    final l = AppLocalizations.of(context)!;
     if (odul.isEmpty || o2 == null || o2 <= 0) {
-      _showSnack(AppLocalizations.of(context)!.adminFillFields, isError: true);
+      _showSnack(l.adminFillFields, isError: true);
       return;
     }
 
@@ -101,11 +102,11 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
         'aktif': true,
       });
       HapticService.success();
-      _showSnack(AppLocalizations.of(context)!.adminSaved);
+      _showSnack(l.adminSaved);
       _clearForm();
       _loadExisting();
     } catch (e) {
-      _showSnack(AppLocalizations.of(context)!.adminDeleteError(e.toString()), isError: true);
+      _showSnack(l.adminDeleteError(e.toString()), isError: true);
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -122,6 +123,7 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
   }
 
   Future<void> _delete(String id) async {
+    final l = AppLocalizations.of(context)!;
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -150,7 +152,7 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
       HapticService.medium();
       _loadExisting();
     } catch (e) {
-      _showSnack(AppLocalizations.of(context)!.adminDeleteError(e.toString()), isError: true);
+      _showSnack(l.adminDeleteError(e.toString()), isError: true);
     }
   }
 
@@ -246,7 +248,7 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
       child: ListView.separated(
         shrinkWrap: true,
         itemCount: _predictions.length,
-        separatorBuilder: (_, __) =>
+        separatorBuilder: (_, _) =>
             const Divider(color: AppColors.cardBorder, height: 1),
         itemBuilder: (_, i) {
           final p = _predictions[i];
@@ -277,7 +279,7 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
                 height: 200,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
+                errorBuilder: (_, _, _) => Container(
                   height: 200,
                   color: AppColors.surface,
                   child: const Center(
@@ -387,7 +389,7 @@ class _AdminGanimetScreenState extends State<AdminGanimetScreen> {
               child: photoUrl != null
                   ? Image.network(photoUrl,
                       width: 48, height: 48, fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => _placeholderThumb())
+                      errorBuilder: (_, _, _) => _placeholderThumb())
                   : _placeholderThumb(),
             ),
             const SizedBox(width: 12),

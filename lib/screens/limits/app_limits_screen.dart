@@ -31,7 +31,7 @@ class AppLimitsScreen extends ConsumerWidget {
         child: ListView.separated(
           padding: const EdgeInsets.all(AppSpacing.s5),
           itemCount: limits.length,
-          separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.s3),
+          separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.s3),
           itemBuilder: (_, i) => _LimitTile(limit: limits[i]),
         ),
       ),

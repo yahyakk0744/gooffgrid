@@ -82,7 +82,7 @@ class _StoryCommentsSheetState extends ConsumerState<StoryCommentsSheet> {
                         child: CircularProgressIndicator(
                             color: AppColors.neonGreen),
                       ),
-                      error: (_, __) => _buildEmptyState(),
+                      error: (_, _) => _buildEmptyState(),
                     ),
                   ),
 

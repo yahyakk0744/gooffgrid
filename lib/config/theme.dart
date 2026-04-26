@@ -25,14 +25,26 @@ class AppColors {
   static const textTertiary = Color(0xFF5A5A70);
 
   // ── Primary accents (refined neon) ──
-  static const neonGreen = Color(0xFF32E810);
-  static const neonOrange = Color(0xFFFF7A1A);
+  // Kullanım disiplini:
+  //   • *Glow* → CTA button fill, active state, hero glow, 1 accent/ekran
+  //   • *Soft* → büyük fill alanları, ikincil vurgular, multiple accent
+  //   • *Deep* → muted background, dolgu
+  static const neonGreen = Color(0xFF32E810);       // glow (hero accent)
+  static const neonGreenSoft = Color(0xFF22A810);   // fill (ikincil)
+  static const neonGreenDeep = Color(0xFF0F2A14);   // bg / muted
+
+  static const neonOrange = Color(0xFFFF7A1A);      // glow
+  static const neonOrangeSoft = Color(0xFFE0661A);  // fill
+  static const neonOrangeDeep = Color(0xFF2A1508);  // bg / muted
+
   static const primaryMuted = Color(0xFF1A3A14);
   static const secondaryMuted = Color(0xFF2A1A0A);
 
   // ── New accent colors ──
   static const accentBlue = Color(0xFF4F8AFF);
+  static const accentBlueSoft = Color(0xFF3F70CC);
   static const accentPurple = Color(0xFFA78BFA);
+  static const accentPurpleSoft = Color(0xFF8466D6);
 
   // ── Screen time rings (Apple Fitness) ──
   static const ringGood = Color(0xFF30D158);

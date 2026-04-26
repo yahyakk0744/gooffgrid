@@ -7,6 +7,7 @@ import '../../l10n/app_localizations.dart';
 import '../../widgets/ranking_row.dart';
 import '../../widgets/top_three_podium.dart';
 import '../../providers/ranking_provider.dart';
+import '../../providers/friends_provider.dart';
 import '../../widgets/premium_background.dart';
 import '../../services/haptic_service.dart';
 
@@ -15,7 +16,6 @@ class RankingScreen extends ConsumerWidget {
 
   final bool embedded;
 
-  static const _tabLabels = <String>[]; // populated in build via l10n
   static const _visibleTabs = [RankingTab.friends, RankingTab.city, RankingTab.country, RankingTab.global];
 
   @override
@@ -44,7 +44,7 @@ class RankingScreen extends ConsumerWidget {
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: _visibleTabs.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                separatorBuilder: (_, _) => const SizedBox(width: 8),
                 itemBuilder: (context, i) {
                   final tab = _visibleTabs[i];
                   final active = tab == rankingState.scope;
@@ -97,7 +97,9 @@ class RankingScreen extends ConsumerWidget {
                   return GestureDetector(
                     onTap: () {
                       HapticService.light();
-                      context.push('/user/${e.userId}');
+                      final friends = ref.read(friendsProvider);
+                      final isFriend = friends.any((f) => f.profile.id == e.userId);
+                      context.push(isFriend ? '/friend/${e.userId}' : '/user/${e.userId}');
                     },
                     child: RankingRow(
                       rank: i + 1,

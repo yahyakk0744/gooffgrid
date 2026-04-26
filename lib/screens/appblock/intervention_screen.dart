@@ -295,7 +295,7 @@ class _BreathingWidget extends StatelessWidget {
       children: [
         AnimatedBuilder(
           animation: breathController,
-          builder: (_, __) {
+          builder: (_, _) {
             final scale = breathScale.value;
             final size = 160.0 * scale;
             final isInhale = breathController.value < 0.5;

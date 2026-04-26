@@ -47,7 +47,7 @@ class AppUsageEntry {
         'name': name,
         'packageName': packageName,
         'minutes': minutes,
-        'iconColor': iconColor.value,
+        'iconColor': iconColor.toARGB32(),
         'category': category,
         'pickups': pickups,
       };

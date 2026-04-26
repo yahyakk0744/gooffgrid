@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
-import '../../config/design_tokens.dart';
 import '../../services/haptic_service.dart';
 
 /// Instagram Stories tarzı aylık top 10 — her sayfa otomatik ilerler,

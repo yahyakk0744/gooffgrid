@@ -160,7 +160,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                         child: CircularProgressIndicator(color: AppColors.neonGreen),
                       ),
                     ),
-                    error: (_, __) => _AppListWithIcons(apps: selectedDay.appUsage),
+                    error: (_, _) => _AppListWithIcons(apps: selectedDay.appUsage),
                   ),
 
                 const SizedBox(height: 100),

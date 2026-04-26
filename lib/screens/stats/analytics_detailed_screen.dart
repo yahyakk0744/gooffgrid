@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
-import '../../config/design_tokens.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/haptic_service.dart';
 import '../../widgets/glassmorphic_card.dart';
@@ -685,7 +684,7 @@ class _AnalyticsDetailedScreenState
                         if (h != 0 && h != 6 && h != 12 && h != 18) {
                           return const SizedBox.shrink();
                         }
-                        return Text('${h}',
+                        return Text('$h',
                             style: const TextStyle(
                                 fontSize: 8, color: AppColors.textTertiary));
                       },
@@ -800,7 +799,7 @@ class _AnalyticsDetailedScreenState
                         if (h != 0 && h != 6 && h != 12 && h != 18) {
                           return const SizedBox.shrink();
                         }
-                        return Text('${h}',
+                        return Text('$h',
                             style: const TextStyle(
                                 fontSize: 8, color: AppColors.textTertiary));
                       },

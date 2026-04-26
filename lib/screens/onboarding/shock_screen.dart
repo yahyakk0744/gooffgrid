@@ -332,7 +332,7 @@ class _ShockScreenState extends ConsumerState<ShockScreen>
           _buildStatRow(
             3,
             '',
-            '${(_lifetimeDays / 365).toStringAsFixed(1)}',
+            (_lifetimeDays / 365).toStringAsFixed(1),
             isTr ? 'y\u0131l sadece ekrana bakarak' : 'years just staring at a screen',
             Icons.hourglass_bottom_rounded,
           ),

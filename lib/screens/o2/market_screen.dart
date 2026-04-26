@@ -83,7 +83,7 @@ class MarketScreen extends ConsumerWidget {
                       child: CircularProgressIndicator(color: AppColors.neonGreen),
                     ),
                   ),
-                  error: (_, __) => Text(l.loadFailed, style: AppType.bodySmall.copyWith(color: AppColors.textSecondary)),
+                  error: (_, _) => Text(l.loadFailed, style: AppType.bodySmall.copyWith(color: AppColors.textSecondary)),
                 ),
                 const SizedBox(height: 100),
               ],

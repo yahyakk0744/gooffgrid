@@ -30,7 +30,7 @@ class BlocklistsScreen extends ConsumerWidget {
         child: ListView.separated(
           padding: const EdgeInsets.all(AppSpacing.s5),
           itemCount: lists.length,
-          separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.s3),
+          separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.s3),
           itemBuilder: (_, i) {
             final b = lists[i];
             return BentoCard(

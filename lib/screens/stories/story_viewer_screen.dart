@@ -94,7 +94,7 @@ class _StoryViewerScreenState extends ConsumerState<StoryViewerScreen>
               Image.network(
                 story.imageUrl!,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(color: AppColors.bg),
+                errorBuilder: (_, _, _) => Container(color: AppColors.bg),
               )
             else
               Container(

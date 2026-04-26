@@ -33,6 +33,8 @@ class AppBlockScreen extends ConsumerWidget {
                   _MainToggleCard(state: state, notifier: notifier, l: l),
                   const SizedBox(height: 12),
                   _StrictModeCard(state: state, notifier: notifier, l: l),
+                  const SizedBox(height: 12),
+                  _PreOpenPreviewTile(),
                   const SizedBox(height: 20),
                   _ScheduleCard(l: l),
                   const SizedBox(height: 20),
@@ -247,7 +249,7 @@ class _MainToggleCard extends StatelessWidget {
               Switch(
                 value: isOn,
                 onChanged: state.isStrictMode ? null : (_) => _handleToggle(context),
-                activeColor: AppColors.neonGreen,
+                activeThumbColor: AppColors.neonGreen,
                 activeTrackColor: AppColors.neonGreen.withValues(alpha: 0.3),
                 inactiveThumbColor: AppColors.textTertiary,
                 inactiveTrackColor: AppColors.cardBg,
@@ -342,7 +344,7 @@ class _StrictModeCardState extends State<_StrictModeCard> {
                         _showDurationPicker(context);
                       }
                     },
-                    activeColor: AppColors.ringDanger,
+                    activeThumbColor: AppColors.ringDanger,
                     activeTrackColor:
                         AppColors.ringDanger.withValues(alpha: 0.3),
                     inactiveThumbColor: AppColors.textTertiary,
@@ -761,7 +763,7 @@ class _AppPickerSheetState extends ConsumerState<_AppPickerSheet> {
                     child: ref.watch(installedAppsProvider).when(
                       loading: () => const CircularProgressIndicator(
                           color: AppColors.neonGreen),
-                      error: (_, __) => Text('Uygulamalar yüklenemedi',
+                      error: (_, _) => Text('Uygulamalar yüklenemedi',
                           style: AppType.caption),
                       data: (_) => Text('Uygulama bulunamadı',
                           style: AppType.caption),
@@ -808,6 +810,59 @@ class _AppPickerSheetState extends ConsumerState<_AppPickerSheet> {
                   ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Dev tile — kicks off the pre-open intervention screen manually so it can be
+/// previewed in the emulator before the native bridge is wired up.
+class _PreOpenPreviewTile extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => context.push('/pre-open?app=Instagram'),
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: AppColors.accentBlue.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppColors.accentBlue.withValues(alpha: 0.25)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: AppColors.accentBlue.withValues(alpha: 0.15),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.spa_rounded, color: AppColors.accentBlue, size: 18),
+            ),
+            const SizedBox(width: 12),
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Müdahale önizle',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Text(
+                    '5 saniye nefes — engellenen uygulamayı açmaya çalıştığında görünür',
+                    style: TextStyle(fontSize: 11, color: AppColors.textTertiary),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.chevron_right_rounded, color: AppColors.textTertiary),
+          ],
+        ),
       ),
     );
   }

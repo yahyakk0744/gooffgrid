@@ -141,7 +141,7 @@ class CategoryPickerStep extends StatelessWidget {
           Expanded(
             child: ListView.separated(
               itemCount: DuelType.categories.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 10),
+              separatorBuilder: (_, _) => const SizedBox(height: 10),
               itemBuilder: (_, i) {
                 final cat = DuelType.categories[i];
                 final isSelected = selectedCategory == cat.$1;
@@ -262,7 +262,7 @@ class _DiceRollerStepState extends State<DiceRollerStep>
             onTap: _roll,
             child: AnimatedBuilder(
               animation: _controller,
-              builder: (_, __) {
+              builder: (_, _) {
                 final t = _controller.value;
                 final angle = _rolling ? t * math.pi * 6 : 0.0;
                 return Transform.rotate(
@@ -442,7 +442,7 @@ class _MysteryRevealStepState extends State<MysteryRevealStep>
           const SizedBox(height: 40),
           AnimatedBuilder(
             animation: _shake,
-            builder: (_, __) {
+            builder: (_, _) {
               final t = _shake.value;
               final dx =
                   math.sin(t * math.pi * 4) * 4 * (t < 0.2 ? 1 : 0);

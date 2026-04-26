@@ -24,7 +24,7 @@ class TopThreePodium extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           // 2nd place
-          Expanded(child: _buildCard(entries[1], 2, 110)),
+          Expanded(child: _buildCard(entries[1], 2, 135)),
           const SizedBox(width: 8),
           // 1st place — parallax efekti
           Expanded(
@@ -33,12 +33,12 @@ class TopThreePodium extends StatelessWidget {
               glowColor: AppColors.gold,
               borderRadius: 16,
               blurAmount: 12,
-              child: _buildCard(entries[0], 1, 140),
+              child: _buildCard(entries[0], 1, 160),
             ),
           ),
           const SizedBox(width: 8),
           // 3rd place
-          Expanded(child: _buildCard(entries[2], 3, 100)),
+          Expanded(child: _buildCard(entries[2], 3, 125)),
         ],
       ),
     );

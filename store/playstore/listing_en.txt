@@ -60,4 +60,4 @@ Leave the grid. Come back to life.
 
 PRIVACY: Your data is stored on encrypted servers and never sold to third parties. You can delete your account at any time.
 
-Privacy Policy: https://gooffgrid.com/privacy
+Privacy Policy: https://gooffgrid.netlify.app/privacy-policy.html

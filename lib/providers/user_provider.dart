@@ -43,6 +43,7 @@ class UserNotifier extends StateNotifier<UserProfile> {
         bestStreak: 14,
         totalPoints: 1200,
         createdAt: DateTime(2025, 1, 15),
+        freezeTokens: 2,
       );
       return;
     }
@@ -75,6 +76,10 @@ class UserNotifier extends StateNotifier<UserProfile> {
           createdAt: data['created_at'] != null
               ? DateTime.parse(data['created_at'] as String)
               : DateTime.now(),
+          freezeTokens: data['freeze_tokens'] as int? ?? 0,
+          lastFreezeAwardedAt: data['last_freeze_awarded_at'] != null
+              ? DateTime.parse(data['last_freeze_awarded_at'] as String)
+              : null,
         );
       }
     } catch (_) {
@@ -86,6 +91,32 @@ class UserNotifier extends StateNotifier<UserProfile> {
 
   void update(UserProfile profile) {
     state = profile;
+  }
+
+  /// 7 aktif günde 1 token kazandır. Daha önce verildiyse idempotent.
+  void maybeAwardFreezeToken() {
+    final now = DateTime.now();
+    final last = state.lastFreezeAwardedAt;
+    final eligible = state.streak > 0 && state.streak % 7 == 0;
+    final alreadyAwardedToday = last != null &&
+        last.year == now.year &&
+        last.month == now.month &&
+        last.day == now.day;
+
+    if (!eligible || alreadyAwardedToday) return;
+    if (state.freezeTokens >= UserProfile.maxFreezeTokens) return;
+
+    state = state.copyWith(
+      freezeTokens: state.freezeTokens + 1,
+      lastFreezeAwardedAt: now,
+    );
+  }
+
+  /// Streak kırılacakken token harca. Harcanırsa true döner.
+  bool tryConsumeFreeze() {
+    if (state.freezeTokens <= 0) return false;
+    state = state.copyWith(freezeTokens: state.freezeTokens - 1);
+    return true;
   }
 }
 

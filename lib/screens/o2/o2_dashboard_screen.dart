@@ -217,7 +217,7 @@ class O2DashboardScreen extends ConsumerWidget {
                           children: txs.take(20).map((tx) => _TransactionRow(tx: tx)).toList(),
                         ),
                   loading: () => const Center(child: CircularProgressIndicator(color: AppColors.neonGreen)),
-                  error: (_, __) => Text(l.loadFailed, style: AppType.bodySmall.copyWith(color: AppColors.textSecondary)),
+                  error: (_, _) => Text(l.loadFailed, style: AppType.bodySmall.copyWith(color: AppColors.textSecondary)),
                 ),
                 const SizedBox(height: 100),
               ],

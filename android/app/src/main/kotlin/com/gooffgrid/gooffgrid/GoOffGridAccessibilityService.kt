@@ -30,12 +30,15 @@ class GoOffGridAccessibilityService : AccessibilityService() {
         if (pkg.startsWith("com.google.android.apps.nexuslauncher")) return
 
         if (AppBlockService.blockedPackages.contains(pkg)) {
-            // Engelli uygulamayı geri gönder, intervention ekranını aç
+            // Engelli uygulamayı geri gönder, pre-open intervention ekranını aç
             performGlobalAction(GLOBAL_ACTION_BACK)
 
+            // one sec tarzı pre-open akışı: 5 saniye nefes + vazgeç/aç seçimi
+            val route = "/pre-open?app=${android.net.Uri.encode(pkg)}&secs=5"
+
             val intent = Intent(this, MainActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                putExtra("route", "/app-block/intervention")
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                putExtra("route", route)
                 putExtra("blockedApp", pkg)
             }
             startActivity(intent)

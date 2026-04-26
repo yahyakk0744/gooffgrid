@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gooffgrid</title>
+  <style>
+    :root {
+      --bg: #0A0F14;
+      --fg: #E8ECEF;
+      --muted: #6B7680;
+      --accent: #7FE7B6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .wrap {
+      max-width: 520px;
+      text-align: center;
+    }
+    .logo {
+      font-size: 48px;
+      font-weight: 900;
+      letter-spacing: -1.5px;
+      margin-bottom: 12px;
+    }
+    .tag {
+      color: var(--muted);
+      font-size: 16px;
+      margin-bottom: 40px;
+    }
+    .links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .link {
+      display: block;
+      padding: 14px 20px;
+      background: rgba(127, 231, 182, 0.06);
+      border: 1px solid rgba(127, 231, 182, 0.2);
+      border-radius: 12px;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    .link:hover { background: rgba(127, 231, 182, 0.12); }
+    .foot {
+      margin-top: 40px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="logo">gooffgrid</div>
+    <div class="tag">Fişi çek. Oyuna başla. Dijitalde kaybolma.</div>
+    <div class="links">
+      <a class="link" href="privacy-policy.html">Gizlilik Politikası</a>
+      <a class="link" href="terms.html">Kullanım Koşulları</a>
+      <a class="link" href="mailto:yahyakk0744+gooffgrid_support@gmail.com">Destek</a>
+    </div>
+    <div class="foot">&copy; 2026 gooffgrid</div>
+  </div>
+</body>
+</html>

@@ -60,7 +60,7 @@ gooffgrid ile gridi terk et. Hayata dön.
 
 --- GİZLİLİK ---
 
-Verileriniz cihazınızda ve şifrelenmiş sunucularda saklanır. Üçüncü taraflara satılmaz. Hesabınızı istediğiniz zaman silerek tüm verilerinizi kaldırabilirsiniz. Detaylar: gooffgrid.com/privacy
+Verileriniz cihazınızda ve şifrelenmiş sunucularda saklanır. Üçüncü taraflara satılmaz. Hesabınızı istediğiniz zaman silerek tüm verilerinizi kaldırabilirsiniz. Detaylar: https://gooffgrid.netlify.app/privacy-policy.html
 
-Privacy Policy URL: https://gooffgrid.com/privacy
-Support URL: https://gooffgrid.com/support
+Privacy Policy URL: https://gooffgrid.netlify.app/privacy-policy.html
+Support URL: mailto:yahyakk0744+gooffgrid_support@gmail.com

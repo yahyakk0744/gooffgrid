@@ -43,7 +43,7 @@ class RankingEntry {
         'rank': rank,
         'userId': userId,
         'name': name,
-        'avatarColor': avatarColor.value,
+        'avatarColor': avatarColor.toARGB32(),
         'level': level,
         'totalMinutes': totalMinutes,
         'change': change,

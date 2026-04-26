@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
-import '../../config/design_tokens.dart';
 import '../../widgets/floating_timer_overlay.dart';
 import '../../providers/screen_time_provider.dart';
 import '../../providers/user_provider.dart';
@@ -173,6 +172,7 @@ class HomeScreen extends ConsumerWidget {
                     streak: streak,
                     o2: o2.balance,
                     focusScore: focusScore,
+                    freezeTokens: user.freezeTokens,
                     last7: last7,
                     onStreakTap: () => context.push('/stats'),
                     onO2Tap: () => context.push('/o2'),
@@ -494,11 +494,13 @@ class _GlassStatsRow extends StatelessWidget {
     required this.last7,
     required this.onStreakTap,
     required this.onO2Tap,
+    this.freezeTokens = 0,
   });
 
   final int streak;
   final int o2;
   final double focusScore;
+  final int freezeTokens;
   final List<bool> last7;
   final VoidCallback onStreakTap;
   final VoidCallback onO2Tap;
@@ -523,7 +525,7 @@ class _GlassStatsRow extends StatelessWidget {
                   _GlassStat(
                     icon: '🔥',
                     value: '$streak',
-                    label: 'Seri',
+                    label: freezeTokens > 0 ? 'Seri · 🧊$freezeTokens' : 'Seri',
                     color: AppColors.neonOrange,
                     onTap: onStreakTap,
                   ),
@@ -665,7 +667,7 @@ class _PremiumFocusButtonState extends State<_PremiumFocusButton>
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: _glow,
-      builder: (_, __) {
+      builder: (_, _) {
         final val = Curves.easeInOut.transform(_glow.value);
         return GestureDetector(
           onTap: widget.onTap,
@@ -980,6 +982,24 @@ class _QuickActionsGrid extends StatelessWidget {
               label: 'Ganimetler',
               color: AppColors.gold,
               onTap: () => context.push('/ganimetler'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            _GlassAction(
+              icon: Icons.people_alt_rounded,
+              label: 'Arkadaşlar',
+              color: const Color(0xFF00D4AA),
+              onTap: () => context.push('/friends'),
+            ),
+            const SizedBox(width: 10),
+            _GlassAction(
+              icon: Icons.auto_awesome_rounded,
+              label: 'Haftalık Rapor',
+              color: const Color(0xFFF5576C),
+              onTap: () => context.push('/wrapped'),
             ),
           ],
         ),

@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -174,7 +173,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                       const SizedBox(height: 10),
                       AnimatedBuilder(
                         animation: _xpAnimation,
-                        builder: (_, __) {
+                        builder: (_, _) {
                           return Container(
                             height: 8,
                             decoration: BoxDecoration(

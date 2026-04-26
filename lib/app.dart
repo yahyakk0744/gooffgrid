@@ -7,9 +7,15 @@ import 'package:go_router/go_router.dart';
 import 'config/theme.dart';
 import 'config/routes.dart';
 import 'providers/theme_provider.dart';
+import 'services/app_block_bridge.dart';
 
 /// Router provider — auth state değişince redirect tetiklenir.
-final routerProvider = Provider<GoRouter>((ref) => buildAppRouter(ref));
+final routerProvider = Provider<GoRouter>((ref) {
+  final router = buildAppRouter(ref);
+  // Native AppBlock → Flutter köprüsünü başlat (pending intent dahil).
+  AppBlockBridge.instance.init(router);
+  return router;
+});
 
 class GoOffGridApp extends ConsumerWidget {
   const GoOffGridApp({super.key});

@@ -79,7 +79,7 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
               Expanded(
                 child: ListView.separated(
                   itemCount: filtered.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  separatorBuilder: (_, _) => const SizedBox(height: 8),
                   itemBuilder: (context, i) {
                     final f = filtered[i];
                     return AppCard(

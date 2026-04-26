@@ -4,11 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:confetti/confetti.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
-import '../../config/design_tokens.dart';
 import '../../providers/o2_provider.dart';
 import '../../widgets/breathing_circle.dart';
 import '../../widgets/growing_tree.dart';
+import '../../widgets/focus/focus_sound_picker.dart';
 import '../../services/haptic_service.dart';
+import '../../services/focus_sound_service.dart';
 import '../../providers/subscription_provider.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -51,6 +52,7 @@ class _FocusModeScreenState extends ConsumerState<FocusModeScreen>
   void dispose() {
     _confetti.dispose();
     _bgAnimController.dispose();
+    FocusSoundService.instance.stop();
     super.dispose();
   }
 
@@ -74,6 +76,7 @@ class _FocusModeScreenState extends ConsumerState<FocusModeScreen>
   Future<void> _stop() async {
     final notifier = ref.read(focusSessionProvider.notifier);
     final result = await notifier.stop();
+    await FocusSoundService.instance.stop();
     setState(() {
       _isComplete = true;
       _earnedO2 = result.o2Earned;
@@ -330,7 +333,12 @@ class _FocusModeScreenState extends ConsumerState<FocusModeScreen>
                       }),
                     ),
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
+
+                  // Ambient sound picker — works both before and during session
+                  const FocusSoundPicker(),
+
+                  const SizedBox(height: 12),
 
                   // Main button
                   Padding(

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
@@ -110,7 +109,7 @@ class AppIconWidget extends StatelessWidget {
         width: size,
         height: size,
         fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => _fallbackDot(),
+        errorBuilder: (_, _, _) => _fallbackDot(),
       );
     }
     return _fallbackDot();

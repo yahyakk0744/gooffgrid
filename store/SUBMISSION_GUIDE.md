@@ -4,7 +4,7 @@
 **Slogan:** Fişi çek. Oyuna başla. Dijitalde kaybolma.
 **Bundle ID (iOS):** `com.gooffgrid.gooffgrid`
 **Package Name (Android):** `com.gooffgrid.gooffgrid`
-**Versiyon:** 1.0.0+1
+**Versiyon:** 1.0.1+2
 **Kategori:** Health & Fitness (iOS) / Sağlık ve Fitness (Play)
 **Yaş:** 13+
 **Monetizasyon:** Free + Pro/Pro+ IAP (reklam YOK)
@@ -20,17 +20,16 @@
   - Kayıt genelde 1-2 saat, bazen 2 gün
 - [ ] D-U-N-S numarası (şirket hesabı ise Apple için zorunlu)
 
-### Domain & E-posta
-- [ ] `gooffgrid.com` domain satın al (Hostinger/Namecheap/GoDaddy)
-- [ ] `privacy@gooffgrid.com` e-posta kutusu oluştur
-- [ ] `support@gooffgrid.com` e-posta kutusu oluştur
-- [ ] DNS MX kayıtları ayarla
+### Domain YOK — Netlify Drop ile ücretsiz host
+- [ ] https://app.netlify.com/drop sayfasını aç (hesap açarsan URL kalıcı, yoksa 24 saatte expire)
+- [ ] `C:\Users\Mega\Desktop\gooffgrid\store` klasörünü sürükle-bırak
+- [ ] Netlify sana `https://xxx-yyy.netlify.app` URL'i verir — bu URL'i aşağıdaki `https://gooffgrid.netlify.app` yerine kullan
+- [ ] Tarayıcıda test et: `https://gooffgrid.netlify.app/privacy-policy.html` ve `/terms.html` açılmalı (mağaza review'ı ilk bunu tıklar)
 
-### Yasal Sayfalar (Hosting)
-- [ ] `privacy-policy.html` → `https://gooffgrid.com/privacy`
-- [ ] `terms.html` → `https://gooffgrid.com/terms`
-- [ ] `support.html` → `https://gooffgrid.com/support`
-- [ ] URL'ler tarayıcıda açılıyor mu kontrol et (mağaza review'ı ilk bunu tıklar)
+### E-posta (Gmail alias)
+- [ ] `yahyakk0744+gooffgrid_support@gmail.com` → aynı Gmail inbox'ına gelir, ayrı hesap gerekmez
+- [ ] `yahyakk0744+gooffgrid_privacy@gmail.com` → privacy için
+- [ ] Veya yeni ücretsiz Gmail aç: `gooffgrid.support@gmail.com` (30 sn)
 
 ---
 
@@ -52,9 +51,9 @@
 - [ ] Keywords (EN): `screen time,digital detox,phone addiction,focus,duel,social,breathing,ranking,friends,goals`
 - [ ] Promotional Text (metadata dosyalarından kopyala)
 - [ ] Description (metadata dosyalarından kopyala — tam metin)
-- [ ] Support URL: `https://gooffgrid.com/support`
-- [ ] Marketing URL: `https://gooffgrid.com`
-- [ ] Privacy Policy URL: `https://gooffgrid.com/privacy`
+- [ ] Support URL: `mailto:yahyakk0744+gooffgrid_support@gmail.com`
+- [ ] Marketing URL: `https://gooffgrid.netlify.app`
+- [ ] Privacy Policy URL: `https://gooffgrid.netlify.app/privacy-policy.html`
 - [ ] Kategori: Primary = Health & Fitness, Secondary = Lifestyle
 
 ### App Privacy Formu (store/appstore/app_privacy.txt)
@@ -77,10 +76,10 @@ Apple "App Privacy" bölümünde şunları işaretle:
 
 ### App Review Bilgileri
 - [ ] Sign-in required: **YES**
-- [ ] Test hesabı: `reviewer@gooffgrid.com` / `Test1234!`
+- [ ] Test hesabı: `yahyakk0744+gooffgrid_reviewer@gmail.com` / `Test1234!`
 - [ ] Contact Info: Ad, soyad, telefon, e-posta
 - [ ] Notes (İngilizce):
-  > gooffgrid is a digital detox app. Screen time data is read via iOS FamilyControls / DeviceActivity framework. Location is optional (country-level ranking only). No ad tracking. Test account: reviewer@gooffgrid.com / Test1234!
+  > gooffgrid is a digital detox app. Screen time data is read via iOS FamilyControls / DeviceActivity framework. Location is optional (country-level ranking only). No ad tracking. Test account: yahyakk0744+gooffgrid_reviewer@gmail.com / Test1234!
 - [ ] **FamilyControls entitlement** — Apple'dan özel izin iste (Capabilities > Family Controls)
   > Apple bunu ayrıca onaylar, bu adım SÜRENİ UZATIR. Şimdiden talep et.
 
@@ -98,7 +97,7 @@ Apple "App Privacy" bölümünde şunları işaretle:
 - [ ] https://app.revenuecat.com → Project oluştur
 - [ ] iOS app bağla (App Store Connect API Key)
 - [ ] App Store Connect'teki ürünleri RevenueCat'e offering olarak tanımla
-- [ ] **Gerçek API Key'i** al, `lib/config/revenuecat_config.dart` dosyasına yaz (placeholder'ı değiştir)
+- [ ] **Gerçek API Key'i** al, `.env` dosyasına yaz: `REVENUECAT_ANDROID_KEY=goog_xxx` ve `REVENUECAT_IOS_KEY=appl_xxx` (`lib/services/revenue_cat_service.dart` env'den okuyor)
 - [ ] Sandbox tester hesabı oluştur ve test et
 
 ### Pricing & Availability
@@ -132,13 +131,13 @@ Apple "App Privacy" bölümünde şunları işaretle:
 - [ ] 7-inch tablet screenshots (opsiyonel)
 - [ ] 10-inch tablet screenshots (opsiyonel)
 - [ ] App category: Health & Fitness
-- [ ] Contact: Email = `support@gooffgrid.com`, Website = `https://gooffgrid.com`
-- [ ] Privacy Policy: `https://gooffgrid.com/privacy`
+- [ ] Contact: Email = `yahyakk0744+gooffgrid_support@gmail.com`, Website = `https://gooffgrid.netlify.app`
+- [ ] Privacy Policy: `https://gooffgrid.netlify.app/privacy-policy.html`
 
 ### Data Safety Formu (store/playstore/data_safety.txt)
 - [ ] Data collected: **YES**
 - [ ] Data encrypted in transit: **YES**
-- [ ] Users can request deletion: **YES** (`https://gooffgrid.com/delete-account`)
+- [ ] Users can request deletion: **YES** (`https://gooffgrid.netlify.app/delete-account.html`)
 - [ ] **Personal info:** Name, Email, User IDs (collected, NOT shared, for App functionality + Account management)
 - [ ] **Photos:** Optional, collected, NOT shared
 - [ ] **App activity:** App interactions (ekran süresi) — collected, NOT shared
@@ -271,7 +270,7 @@ flutter build ipa --release
 ## 8. Final Checklist (Yüklemeden Hemen Önce)
 
 - [ ] `pubspec.yaml` → `version: 1.0.0+1` doğru
-- [ ] `lib/config/revenuecat_config.dart` → GERÇEK API key (placeholder değil)
+- [ ] `.env` → `REVENUECAT_ANDROID_KEY` ve `REVENUECAT_IOS_KEY` GERÇEK key'lerle dolu (boş değil)
 - [ ] `_demoMode = false` tüm dosyalarda (grep ile kontrol et)
 - [ ] Supabase endpoint → PRODUCTION URL ve anon key
 - [ ] Google Maps API key (kullanılıyorsa) → production key + HTTP referrer kısıtlaması
@@ -304,7 +303,7 @@ flutter build ipa --release
 
 1. [ ] `flutter clean && flutter pub get` çalıştır
 2. [ ] `flutter analyze` — 0 error olduğundan emin ol
-3. [ ] `lib/config/revenuecat_config.dart` dosyasındaki placeholder'ı gerçek key ile değiştir (hazırda key varsa)
+3. [ ] `.env` içine `REVENUECAT_ANDROID_KEY=...` ve `REVENUECAT_IOS_KEY=...` yaz (hazırda key varsa)
 4. [ ] Kodda `_demoMode = false` kontrol et, varsa güncelle
 5. [ ] Supabase URL + anon key production değerlerine çek
 6. [ ] `flutter build appbundle --release` → AAB üret
@@ -313,7 +312,7 @@ flutter build ipa --release
 9. [ ] Screenshot'ları hazırla/güncelle (Android: 1080×1920, iOS: 1290×2796)
 10. [ ] Feature graphic hazırla (1024×500 PNG)
 11. [ ] `privacy-policy.html` ve `terms.html` dosyalarını hazırla (lokalde)
-12. [ ] Test hesabı credentials'ı bir yere yaz (`reviewer@gooffgrid.com` / `Test1234!`)
+12. [ ] Test hesabı credentials'ı bir yere yaz (`yahyakk0744+gooffgrid_reviewer@gmail.com` / `Test1234!`)
 13. [ ] `store/appstore/metadata_tr.txt`, `metadata_en.txt`, `app_privacy.txt` oku, kafanda tazele
 14. [ ] `store/playstore/listing_tr.txt`, `listing_en.txt`, `data_safety.txt` oku
 
@@ -323,11 +322,11 @@ flutter build ipa --release
 
 1. [ ] **Apple Developer Program** kaydı — $99 öde, kimlik doğrulaması (1-2 gün sürebilir)
 2. [ ] **Google Play Console** kaydı — $25 öde (genelde 1-2 saat)
-3. [ ] **gooffgrid.com** domain satın al (Hostinger/Namecheap)
+3. [ ] ~~Domain satın al~~ → Netlify Drop ile ücretsiz host (hesabın yoksa 24h, varsa kalıcı)
 4. [ ] **DNS ayarları** (A record + MX kayıtları) — Hostinger panelinden
-5. [ ] **privacy@gooffgrid.com** + **support@gooffgrid.com** e-posta oluştur
+5. [ ] **yahyakk0744+gooffgrid_privacy@gmail.com** + **yahyakk0744+gooffgrid_support@gmail.com** e-posta oluştur
 6. [ ] **Privacy Policy + Terms** HTML'lerini hostinga yükle (FTP veya File Manager)
-7. [ ] URL'leri tarayıcıda test et: `https://gooffgrid.com/privacy`, `/terms`, `/support`
+7. [ ] URL'leri tarayıcıda test et: `https://gooffgrid.netlify.app/privacy-policy.html`, `/terms`, `/support`
 8. [ ] **App Store Connect** → New App oluştur, bundle ID kaydet
 9. [ ] **Apple Developer** → Identifiers → `com.gooffgrid.gooffgrid` oluştur
 10. [ ] **Apple Developer** → Capabilities → **FamilyControls** başvurusu yap (Apple'a açıklama yolla)
