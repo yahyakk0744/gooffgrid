@@ -219,6 +219,13 @@ workflows:
       - build/**/outputs/apk/**/*.apk
       - build/**/outputs/**/mapping.txt
     publishing:
+      # Google Play publishing — kicks in once GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+      # is added to gooffgrid_env group in Codemagic UI. First upload to Play
+      # Console must still be done manually (Play policy).
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: internal
+        submit_as_draft: false
       email:
         recipients:
           - yahyakk0744@gmail.com
