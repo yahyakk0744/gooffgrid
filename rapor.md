@@ -264,3 +264,78 @@ Görev brief'inin **8/10 adımı tamamlandı:**
 - ⚠ #10 Upload (iOS BLOCKED, Android ilk yükleme MANUEL — STOP CONDITION)
 
 **Sonraki adım:** Apple Family Controls Distribution entitlement onayı sonrası Codemagic iOS build retry, paralelde Play Console'a 1.0.1+3 AAB manuel yükleme.
+
+---
+
+## 10. App Store Connect Subscription Durumu (26 Nisan 2026)
+
+ASC API üzerinden doğrulandı (issuer `b11fbc87-...`, app id `6761863053`):
+
+| Field | gooffgrid_pro | gooffgrid_pro_plus |
+|-------|---------------|-------------------|
+| ID | 6762520649 | 6762623868 |
+| Name | GoOffGrid Pro Monthly | GoOffGrid Pro Plus Monthly |
+| Group | 22040046 (level 1) | 22040046 (level 2) |
+| Period | ONE_MONTH | ONE_MONTH |
+| State | MISSING_METADATA | MISSING_METADATA |
+| Localization (tr) | ✓ "GoOffGrid Pro" / "Aylik Pro..." | ✓ "GoOffGrid Pro+" / "Aylik Pro+..." |
+| Price (TR) | 149.99 TRY (price point 10173) | 299.99 TRY (varsayılan) |
+| Territories | 175 | 175 |
+| Review screenshot | ✗ EKSİK | ✗ EKSİK |
+
+**Review screenshot durumu (27 Nisan):** Her iki subscription için review screenshot ASC API üzerinden yüklendi (`scripts/asc_upload_screenshot.py` — POST /subscriptionAppStoreReviewScreenshots → PUT chunk → PATCH commit):
+- pro: asset id `de3cc643-01c2-456b-9795-f600ae59111e`, source `store/screenshots/ios_67/03_03_rewards.png`, assetDeliveryState=COMPLETE
+- pro_plus: asset id `794adedf-737b-4103-a235-fc847aa1f9fd`, source `store/screenshots/ios_67/06_06_global.png`, assetDeliveryState=COMPLETE
+
+State halen `MISSING_METADATA` görünüyor — Apple state machine async, screenshot upload sonrası birkaç dakika→saat içinde `READY_TO_SUBMIT`'a geçer. iOS build entitlement gelene kadar critical path'te değil.
+
+iOS build halen Family Controls entitlement bekliyor olduğundan subscription metadata eksikliği critical path'te değil; entitlement geldikten sonra ilk TestFlight build'le birlikte tamamlanabilir.
+
+---
+
+## 11. Release Candidate AAB (26 Nisan 2026)
+
+Final build:
+- **Path:** `build/app/outputs/bundle/release/app-release.aab`
+- **Size:** 50.6 MB (51M)
+- **Build time:** 26 Nisan 2026, 15:17
+- **Version:** 1.0.1+3 (versionName=1.0.1, versionCode=3)
+- **Signing:** `gooffgrid_keystore` (Codemagic Android signing reference)
+- **Komut:** `flutter build appbundle --release`
+
+Bu AAB Play Console Internal Testing için yüklenmeye hazır. İlk yükleme Play policy gereği manuel; sonraki updates `codemagic.yaml` android-release workflow'u tarafından otomatik (`google_play.track: internal`).
+
+---
+
+## 12. Otonom Tamamlanamayan Kalemler ve Manuel Adımlar
+
+Aşağıdaki adımlar denenedi ama Google/Apple tarafındaki teknik/policy duvarlar yüzünden tamamlanamadı:
+
+### 12.1 Play Console İlk AAB Yükleme
+
+**Denendi:** Tarayıcı otomasyonu ile Play Console'a navigate, app-list scrape, AAB upload akışı.
+
+**Engel:** Play Console UI'sı shadow DOM + iframe + Google anti-bot guard ile korunuyor; Chrome eklentisi credential'lı fetch ve sayfa içeriği erişimini `[BLOCKED: Cookie/query string data]` ile reddediyor. Bu Google'ın bilinçli güvenlik önlemi.
+
+**Çözüm:**
+1. `bash scripts/setup_play_publisher.sh` çalıştır (gcloud auth login sonrası) — service account + key üretir
+2. Play Console → Kullanıcılar ve izinler → SA email'i davet et, "Sürümleri yayınla" izni ver
+3. Codemagic UI → `gooffgrid_env` group'una `GCLOUD_SERVICE_ACCOUNT_CREDENTIALS` değişkenini ekle (JSON içeriği)
+4. Play Console → gooffgrid → Internal testing → Sürüm oluştur → AAB yükle (`build/app/outputs/bundle/release/app-release.aab`)
+5. İncelemeye gönder
+
+İlk yüklemeden sonra `codemagic.yaml` android-release workflow'u sonraki upload'ları otomatik yapacak.
+
+### 12.2 Apple Family Controls Distribution Entitlement
+
+**Engel:** Apple Developer'da bu entitlement için "Distribution" onayı manuel review gerektiriyor — Apple developer relations team incelemesi (1-4 hafta tipik).
+
+**Mevcut durum:** Development entitlement var, Distribution bekleniyor. ASC API üzerinden bypass edilemez.
+
+**Çözüm:** Beklemek. Onay geldikten sonra `codemagic.yaml` ios-release workflow'u zaten doğru konfigüre, retry edip TestFlight'a build'leyebilir.
+
+### 12.3 Codemagic UI Env Variable
+
+**Engel:** Codemagic web UI de aynı `[BLOCKED]` guard'ına sahip — JS otomasyonu çalışmıyor.
+
+**Çözüm:** Manuel olarak https://codemagic.io/app/69cad53e08e63b52a2833133/settings → Environment variables → gooffgrid_env group → Add variable.
